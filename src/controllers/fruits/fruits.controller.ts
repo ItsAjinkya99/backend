@@ -84,7 +84,6 @@ export class FruitsController {
       return response;
     }
   }
-
   @Get()
   findAll(@Query() query: any) {
     return this.fruitsService.findAll(query);
