@@ -1,0 +1,22 @@
+import { Fruit_Category } from './../../fruits/entities/fruit_category.entity';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+
+import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
+import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
+import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
+
+@Entity('color')
+export class Color {
+  @PrimaryGeneratedColumn()
+  id: number;
+
+  @Column()
+  name: string;
+
+  @ManyToMany(() => Vegetable, vegetable => vegetable.categories)
+  vegetables: Vegetable;
+
+  @ManyToMany(() => Fruit_Category, fruit => fruit.categories)
+  fruits: Fruit;
+
+}
