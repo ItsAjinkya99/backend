@@ -1,3 +1,4 @@
+import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
 import { Category } from "src/controllers/main/entities/categories.model";
 import { Mineral } from "src/controllers/main/entities/minerals.model";
 import { Vitamin } from "src/controllers/main/entities/vitamins.model";
@@ -8,11 +9,11 @@ export class Fruit_vitamin {
     @PrimaryGeneratedColumn()
     id: number;
   
-    @Column({unique: true})
-    name: string;
+    @Column()
+    fruitId: number;
   
     @Column()
-    vitaminsId: string;
+    vitaminsId: number;
   
     @ManyToOne(() => Vitamin, vitamin => vitamin.id, { eager: true })
     @JoinColumn({
@@ -20,4 +21,12 @@ export class Fruit_vitamin {
       name: 'vitaminsId',
     })
     vitamins: Vitamin;
+
+    @ManyToOne(() => Fruit, fruit => fruit.id, { eager: true })
+    @JoinColumn({
+      referencedColumnName: 'id',
+      name: 'fruitId',
+    })
+    fruit: Fruit
+    
   }

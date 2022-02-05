@@ -8,33 +8,26 @@ import { UpdateFruitDto } from './dto/update-fruit.dto';
 import { Fruit } from './entities/fruit.entity';
 import { Fruit_Mineral } from './entities/fruit_mineral.entity';
 import { Fruit_Category } from './entities/fruit_category.entity';
+import { Vitamin } from '../main/entities/vitamins.model';
 
 @Injectable()
 export class FruitsService {
 
   constructor(
     @InjectRepository(Fruit) private readonly repo: Repository<Fruit>,
-    @InjectRepository(Fruit_vitamin) private readonly vitamin: Repository<Fruit_vitamin>,
+    @InjectRepository(Fruit_vitamin) private readonly fruitVitamin: Repository<Fruit_vitamin>,
     @InjectRepository(Fruit_Mineral) private readonly mineral: Repository<Fruit_Mineral>,
     @InjectRepository(Fruit_Category) private readonly category: Repository<Fruit_Category>,
     @InjectRepository(Fruit_Image) private readonly image: Repository<Fruit_Image>,
+    @InjectRepository(Vitamin) private readonly vitamin: Repository<Vitamin>,
   ) {
 
   }
   async create(createFruitDto: CreateFruitDto) {
     const fruit = new Fruit();
-    const vitamin = new Fruit_vitamin();
-    const mineral = new Fruit_Mineral();
-    const category = new Fruit_Category();
     let images;
     if (createFruitDto.images) {
       images = createFruitDto.images
-    }
-    let vitaminData = {
-      name: createFruitDto.name,
-      vitaminsId: parseInt(createFruitDto.vitaminsId)
-      // image: createFruitDto.images
-
     }
 
     let fruitData = {
@@ -42,45 +35,75 @@ export class FruitsService {
       mainImage: createFruitDto.mainImage
     }
     let findVitamin;
-    try {
-      findVitamin = await this.vitamin.findOneOrFail(parseInt(createFruitDto.vitaminsId));
-    }
-    catch (Exception) {
-      return Exception
-    }
+
+    console.log("finding vitamin")
+    findVitamin = await this.vitamin.findOneOrFail(parseInt(createFruitDto.vitaminsId));
+    console.log(findVitamin)
+
+
 
     if (findVitamin) {
 
-      Object.assign(vitamin, vitaminData)
-      Object.assign(fruit, fruitData)
+      try {
+        Object.assign(fruit, fruitData)
 
-      this.repo.create(fruit);
-      this.vitamin.create(vitamin)
-      // this.repo.create(vitamin);
-      this.repo.save(fruit);
-      this.vitamin.save(vitamin);
-      // this.repo.insert(vitamin)
-      return true
+        this.repo.create(fruit);
+
+        return await this.repo.save(fruit);
+      } catch (ex) {
+        console.log("throwing error")
+        console.log(ex)
+      }
+
     }
   }
 
-  async saveFruitImages(files) {
-    const images = new Fruit_Image();
-    console.log(files);
+  async saveVitaminData(fruitId, vitaminId) {
+    const fruitvitamin = new Fruit_vitamin();
+    console.log(fruitId, vitaminId)
+    let vitaminData = {
+      fruitId: fruitId,
+      vitaminsId: vitaminId
+      // image: createFruitDto.images
+    }
+    try {
+      Object.assign(fruitvitamin, vitaminData)
 
-    files.forEach(file => {
-      const fileReponse = {
-        fruitId: file.fruitId,
-        imageName: file.originalname,
-      };
-      Object.assign(images, fileReponse)
-      this.image.insert(images)
-      this.image.save(images)
+      this.fruitVitamin.create(fruitvitamin)
+      this.fruitVitamin.insert(fruitvitamin);
+      return "vitamin data saved"
+
+    } catch (ex) {
+      return ex
+    }
+
+  }
+
+  async saveFruitImages(files, fruitId?) {
+    console.log(files, fruitId)
+    try {
+      files.forEach(file => {
+        let images = new Fruit_Image();
+
+        console.log("\n" + file.originalname + "\n")
+        let fileReponse = {
+          fruitId: fruitId,
+          imageName: file.originalname,
+        };
+        Object.assign(images, fileReponse)
+        this.image.create(images)
+        this.image.save(images)
+
+      });
+
+    } catch (ex) {
+      return ex
+    }
 
 
-    });
 
-    return true
+
+
   }
 
   async findAll(query?: string) {
@@ -122,10 +145,9 @@ export class FruitsService {
     }
   }
 
-  async findByVitamin(vitaminsId: string) {
-    const vitamin = new Fruit_vitamin();
+  async findByVitamin(vitaminsId: number) {
     try {
-      const fruit = await this.vitamin.findOne({ vitaminsId });
+      const fruit = await this.fruitVitamin.findOne({ vitaminsId });
       return fruit;
     } catch (err) {
       throw new BadRequestException(`Fruit with vitaminId ${vitaminsId} not found`);

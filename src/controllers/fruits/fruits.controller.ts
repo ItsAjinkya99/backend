@@ -16,14 +16,17 @@ export class FruitsController {
     FilesInterceptor('images', 10, {
       dest: "./uploads"
     }))
-  create(@UploadedFiles() files: Array<Express.Multer.File>,
+  async create(@UploadedFiles() files: Array<Express.Multer.File>,
     @Body() createFruitDto: CreateFruitDto, @Req() req: Request,
   ) {
     // return this.fruitsService.saveFruitImages(files);
 
-    return this.fruitsService.create(createFruitDto).then(() => {
-      this.fruitsService.saveFruitImages(files);
-    })
+    let fruit = await this.fruitsService.create(createFruitDto)
+    if (fruit) {
+      let savedVitaminData = await this.fruitsService.saveVitaminData(fruit.id, createFruitDto.vitaminsId)
+      // return savedVitaminData
+      return this.fruitsService.saveFruitImages(files, fruit.id);
+    }
   }
 
 
@@ -35,18 +38,18 @@ export class FruitsController {
   uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
     console.log(files);
 
-      /* const response = [];
-      files.forEach(file => {
-        const fileReponse = {
-          originalname: file.originalname,
-          filename: file.filename,
-        };
-        response.push(fileReponse);
-      });
-      return response; */
+    /* const response = [];
+    files.forEach(file => {
+      const fileReponse = {
+        originalname: file.originalname,
+        filename: file.filename,
+      };
+      response.push(fileReponse);
+    });
+    return response; */
 
-      // console.log("request has files");
-      return this.fruitsService.saveFruitImages(files);
+    // console.log("request has files");
+    return this.fruitsService.saveFruitImages(files);
 
 
   }

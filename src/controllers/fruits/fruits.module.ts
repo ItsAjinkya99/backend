@@ -8,10 +8,11 @@ import { FruitsService } from './fruits.service';
 import { FruitsController } from './fruits.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Fruit } from './entities/fruit.entity';
+import { Vitamin } from '../main/entities/vitamins.model';
 
 @Module({
   imports: [forwardRef(() => MainModule),
-    TypeOrmModule.forFeature([Fruit, Fruit_vitamin, Fruit_Mineral, Fruit_Category, Fruit_Image])],
+    TypeOrmModule.forFeature([Fruit, Fruit_vitamin, Fruit_Mineral, Fruit_Category, Fruit_Image, Vitamin])],
   controllers: [FruitsController],
   providers: [FruitsService]
 })
