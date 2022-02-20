@@ -14,7 +14,7 @@ export class FruitsController {
   @Post()
   @UseInterceptors(
     FilesInterceptor('images', 10, {
-      dest: "./uploads"
+    dest: "./uploads"
     }))
   async create(@UploadedFiles() files: Array<Express.Multer.File>,
     @Body() createFruitDto: CreateFruitDto, @Req() req: Request,
