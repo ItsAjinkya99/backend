@@ -15,7 +15,7 @@ import { Customer } from '../customer/entities/customer.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Category, Customer, Mineral, Note,
-      Benefit, Order, Vitamin, Color]),
+      Benefit, Order, Color]),
   ],
   controllers: [MainController],
   providers: [MainService]

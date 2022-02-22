@@ -5,10 +5,11 @@ import { UpdateVitaminDto } from './dto/update-vitamin.dto';
 
 @Controller('vitamins')
 export class VitaminsController {
-  constructor(private readonly vitaminsService: VitaminsService) {}
+  constructor(private readonly vitaminsService: VitaminsService) { }
 
   @Post()
   create(@Body() createVitaminDto: CreateVitaminDto) {
+    console.log(createVitaminDto)
     return this.vitaminsService.create(createVitaminDto);
   }
 

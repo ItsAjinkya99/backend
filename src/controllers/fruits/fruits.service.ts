@@ -8,7 +8,7 @@ import { UpdateFruitDto } from './dto/update-fruit.dto';
 import { Fruit } from './entities/fruit.entity';
 import { Fruit_Mineral } from './entities/fruit_mineral.entity';
 import { Fruit_Category } from './entities/fruit_category.entity';
-import { Vitamin } from '../main/entities/vitamins.model';
+import { Vitamin } from '../vitamins/entities/vitamin.entity';
 
 @Injectable()
 export class FruitsService {
