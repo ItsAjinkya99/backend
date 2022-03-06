@@ -1,4 +1,5 @@
-import { Fruit_Image } from 'src/controllers/fruits/entities/fruit_images.entity';
+import { Fruit_Image } from './entities/fruit_images.entity';
+// import {Fruit_Image}
 import { Fruit_vitamin } from './entities/fruit_vitamins.entity';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,7 +19,7 @@ export class FruitsService {
   constructor(
     @InjectRepository(Fruit) private readonly repo: Repository<Fruit>,
     @InjectRepository(Fruit_vitamin) private readonly fruitVitamin: Repository<Fruit_vitamin>,
-    @InjectRepository(Fruit_Mineral) private readonly vitaminMineral: Repository<Fruit_Mineral>,
+    @InjectRepository(Fruit_Mineral) private readonly fruitMineral: Repository<Fruit_Mineral>,
     @InjectRepository(Fruit_Category) private readonly vitaminCategory: Repository<Fruit_Category>,
     @InjectRepository(Fruit_Image) private readonly image: Repository<Fruit_Image>,
     @InjectRepository(Vitamin) private readonly vitamin: Repository<Vitamin>,
@@ -42,10 +43,13 @@ export class FruitsService {
     console.log("finding vitamin")
     let findVitamin = await this.vitamin.findOneOrFail(parseInt(createFruitDto.vitaminsId));
 
+    console.log("finding mineral")
+
     let findMineral = await this.mineral.findOneOrFail(parseInt(createFruitDto.mineralsId));
 
 
     console.log(findVitamin)
+    console.log(findMineral)
 
     if (findVitamin && findMineral) {
 
@@ -55,8 +59,11 @@ export class FruitsService {
         this.repo.create(fruit);
 
         let savedFruitData = await this.repo.save(fruit);
-        this.saveVitaminData(savedFruitData.id, parseInt(createFruitDto.vitaminsId))
-        this.saveMineralData(savedFruitData.id, parseInt(createFruitDto.mineralsId))
+        console.log("Saved fruit data")
+        console.log(savedFruitData)
+        let vitaminData = await this.saveVitaminData(savedFruitData.id, parseInt(createFruitDto.vitaminsId))
+        let mineralData = await this.saveMineralData(savedFruitData.id, parseInt(createFruitDto.mineralsId))
+        console.log(vitaminData, mineralData)
         return savedFruitData;
       } catch (ex) {
         console.log("Some error occured during saving Fruit data")
@@ -88,32 +95,31 @@ export class FruitsService {
   }
   async saveMineralData(fruitId, mineralId) {
     const fruitmineral = new Fruit_Mineral();
-    console.log(fruitId, mineralId)
     let mineralData = {
       fruitId: fruitId,
-      vitaminsId: mineralId
+      mineralsId: mineralId
       // image: createFruitDto.images
     }
     try {
       Object.assign(fruitmineral, mineralData)
 
-      this.vitaminMineral.create(fruitmineral)
-      this.vitaminMineral.insert(fruitmineral);
-      return "mineral data saved"
+      this.fruitMineral.create(fruitmineral)
+      let data = this.fruitMineral.insert(fruitmineral);
+      console.log("MIneral data" + data)
 
     } catch (ex) {
-      return ex
+      console.log(ex)
     }
 
   }
 
   async saveFruitImages(files, fruitId?) {
-    console.log(files, fruitId)
+    console.log("in save fruit images")
     try {
       files.forEach(file => {
         let images = new Fruit_Image();
 
-        console.log("\n" + file.originalname + "\n")
+        // console.log("\n" + file.originalname + "\n")
         let fileReponse = {
           fruitId: fruitId,
           imageName: file.originalname,
@@ -125,7 +131,8 @@ export class FruitsService {
       });
 
     } catch (ex) {
-      return ex
+      console.log("This is error :" + ex)
+      // return ex
     }
 
   }
@@ -157,16 +164,16 @@ export class FruitsService {
     }
   }
 
-  async findByMineral(mineralsId: string) {
+  /* async findByMineral(mineralsId: string) {
     const mineral = new Fruit_Mineral();
 
     try {
-      const fruit = await this.vitaminMineral.findOne({ mineralsId });
+      const fruit = await this.fruitMineral.findOne({ mineralsId });
       return fruit;
     } catch (err) {
       throw new BadRequestException(`Fruit with slug ${mineralsId} not found`);
     }
-  }
+  } */
 
   async update(id: number, updateFruitDto: UpdateFruitDto) {
     const fruit = await this.repo.findOne({ id });

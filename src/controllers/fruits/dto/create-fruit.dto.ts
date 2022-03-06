@@ -1,8 +1,6 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from "class-validator";
 
-import { Category } from "src/controllers/main/entities/categories.model";
-import { Mineral } from "src/controllers/main/entities/minerals.model";
-import { Vitamin } from "src/controllers/main/entities/vitamins.model";
+import { Category } from "src/controllers/categories/entities/category.entity";
 
 
 export class CreateFruitDto {

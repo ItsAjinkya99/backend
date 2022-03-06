@@ -1,5 +1,5 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Order } from 'src/controllers/main/entities/orders.model';
+import { Order } from 'src/controllers/orders/entities/order.entity';
 
 @Entity('customers')
 export class Customer {
@@ -22,7 +22,7 @@ export class Customer {
   shipping_address: string;
 
   @OneToMany(() => Order, order => order.customer)
-  order: Order[]; 
+  order: Order[];
   /* @OneToMany(() => Order, order => order.customer)
   shops: Order[];
   /* @OneToMany(() => Post, (post) => post.category)

@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Category } from 'src/controllers/main/entities/categories.model';
-import { Mineral } from 'src/controllers/main/entities/minerals.model';
-import { Vitamin } from 'src/controllers/main/entities/vitamins.model';
+import { Category } from 'src/controllers/categories/entities/category.entity';
+import { Mineral } from 'src/controllers/minerals/entities/mineral.entity';
+import { Vitamin } from 'src/controllers/vitamins/entities/vitamin.entity';
 
 @Entity('vegetable')
 export class Vegetable {
@@ -40,6 +40,6 @@ export class Vegetable {
     name: 'categoriesId',
   })
   categories: Category[];
-  
+
 
 }

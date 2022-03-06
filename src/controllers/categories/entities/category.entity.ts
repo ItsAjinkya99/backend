@@ -15,6 +15,6 @@ export class Category {
     @ManyToMany(() => Vegetable, (vegetable) => vegetable.categories)
     vegetables: Vegetable[];
 
-    @ManyToMany(() => Fruit_Category, fruit => fruit.categories)
-    fruits: Fruit[];
+    /* @ManyToMany(() => Fruit_Category, fruit => fruit.categories)
+    fruits: Fruit[]; */
 }

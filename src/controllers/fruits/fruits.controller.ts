@@ -20,11 +20,11 @@ export class FruitsController {
     @Body() createFruitDto: CreateFruitDto, @Req() req: Request,
   ) {
     // return this.fruitsService.saveFruitImages(files);
-
+    console.log(createFruitDto)
     var fruit = await this.fruitsService.create(createFruitDto)
-    if (fruit) {
+    /* if (fruit && files) {
       return this.fruitsService.saveFruitImages(files, fruit.id);
-    }
+    } */
   }
 
 
