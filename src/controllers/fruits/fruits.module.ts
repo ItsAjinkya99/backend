@@ -9,11 +9,14 @@ import { FruitsController } from './fruits.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Fruit } from './entities/fruit.entity';
 import { Vitamin } from '../main/entities/vitamins.model';
+import { Mineral } from '../minerals/entities/mineral.entity';
+import { Category } from '../categories/entities/category.entity';
 
 @Module({
   imports: [forwardRef(() => MainModule),
-    TypeOrmModule.forFeature([Fruit, Fruit_vitamin, Fruit_Mineral, Fruit_Category, Fruit_Image, Vitamin])],
+  TypeOrmModule.forFeature([Fruit, Fruit_vitamin, Fruit_Mineral,
+    Fruit_Category, Fruit_Image, Vitamin, Mineral, Category])],
   controllers: [FruitsController],
   providers: [FruitsService]
 })
-export class FruitsModule {}
+export class FruitsModule { }

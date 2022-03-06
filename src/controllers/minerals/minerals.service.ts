@@ -1,11 +1,27 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { CreateMineralDto } from './dto/create-mineral.dto';
 import { UpdateMineralDto } from './dto/update-mineral.dto';
+import { Mineral } from './entities/mineral.entity';
 
 @Injectable()
 export class MineralsService {
-  create(createMineralDto: CreateMineralDto) {
-    return 'This action adds a new mineral';
+  constructor(
+    @InjectRepository(Mineral) private readonly mineral: Repository<Mineral>,
+
+  ) {
+
+  }
+
+
+  async create(createMineralDto: CreateMineralDto) {
+
+
+    const mineral = new Mineral();
+    Object.assign(mineral, createMineralDto)
+
+    return await this.mineral.save(mineral);
   }
 
   findAll() {

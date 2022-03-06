@@ -9,6 +9,8 @@ import { Fruit } from './entities/fruit.entity';
 import { Fruit_Mineral } from './entities/fruit_mineral.entity';
 import { Fruit_Category } from './entities/fruit_category.entity';
 import { Vitamin } from '../vitamins/entities/vitamin.entity';
+import { Mineral } from '../minerals/entities/mineral.entity';
+import { Category } from '../categories/entities/category.entity';
 
 @Injectable()
 export class FruitsService {
@@ -16,10 +18,12 @@ export class FruitsService {
   constructor(
     @InjectRepository(Fruit) private readonly repo: Repository<Fruit>,
     @InjectRepository(Fruit_vitamin) private readonly fruitVitamin: Repository<Fruit_vitamin>,
-    @InjectRepository(Fruit_Mineral) private readonly mineral: Repository<Fruit_Mineral>,
-    @InjectRepository(Fruit_Category) private readonly category: Repository<Fruit_Category>,
+    @InjectRepository(Fruit_Mineral) private readonly vitaminMineral: Repository<Fruit_Mineral>,
+    @InjectRepository(Fruit_Category) private readonly vitaminCategory: Repository<Fruit_Category>,
     @InjectRepository(Fruit_Image) private readonly image: Repository<Fruit_Image>,
     @InjectRepository(Vitamin) private readonly vitamin: Repository<Vitamin>,
+    @InjectRepository(Mineral) private readonly mineral: Repository<Mineral>,
+    @InjectRepository(Category) private readonly category: Repository<Category>,
   ) {
 
   }
@@ -34,24 +38,28 @@ export class FruitsService {
       name: createFruitDto.name,
       mainImage: createFruitDto.mainImage
     }
-    let findVitamin;
 
     console.log("finding vitamin")
-    findVitamin = await this.vitamin.findOneOrFail(parseInt(createFruitDto.vitaminsId));
+    let findVitamin = await this.vitamin.findOneOrFail(parseInt(createFruitDto.vitaminsId));
+
+    let findMineral = await this.mineral.findOneOrFail(parseInt(createFruitDto.mineralsId));
+
+
     console.log(findVitamin)
 
-
-
-    if (findVitamin) {
+    if (findVitamin && findMineral) {
 
       try {
         Object.assign(fruit, fruitData)
 
         this.repo.create(fruit);
 
-        return await this.repo.save(fruit);
+        let savedFruitData = await this.repo.save(fruit);
+        this.saveVitaminData(savedFruitData.id, parseInt(createFruitDto.vitaminsId))
+        this.saveMineralData(savedFruitData.id, parseInt(createFruitDto.mineralsId))
+        return savedFruitData;
       } catch (ex) {
-        console.log("throwing error")
+        console.log("Some error occured during saving Fruit data")
         console.log(ex)
       }
 
@@ -72,6 +80,26 @@ export class FruitsService {
       this.fruitVitamin.create(fruitvitamin)
       this.fruitVitamin.insert(fruitvitamin);
       return "vitamin data saved"
+
+    } catch (ex) {
+      return ex
+    }
+
+  }
+  async saveMineralData(fruitId, mineralId) {
+    const fruitmineral = new Fruit_Mineral();
+    console.log(fruitId, mineralId)
+    let mineralData = {
+      fruitId: fruitId,
+      vitaminsId: mineralId
+      // image: createFruitDto.images
+    }
+    try {
+      Object.assign(fruitmineral, mineralData)
+
+      this.vitaminMineral.create(fruitmineral)
+      this.vitaminMineral.insert(fruitmineral);
+      return "mineral data saved"
 
     } catch (ex) {
       return ex
@@ -100,10 +128,6 @@ export class FruitsService {
       return ex
     }
 
-
-
-
-
   }
 
   async findAll(query?: string) {
@@ -111,28 +135,7 @@ export class FruitsService {
       .createQueryBuilder('fruit')
       .select('id', 'name')
 
-    // check if query is present
-    /* if (!(Object.keys(query).length === 0) && query.constructor === Object) {
-      const queryKeys = Object.keys(query); // get the keys of the query string
-
-      // check if slug key is present
-      if (queryKeys.includes('slug')) {
-        myQuery.where('post.slug LIKE :slug', { slug: `%${query['slug']}%` });
-      }
-      // check if sort key is present, we will sort by Title field only
-      if (queryKeys.includes('sort')) {
-        myQuery.orderBy('post.title', query['sort'].toUpperCase());
-      }
-
-      // check if category is present, show only selected category items
-      if (queryKeys.includes('category')) {
-        myQuery.andWhere('category.title = :cat', { cat: query['category'] });
-      }
-
-      return await myQuery.getMany();
-    } else { */
     return await myQuery.getMany();
-    // }
 
   }
 
@@ -158,7 +161,7 @@ export class FruitsService {
     const mineral = new Fruit_Mineral();
 
     try {
-      const fruit = await this.mineral.findOne({ mineralsId });
+      const fruit = await this.vitaminMineral.findOne({ mineralsId });
       return fruit;
     } catch (err) {
       throw new BadRequestException(`Fruit with slug ${mineralsId} not found`);
@@ -173,8 +176,6 @@ export class FruitsService {
     }
 
     fruit.modifiedOn = new Date(Date.now());
-    /* fruit.mineralsId = updateFruitDto.vitaminsId;
-    fruit.vitaminsId = updateFruitDto.mineralsId; */
 
     Object.assign(fruit, updateFruitDto);
     return this.repo.save(fruit);

@@ -14,17 +14,15 @@ export class FruitsController {
   @Post()
   @UseInterceptors(
     FilesInterceptor('images', 10, {
-    dest: "./uploads"
+      dest: "./uploads"
     }))
   async create(@UploadedFiles() files: Array<Express.Multer.File>,
     @Body() createFruitDto: CreateFruitDto, @Req() req: Request,
   ) {
     // return this.fruitsService.saveFruitImages(files);
 
-    let fruit = await this.fruitsService.create(createFruitDto)
+    var fruit = await this.fruitsService.create(createFruitDto)
     if (fruit) {
-      let savedVitaminData = await this.fruitsService.saveVitaminData(fruit.id, createFruitDto.vitaminsId)
-      // return savedVitaminData
       return this.fruitsService.saveFruitImages(files, fruit.id);
     }
   }
