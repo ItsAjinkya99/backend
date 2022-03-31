@@ -14,12 +14,6 @@ export class CreateFruitDto {
     @IsNotEmpty()
     mineralsId: string;
 
-    /* @IsNotEmpty()
-    vitaminI: Vitamin;
-
-    @IsNotEmpty()
-    mineral: Mineral; */
-
     @IsOptional()
     categoriesId: string;
 
