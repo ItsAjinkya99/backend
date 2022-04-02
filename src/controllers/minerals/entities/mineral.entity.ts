@@ -1,4 +1,4 @@
-import { Fruit_Mineral } from './../../fruits/entities/fruit_mineral.entity';
+import { fruitMineral } from '../../fruits/entities/fruitMineral.entity';
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
 import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
@@ -13,7 +13,7 @@ export class Mineral {
   @Column({ unique: true })
   name: string;
 
-  @ManyToMany(() => Fruit_Mineral, fruit => fruit.minerals)
+  @ManyToMany(() => fruitMineral, fruit => fruit.minerals)
   fruits: Fruit[];
 
 

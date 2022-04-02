@@ -1,14 +1,14 @@
-import { Fruit_Image } from './entities/fruit_images.entity';
-// import {Fruit_Image}
-import { Fruit_vitamin } from './entities/fruit_vitamins.entity';
+import { fruitImage } from './entities/fruitImages.entity';
+// import {fruitImage}
+import { fruitVitamin } from './entities/fruitVitamins.entity';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateFruitDto } from './dto/create-fruit.dto';
 import { UpdateFruitDto } from './dto/update-fruit.dto';
 import { Fruit } from './entities/fruit.entity';
-import { Fruit_Mineral } from './entities/fruit_mineral.entity';
-import { Fruit_Category } from './entities/fruit_category.entity';
+import { fruitMineral } from './entities/fruitMineral.entity';
+import { fruitCategory } from './entities/fruitCategory.entity';
 import { Vitamin } from '../vitamins/entities/vitamin.entity';
 import { Mineral } from '../minerals/entities/mineral.entity';
 import { Category } from '../categories/entities/category.entity';
@@ -18,10 +18,10 @@ export class FruitsService {
 
   constructor(
     @InjectRepository(Fruit) private readonly repo: Repository<Fruit>,
-    @InjectRepository(Fruit_vitamin) private readonly fruitVitamin: Repository<Fruit_vitamin>,
-    @InjectRepository(Fruit_Mineral) private readonly fruitMineral: Repository<Fruit_Mineral>,
-    @InjectRepository(Fruit_Category) private readonly vitaminCategory: Repository<Fruit_Category>,
-    @InjectRepository(Fruit_Image) private readonly image: Repository<Fruit_Image>,
+    @InjectRepository(fruitVitamin) private readonly fruitVitamin: Repository<fruitVitamin>,
+    @InjectRepository(fruitMineral) private readonly fruitMineral: Repository<fruitMineral>,
+    @InjectRepository(fruitCategory) private readonly vitaminCategory: Repository<fruitCategory>,
+    @InjectRepository(fruitImage) private readonly image: Repository<fruitImage>,
     @InjectRepository(Vitamin) private readonly vitamin: Repository<Vitamin>,
     @InjectRepository(Mineral) private readonly mineral: Repository<Mineral>,
     @InjectRepository(Category) private readonly category: Repository<Category>,
@@ -74,7 +74,7 @@ export class FruitsService {
   }
 
   async saveVitaminData(fruitId, vitaminId) {
-    const fruitvitamin = new Fruit_vitamin();
+    const fruitvitamin = new fruitVitamin();
     console.log(fruitId, vitaminId)
     let vitaminData = {
       fruitId: fruitId,
@@ -94,7 +94,7 @@ export class FruitsService {
 
   }
   async saveMineralData(fruitId, mineralId) {
-    const fruitmineral = new Fruit_Mineral();
+    const fruitmineral = new fruitMineral();
     let mineralData = {
       fruitId: fruitId,
       mineralsId: mineralId
@@ -117,7 +117,7 @@ export class FruitsService {
     console.log("in save fruit images")
     try {
       files.forEach(file => {
-        let images = new Fruit_Image();
+        let images = new fruitImage();
 
         // console.log("\n" + file.originalname + "\n")
         let fileReponse = {
@@ -165,7 +165,7 @@ export class FruitsService {
   }
 
   /* async findByMineral(mineralsId: string) {
-    const mineral = new Fruit_Mineral();
+    const mineral = new fruitMineral();
 
     try {
       const fruit = await this.fruitMineral.findOne({ mineralsId });

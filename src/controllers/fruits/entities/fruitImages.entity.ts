@@ -1,8 +1,8 @@
 import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 
-@Entity('Fruit_Image')
-export class Fruit_Image {
+@Entity('fruitImage')
+export class fruitImage {
   @PrimaryGeneratedColumn()
   id: number;
 

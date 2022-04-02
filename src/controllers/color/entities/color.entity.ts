@@ -1,4 +1,4 @@
-import { Fruit_Category } from './../../fruits/entities/fruit_category.entity';
+import { fruitCategory } from '../../fruits/entities/fruitCategory.entity';
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
@@ -16,7 +16,7 @@ export class Color {
     @ManyToMany(() => Vegetable, vegetable => vegetable.categories)
     vegetables: Vegetable;
 
-    /* @ManyToMany(() => Fruit_Category, fruit => fruit.categories)
+    /* @ManyToMany(() => fruitCategory, fruit => fruit.categories)
     fruits: Fruit; */
 
 }

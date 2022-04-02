@@ -1,4 +1,4 @@
-import { Fruit_vitamin } from './../../fruits/entities/fruit_vitamins.entity';
+import { fruitVitamin } from '../../fruits/entities/fruitVitamins.entity';
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
 import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
@@ -26,7 +26,7 @@ export class Vitamin {
   @ManyToMany(() => Vegetable, (vegetable) => vegetable.vitamins)
   vegetables: Vegetable[];
 
-  @OneToMany(() => Fruit_vitamin, fruit => fruit.vitamins)
+  @OneToMany(() => fruitVitamin, fruit => fruit.vitamins)
   fruits: Fruit[];
 
 }
