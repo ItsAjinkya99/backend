@@ -51,7 +51,7 @@ export class VegetablesService {
         console.log(vitaminData, mineralData)
         return savedFruitData;
       } catch (ex) {
-        console.log("Some error occured during saving Fruit data")
+        console.log("Some error occurred during saving Fruit data")
         console.log(ex)
       }
 

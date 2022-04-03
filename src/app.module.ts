@@ -15,6 +15,7 @@ import { CategoriesModule } from './controllers/categories/categories.module';
 import { OrdersModule } from './controllers/orders/orders.module';
 import { ColorModule } from './controllers/color/color.module';
 import { NoteModule } from './controllers/note/note.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { NoteModule } from './controllers/note/note.module';
     CategoriesModule,
     OrdersModule,
     ColorModule,
-    NoteModule
+    NoteModule,
+    AuthModule
     // AccessControlModule.forRoles(roles),
     
   ],

@@ -3,3 +3,5 @@ uploads
 package-lock.json
 dist
 package.json
+.vscode/settings.json
+.gitignore
