@@ -18,7 +18,15 @@ export class User {
     password: string;
 
     @Column()
+    role: Role;
+    
+    @Column()
     profilePic: string;
-
-
+    
 }
+
+export enum Role {
+    vendor = 'vendor',
+    customer = 'customer',
+    admin = 'admin'
+  }

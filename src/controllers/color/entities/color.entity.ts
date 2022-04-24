@@ -13,10 +13,4 @@ export class Color {
     @Column()
     name: string;
 
-    @ManyToMany(() => Vegetable, vegetable => vegetable.categories)
-    vegetables: Vegetable;
-
-    /* @ManyToMany(() => fruitCategory, fruit => fruit.categories)
-    fruits: Fruit; */
-
 }

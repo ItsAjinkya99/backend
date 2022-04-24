@@ -23,9 +23,6 @@ export class Vitamin {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   modifiedOn: Date;
 
-  @ManyToMany(() => Vegetable, (vegetable) => vegetable.vitamins)
-  vegetables: Vegetable[];
-
   @OneToMany(() => fruitVitamin, fruit => fruit.vitamins)
   fruits: Fruit[];
 

@@ -3,28 +3,27 @@ import { FruitsService } from './fruits.service';
 import { CreateFruitDto } from './dto/create-fruit.dto';
 import { UpdateFruitDto } from './dto/update-fruit.dto';
 import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
-import multer, { diskStorage } from 'multer';
+import { diskStorage } from 'multer';
 import { Express } from 'express';
 import { Request } from 'express';
+import { User } from 'src/auth/entities/user.entity';
 
 @Controller('fruits')
 export class FruitsController {
   constructor(private readonly fruitsService: FruitsService) { }
 
   @Post()
-  @UseInterceptors(
+  @UseInterceptors( 
     FilesInterceptor('images', 10, {
       dest: "./uploads"
     }))
   async create(@UploadedFiles() files: Array<Express.Multer.File>,
-    @Body() createFruitDto: CreateFruitDto, @Req() req: Request,
+    @Body() createFruitDto: CreateFruitDto, @Req() req: Request
   ) {
-    // return this.fruitsService.saveFruitImages(files);
     console.log(createFruitDto)
-    var fruit = await this.fruitsService.create(createFruitDto)
-    /* if (fruit && files) {
-      return this.fruitsService.saveFruitImages(files, fruit.id);
-    } */
+    // @ts-ignore
+    var fruit = await this.fruitsService.create(createFruitDto, req.user as User)
+
   }
 
 

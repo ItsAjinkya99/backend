@@ -1,5 +1,4 @@
 import { fruitImage } from './entities/fruitImages.entity';
-// import {fruitImage}
 import { fruitVitamin } from './entities/fruitVitamins.entity';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +11,7 @@ import { fruitCategory } from './entities/fruitCategory.entity';
 import { Vitamin } from '../vitamins/entities/vitamin.entity';
 import { Mineral } from '../minerals/entities/mineral.entity';
 import { Category } from '../categories/entities/category.entity';
+import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class FruitsService {
@@ -28,8 +28,10 @@ export class FruitsService {
   ) {
 
   }
-  async create(createFruitDto: CreateFruitDto) {
+  async create(createFruitDto: CreateFruitDto, user: User) {
     const fruit = new Fruit();
+    //@ts-ignore
+    fruit.userId = 1;
     let images;
     if (createFruitDto.images) {
       images = createFruitDto.images
@@ -66,7 +68,7 @@ export class FruitsService {
         console.log(vitaminData, mineralData)
         return savedFruitData;
       } catch (ex) {
-        console.log("Some error occured during saving Fruit data")
+        console.log("Some error occurred during saving Fruit data")
         console.log(ex)
       }
 
@@ -93,6 +95,7 @@ export class FruitsService {
     }
 
   }
+
   async saveMineralData(fruitId, mineralId) {
     const fruitmineral = new fruitMineral();
     let mineralData = {

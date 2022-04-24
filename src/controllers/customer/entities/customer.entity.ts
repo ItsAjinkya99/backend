@@ -16,15 +16,12 @@ export class Customer {
   email: string;
 
   @Column({ nullable: false })
-  billing_address: string;
+  billingAddress: string;
 
   @Column({ nullable: false })
-  shipping_address: string;
+  shippingAddress: string;
 
   @OneToMany(() => Order, order => order.customer)
-  order: Order[];
-  /* @OneToMany(() => Order, order => order.customer)
-  shops: Order[];
-  /* @OneToMany(() => Post, (post) => post.category)
-  posts: Post[]; */
+  orders: Order[];
+ 
 }

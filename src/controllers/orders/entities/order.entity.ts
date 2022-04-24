@@ -9,7 +9,10 @@ export class Order {
     @Column()
     orderId: string;
 
-    @ManyToOne(() => Customer, customer => customer.order, { eager: true })
+    @Column()
+    customerId: string;
+
+    @ManyToOne(() => Customer, customer => customer.orders, { eager: true })
     customer: Customer;
 
 }

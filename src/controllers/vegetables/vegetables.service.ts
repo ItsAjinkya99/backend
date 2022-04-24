@@ -1,5 +1,5 @@
 import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Category } from '../categories/entities/category.entity';
@@ -103,19 +103,39 @@ export class VegetablesService {
   }
 
 
-  findAll() {
-    return `This action returns all vegetables`;
+  async findAll() {
+    const myQuery = this.repo
+      .createQueryBuilder('vegetable')
+      .select('id', 'name')
+
+    return await myQuery.getMany();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} vegetable`;
+  async findOne(id: number) {
+    try {
+      const vegetable = await this.repo.findOneOrFail(id);
+      return vegetable;
+    } catch (err) {
+      throw new BadRequestException('Vegetable not found');
+    }
   }
 
-  update(id: number, updateVegetableDto: UpdateVegetableDto) {
-    return `This action updates a #${id} vegetable`;
+  async update(id: number, updateVegetableDto: UpdateVegetableDto) {
+    const vegetable = await this.repo.findOne({ id });
+
+    if (!vegetable) {
+      throw new BadRequestException('post not found');
+    }
+
+    vegetable.modifiedOn = new Date(Date.now());
+
+    Object.assign(vegetable, updateVegetableDto);
+    return this.repo.save(vegetable);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} vegetable`;
+  async remove(id: number) {
+    const vegetable = await this.repo.findOne(id);
+    await this.repo.remove(vegetable);
+    return { success: true, vegetable };
   }
 }

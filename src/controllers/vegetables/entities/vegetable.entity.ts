@@ -11,35 +11,14 @@ export class Vegetable {
   @Column()
   name: string;
 
-  @Column()
-  vitaminsId: string;
+  @Column({ nullable: false })
+  mainImage: string;
 
-  @Column()
-  mineralsId: string;
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  createdOn: Date;
 
-  @Column()
-  categoriesId: string;
-
-  @ManyToMany(() => Vitamin, (vitamin) => vitamin.id, { eager: true })
-  @JoinColumn({
-    referencedColumnName: 'id',
-    name: 'vitaminsId',
-  })
-  vitamins: Vitamin[];
-
-  @ManyToMany(() => Mineral, (mineral) => mineral.id, { eager: true })
-  @JoinColumn({
-    referencedColumnName: 'id',
-    name: 'mineralsId',
-  })
-  minerals: Mineral[];
-
-  @ManyToMany(() => Category, (category) => category.id, { eager: true })
-  @JoinColumn({
-    referencedColumnName: 'id',
-    name: 'categoriesId',
-  })
-  categories: Category[];
+  @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
+  modifiedOn: Date;
 
 
 }
