@@ -1,6 +1,6 @@
 import { User } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
@@ -11,7 +11,7 @@ import { Customer } from 'src/controllers/customer/entities/customer.entity';
 import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Customer, Vendor]),CustomerModule, VendorModule,
+  imports: [TypeOrmModule.forFeature([User, Customer, Vendor]),
   JwtModule.register({
     secret: 'secretKey',
     signOptions: {
@@ -24,6 +24,7 @@ import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
   })
   ],
   controllers: [AuthController],
-  providers: [AuthService]
+  providers: [AuthService],
+  exports:[AuthService]
 })
 export class AuthModule { }

@@ -1,5 +1,6 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from 'src/controllers/orders/entities/order.entity';
+import * as bcrypt from 'bcryptjs';
 
 @Entity('customers')
 export class Customer {
@@ -7,7 +8,13 @@ export class Customer {
   id: number;
 
   @Column()
-  name: string;
+  firstname: string;
+
+  @Column()
+  lastname: string;
+
+  @Column()
+  password: string;
 
   @Column({ nullable: false })
   address: string;
@@ -20,8 +27,16 @@ export class Customer {
 
   @Column({ nullable: false })
   shippingAddress: string;
+  
+  @Column({ default: null })
+  profilePic: string;
 
   @OneToMany(() => Order, order => order.customer)
   orders: Order[];
+
+  @BeforeInsert()
+  hashPassword(){
+    this.password = bcrypt.hashSync(this.password, 10)
+  }
  
 }

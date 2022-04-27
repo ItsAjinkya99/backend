@@ -5,3 +5,4 @@ dist
 package.json
 .vscode/settings.json
 .gitignore
+package.json
