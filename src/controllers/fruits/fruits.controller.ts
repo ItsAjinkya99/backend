@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UploadedFile, UseInterceptors, Query, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UploadedFile, UseInterceptors, Query, UploadedFiles, UseGuards } from '@nestjs/common';
 import { FruitsService } from './fruits.service';
 import { CreateFruitDto } from './dto/create-fruit.dto';
 import { UpdateFruitDto } from './dto/update-fruit.dto';
@@ -7,6 +7,10 @@ import { diskStorage } from 'multer';
 import { Express } from 'express';
 import { Request } from 'express';
 import { User } from 'src/auth/entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
+import { CurrentUserGuard } from 'src/auth/current-user.guard';
+import { CurrentUser } from 'src/auth/user.decorator';
+import { Customer } from '../customer/entities/customer.entity';
 
 @Controller('fruits')
 export class FruitsController {
@@ -18,8 +22,8 @@ export class FruitsController {
       dest: "./uploads"
     }))
   async create(@UploadedFiles() files: Array<Express.Multer.File>,
-    @Body() createFruitDto: CreateFruitDto, @Req() req: Request
-  ) {
+    @Body() createFruitDto: CreateFruitDto, @Req() req: Request,
+ ) {
     console.log(createFruitDto)
     // @ts-ignore
     var fruit = await this.fruitsService.create(createFruitDto, req.user as User)
@@ -85,7 +89,9 @@ export class FruitsController {
     }
   }
   @Get()
-  findAll(@Query() query: any) {
+  @UseGuards(CurrentUserGuard)
+  findAll(@Query() query: any, @Req() req: Request, @CurrentUser() user: Customer) {
+    console.log(user)
     return this.fruitsService.findAll(query);
   }
 
@@ -95,6 +101,7 @@ export class FruitsController {
   }
 
   @Patch(':id')
+  @UseGuards(AuthGuard('jwt'))
   update(@Param('id') id: string, @Body() updateFruitDto: UpdateFruitDto) {
     return this.fruitsService.update(+id, updateFruitDto);
   }

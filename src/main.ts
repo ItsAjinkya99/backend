@@ -20,8 +20,8 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const config = new DocumentBuilder()
-    .setTitle('CMS Blog')
-    .setDescription('The blog API for professionals')
+    .setTitle('Backend')
+    .setDescription('The backend for Fruits and Vegetables app')
     .setVersion('1.0')
     .build();
   const document = SwaggerModule.createDocument(app, config);

@@ -1,6 +1,6 @@
 import { User } from './entities/user.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { forwardRef, Module } from '@nestjs/common';
+import { forwardRef, Global, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
@@ -9,7 +9,9 @@ import { CustomerModule } from 'src/controllers/customer/customer.module';
 import { VendorModule } from 'src/controllers/vendor/vendor.module';
 import { Customer } from 'src/controllers/customer/entities/customer.entity';
 import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
+import { JwtStrategy } from './entities/jwt.strategy';
 
+@Global()
 @Module({
   imports: [TypeOrmModule.forFeature([User, Customer, Vendor]),
   JwtModule.register({
@@ -24,7 +26,7 @@ import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
   })
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy],
   exports:[AuthService]
 })
 export class AuthModule { }

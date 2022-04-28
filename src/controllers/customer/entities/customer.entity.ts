@@ -13,7 +13,7 @@ export class Customer {
   @Column()
   lastname: string;
 
-  @Column()
+  @Column({select:false})
   password: string;
 
   @Column({ nullable: false })

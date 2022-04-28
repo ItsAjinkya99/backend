@@ -1,10 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UseGuards, Query } from '@nestjs/common';
 import { Response } from 'express';
+import { Request } from 'express';
 import { AuthService } from 'src/auth/auth.service';
+import { CurrentUserGuard } from 'src/auth/current-user.guard';
 import { UserLoginDto } from 'src/auth/dto/user-login.dto';
+import { User } from 'src/auth/entities/user.entity';
+import { CurrentUser } from 'src/auth/user.decorator';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { Customer } from './entities/customer.entity';
 
 @Controller('customer')
 export class CustomerController {
@@ -35,14 +40,23 @@ export class CustomerController {
     return this.authService.register(body);
   }
 
+  @Get('authstatus')
+  @UseGuards(CurrentUserGuard)
+  authStatus(@CurrentUser() customer: Customer) {
+    console.log(!!customer);
+    return { status: !!customer, customer };
+  }
+  
+
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    console.log(id)
+    return this.customerService.findOne(id);
+  }
+
   @Get()
   findAll() {
     return this.customerService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.customerService.findOne(+id);
   }
 
   @Patch(':id')
@@ -53,5 +67,15 @@ export class CustomerController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.customerService.remove(+id);
+  }
+
+  
+
+  @Post()
+  logout(@Req() req: Request, @Res() res: Response){
+    res.clearCookie('Authentication')
+    res.clearCookie('IsAuthenticated')
+    return res.status(200).send({ success: true });
+
   }
 }
