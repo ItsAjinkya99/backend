@@ -1,6 +1,7 @@
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Order } from 'src/controllers/orders/entities/order.entity';
 import * as bcrypt from 'bcryptjs';
+import { UserRoles } from 'src/auth/user-roles';
 
 @Entity('customers')
 export class Customer {
@@ -21,6 +22,9 @@ export class Customer {
 
   @Column({ nullable: false })
   email: string;
+
+  @Column({ type: 'enum', enum: UserRoles, enumName: 'roles', default: UserRoles.Customer })
+  roles: UserRoles;
 
   @Column({ nullable: false })
   billingAddress: string;

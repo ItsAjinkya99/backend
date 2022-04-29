@@ -9,7 +9,7 @@ import { CustomerModule } from 'src/controllers/customer/customer.module';
 import { VendorModule } from 'src/controllers/vendor/vendor.module';
 import { Customer } from 'src/controllers/customer/entities/customer.entity';
 import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
-import { JwtStrategy } from './entities/jwt.strategy';
+import { JwtStrategy } from './jwt.strategy';
 
 @Global()
 @Module({

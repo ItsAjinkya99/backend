@@ -16,6 +16,8 @@ import { OrdersModule } from './controllers/orders/orders.module';
 import { ColorModule } from './controllers/color/color.module';
 import { NoteModule } from './controllers/note/note.module';
 import { AuthModule } from './auth/auth.module';
+import { AccessControlModule } from 'nest-access-control';
+import { roles } from './auth/user-roles';
 
 @Module({
   imports: [
@@ -44,8 +46,8 @@ import { AuthModule } from './auth/auth.module';
     OrdersModule,
     ColorModule,
     NoteModule,
-    AuthModule
-    // AccessControlModule.forRoles(roles),
+    AuthModule,
+    AccessControlModule.forRoles(roles)
     
   ],
   controllers: [AppController],

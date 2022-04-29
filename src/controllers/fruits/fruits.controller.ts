@@ -11,12 +11,19 @@ import { AuthGuard } from '@nestjs/passport';
 import { CurrentUserGuard } from 'src/auth/current-user.guard';
 import { CurrentUser } from 'src/auth/user.decorator';
 import { Customer } from '../customer/entities/customer.entity';
+import { ACGuard, UseRoles } from 'nest-access-control';
 
 @Controller('fruits')
 export class FruitsController {
   constructor(private readonly fruitsService: FruitsService) { }
 
   @Post()
+  @UseRoles({
+    possession:'any',
+    action:'create',
+    resource:'fruits'
+  })
+  @UseGuards(AuthGuard('jwt'), ACGuard)
   @UseInterceptors( 
     FilesInterceptor('images', 10, {
       dest: "./uploads"
