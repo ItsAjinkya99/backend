@@ -66,7 +66,7 @@ const myFormat = printf(({ level, message, label, timestamp }) => {
 export const logger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
-    new DailyRotateFile({ filename: 'combined.log' }),
+    new DailyRotateFile({ filename: `log/combined-%DATE%.log` }),
   ],
   format: combine(
     label({ label: 'backend' }),
