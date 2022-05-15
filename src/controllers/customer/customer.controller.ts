@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UseGuards, Query } from '@nestjs/common';
 import { Response } from 'express';
 import { Request } from 'express';
+import { logger } from 'src/app.module';
 import { AuthService } from 'src/auth/auth.service';
 import { CurrentUserGuard } from 'src/auth/current-user.guard';
 import { UserLoginDto } from 'src/auth/dto/user-login.dto';
@@ -14,11 +15,13 @@ import { Customer } from './entities/customer.entity';
 
 @Controller('customer')
 export class CustomerController {
+
   constructor(private readonly customerService: CustomerService,
     private readonly authService: AuthService) { }
 
   @Post('register')
   registerUser(@Body() body: CreateCustomerDto) {
+    logger.info('Hello again distributed logs');
     body.role = UserRoles.Customer
     return this.authService.register(body);
   }

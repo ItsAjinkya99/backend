@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { VegetablesModule } from './controllers/vegetables/vegetables.module';
 import { VendorModule } from './controllers/vendor/vendor.module';
-import { CustomerModule } from './controllers/customer/customer.module';4
+import { CustomerModule } from './controllers/customer/customer.module'; 4
 import { FruitsModule } from './controllers/fruits/fruits.module';
 import { ShopModule } from './controllers/shop/shop.module';
 import { MulterModule } from '@nestjs/platform-express';
@@ -18,6 +18,10 @@ import { NoteModule } from './controllers/note/note.module';
 import { AuthModule } from './auth/auth.module';
 import { AccessControlModule } from 'nest-access-control';
 import { roles } from './auth/user-roles';
+const winston = require('winston');
+const DailyRotateFile = require('winston-daily-rotate-file');
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp, label, printf } = format;
 
 @Module({
   imports: [
@@ -48,9 +52,26 @@ import { roles } from './auth/user-roles';
     NoteModule,
     AuthModule,
     AccessControlModule.forRoles(roles)
-    
+
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
+
+const myFormat = printf(({ level, message, label, timestamp }) => {
+  return `${timestamp} [${label}] ${level}: ${message}`;
+});
+
+export const logger = winston.createLogger({
+  transports: [
+    new winston.transports.Console(),
+    new DailyRotateFile({ filename: 'combined.log' }),
+  ],
+  format: combine(
+    label({ label: 'backend' }),
+    timestamp(),
+    myFormat
+  ),
+
+});

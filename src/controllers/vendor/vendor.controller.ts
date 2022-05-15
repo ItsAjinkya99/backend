@@ -7,6 +7,7 @@ import { UserLoginDto } from 'src/auth/dto/user-login.dto';
 import { Response } from 'express';
 import { Request } from 'express';
 import { UserRoles } from 'src/auth/user-roles';
+import { logger } from 'src/app.module';
 
 @Controller('vendor')
 export class VendorController {
@@ -15,6 +16,7 @@ export class VendorController {
 
   @Post('register')
   registerUser(@Body() body: CreateVendorDto) {
+    logger.info('Hello again distributed logs');
     body.role = UserRoles.Vendor
     return this.authService.register(body);
   }

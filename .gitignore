@@ -6,3 +6,6 @@ package.json
 .vscode/settings.json
 .gitignore
 package.json
+combined.log
+combined.log.2022-05-15
+error.log
