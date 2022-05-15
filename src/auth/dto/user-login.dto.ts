@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsString } from "class-validator";
+import { UserRoles } from "../user-roles";
 
 export class UserLoginDto {
     @IsString()
@@ -8,4 +9,6 @@ export class UserLoginDto {
     @IsString()
     @IsNotEmpty()
     password: string;
+
+    role: UserRoles;
 }

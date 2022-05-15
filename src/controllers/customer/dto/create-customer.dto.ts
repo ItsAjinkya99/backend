@@ -1,36 +1,15 @@
 
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 
-export class CreateCustomerDto {
-  @IsString()
-  @IsNotEmpty()
-  firstname: string;
-
-  @IsString()
-  @IsNotEmpty()
-  lastname: string;
-
-  @IsString()
-  @IsNotEmpty()
-  email: string;
-
-  @IsString()
-  @IsNotEmpty()
-  address: string;
+export class CreateCustomerDto extends CreateUserDto {
 
   @IsString()
   @IsNotEmpty()
   billingAddress: string;
-  
+
   @IsString()
   @IsNotEmpty()
   shippingAddress: string;
 
-  @IsString()
-  @IsNotEmpty()
-  password: string;
-  
-  @IsString()
-  @IsOptional()
-  profilePic: string;
 }

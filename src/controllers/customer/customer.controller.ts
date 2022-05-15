@@ -5,6 +5,7 @@ import { AuthService } from 'src/auth/auth.service';
 import { CurrentUserGuard } from 'src/auth/current-user.guard';
 import { UserLoginDto } from 'src/auth/dto/user-login.dto';
 import { User } from 'src/auth/entities/user.entity';
+import { UserRoles } from 'src/auth/user-roles';
 import { CurrentUser } from 'src/auth/user.decorator';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
@@ -14,29 +15,11 @@ import { Customer } from './entities/customer.entity';
 @Controller('customer')
 export class CustomerController {
   constructor(private readonly customerService: CustomerService,
-    private readonly authService: AuthService) {}
-
-  @Post()
-  create(@Body() createCustomerDto: CreateCustomerDto) {
-    return this.customerService.create(createCustomerDto);
-  }
-
-  @Post('login')
-  async login(@Body() userLoginDto: UserLoginDto, @Res() res: Response) {
-    const {token, user} = await this.authService.login(userLoginDto);
-
-    res.cookie('isAuthenticated', true, {maxAge:2*60*60*1000}) // max age 2 hours
-    res.cookie('Authentication', token, {
-      httpOnly:true,
-      maxAge:2*60*60*1000
-    })
-
-    return res.send({success:true, user})
-  }
+    private readonly authService: AuthService) { }
 
   @Post('register')
   registerUser(@Body() body: CreateCustomerDto) {
-    // console.log(body);
+    body.role = UserRoles.Customer
     return this.authService.register(body);
   }
 
@@ -46,7 +29,23 @@ export class CustomerController {
     console.log(!!customer);
     return { status: !!customer, customer };
   }
-  
+
+  @Post('login')
+  async login(@Body() userLoginDto: UserLoginDto, @Res() res: Response) {
+
+    userLoginDto.role = UserRoles.Customer;
+
+    const { token, user } = await this.authService.login(userLoginDto);
+
+    res.cookie('isAuthenticated', true, { maxAge: 2 * 60 * 60 * 1000 }) // max age 2 hours
+    res.cookie('Authentication', token, {
+      httpOnly: true,
+      maxAge: 2 * 60 * 60 * 1000
+    })
+
+    return res.send({ success: true, user })
+  }
+
 
   @Get(':id')
   findOne(@Param('id') id: number) {
@@ -69,13 +68,4 @@ export class CustomerController {
     return this.customerService.remove(+id);
   }
 
-  
-
-  @Post()
-  logout(@Req() req: Request, @Res() res: Response){
-    res.clearCookie('Authentication')
-    res.clearCookie('IsAuthenticated')
-    return res.status(200).send({ success: true });
-
-  }
 }

@@ -1,24 +1,11 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Shop } from 'src/controllers/shop/entities/shop.entity';
+import { User } from 'src/auth/entities/user.entity';
 
 @Entity('vendor')
-export class Vendor {
-  @PrimaryGeneratedColumn()
-  id: number;
-
-  @Column()
-  name: string;
-
-  @Column({ nullable: false })
-  address: string;
-
-  @Column({ nullable: false })
-  email: string;
+export class Vendor extends User {
 
   @OneToMany(() => Shop, shop => shop.vendor)
   shops: Shop[];
-
-  /* @Column({ nullable: false })
-  shipping_address: string; */
 
 }

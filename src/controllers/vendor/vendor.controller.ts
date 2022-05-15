@@ -1,15 +1,38 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { VendorService } from './vendor.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
+import { AuthService } from 'src/auth/auth.service';
+import { UserLoginDto } from 'src/auth/dto/user-login.dto';
+import { Response } from 'express';
+import { Request } from 'express';
+import { UserRoles } from 'src/auth/user-roles';
 
 @Controller('vendor')
 export class VendorController {
-  constructor(private readonly vendorService: VendorService) {}
+  constructor(private readonly vendorService: VendorService,
+    private readonly authService: AuthService) { }
 
-  @Post()
-  create(@Body() createVendorDto: CreateVendorDto) {
-    return this.vendorService.create(createVendorDto);
+  @Post('register')
+  registerUser(@Body() body: CreateVendorDto) {
+    body.role = UserRoles.Vendor
+    return this.authService.register(body);
+  }
+
+  @Post('login')
+  async login(@Body() userLoginDto: UserLoginDto, @Res() res: Response) {
+
+    userLoginDto.role = UserRoles.Vendor;
+
+    const { token, user } = await this.authService.login(userLoginDto);
+
+    res.cookie('isAuthenticated', true, { maxAge: 2 * 60 * 60 * 1000 }) // max age 2 hours
+    res.cookie('Authentication', token, {
+      httpOnly: true,
+      maxAge: 2 * 60 * 60 * 1000
+    })
+
+    return res.send({ success: true, user })
   }
 
   @Get()

@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
+import { UserRoles } from '../user-roles';
 
 export class CreateUserDto {
   @IsString()
@@ -16,9 +17,17 @@ export class CreateUserDto {
   @IsString()
   @IsNotEmpty()
   password: string;
-  
+
+  @IsString()
+  @IsNotEmpty()
+  address: string;
+
   @IsString()
   @IsOptional()
   profilePic: string;
-}
 
+  @IsString()
+  @IsOptional()
+  role: UserRoles;
+
+}

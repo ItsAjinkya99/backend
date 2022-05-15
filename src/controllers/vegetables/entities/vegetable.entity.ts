@@ -20,5 +20,4 @@ export class Vegetable {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   modifiedOn: Date;
 
-
 }

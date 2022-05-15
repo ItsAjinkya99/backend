@@ -1,4 +1,6 @@
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { UserRoles } from "../user-roles";
+import * as bcrypt from 'bcryptjs';
 
 @Entity('Users')
 export class User {
@@ -6,27 +8,29 @@ export class User {
     id: number;
 
     @Column()
-    firstName: string;
+    firstname: string;
 
     @Column()
-    lastName: string;
+    lastname: string;
 
-    @Column()
-    email: string;
-
-    @Column()
+    @Column({ select: false })
     password: string;
 
-    @Column()
-    role: Role;
-    
-    @Column()
-    profilePic: string;
-    
-}
+    @Column({ nullable: false })
+    address: string;
 
-export enum Role {
-    vendor = 'vendor',
-    customer = 'customer',
-    admin = 'admin'
-  }
+    @Column({ nullable: false })
+    email: string;
+
+    @Column({ type: 'enum', enum: UserRoles, enumName: 'roles', default: UserRoles.Customer })
+    role: UserRoles;
+
+    @Column({ default: null })
+    profilePic: string;
+
+    @BeforeInsert()
+    hashPassword() {
+        this.password = bcrypt.hashSync(this.password, 10)
+    }
+
+}
