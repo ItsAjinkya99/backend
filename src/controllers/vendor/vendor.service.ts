@@ -1,4 +1,5 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { randomBytes, scrypt } from 'crypto';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 
@@ -23,4 +24,5 @@ export class VendorService {
   remove(id: number) {
     return `This action removes a #${id} vendor`;
   }
+
 }

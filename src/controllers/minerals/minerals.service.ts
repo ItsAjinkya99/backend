@@ -14,9 +14,7 @@ export class MineralsService {
 
   }
 
-
   async create(createMineralDto: CreateMineralDto) {
-
 
     const mineral = new Mineral();
     Object.assign(mineral, createMineralDto)

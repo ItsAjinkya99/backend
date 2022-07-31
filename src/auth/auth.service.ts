@@ -1,76 +1,62 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from 'src/controllers/customer/entities/customer.entity';
 import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateAuthDto } from './dto/update-user.dto';
-import * as bcrypt from 'bcryptjs';
-import { JwtService } from '@nestjs/jwt';
-import { UserLoginDto } from './dto/user-login.dto';
-import { User } from './entities/user.entity';
-import { CreateCustomerDto } from 'src/controllers/customer/dto/create-customer.dto';
 import { UserRoles } from './user-roles';
+import { promisify } from 'util';
+import { randomBytes, scrypt as _scrypt } from 'crypto';
+const scrypt = promisify(_scrypt);
 
 @Injectable()
 export class AuthService {
+
+  user: any;
   constructor(
     @InjectRepository(Customer) private readonly customer: Repository<Customer>,
     @InjectRepository(Vendor) private readonly vendor: Repository<Vendor>,
-    private jwtService: JwtService) {
+  ) {
 
   }
 
   async login(loginBody: any) {
-
     switch (loginBody.role) {
       case 'Customer': {
-        const user = await this.customer.createQueryBuilder('customer')
+        this.user = await this.customer.createQueryBuilder('customer')
           .addSelect('customer.password')
           .where('customer.email = :email', { email: loginBody.email }).getOne();
-
-        if (!user) {
-          throw new UnauthorizedException('Bad credentials');
-        } else {
-          // verify whether the supplied password hash is matching with the password hash in database
-          if (await this.verifyPassword(loginBody.password, user.password)) {
-            const token = await this.jwtService.signAsync({
-              email: user.email,
-              id: user.id
-            });
-            delete user.password;
-            return { token, user };
-          } else {
-            throw new UnauthorizedException('Bad credentials');
-
-          }
-        }
+        break;
       }
 
       case 'Vendor': {
-        const user = await this.vendor.createQueryBuilder('vendor')
+        this.user = await this.vendor.createQueryBuilder('vendor')
           .addSelect('vendor.password')
           .where('vendor.email = :email', { email: loginBody.email }).getOne();
-
-        if (!user) {
-          throw new UnauthorizedException('Bad credentials');
-        } else {
-          // verify whether the supplied password hash is matching with the password hash in database
-          if (await this.verifyPassword(loginBody.password, user.password)) {
-            const token = await this.jwtService.signAsync({
-              email: user.email,
-              id: user.id
-            });
-            delete user.password;
-            return { token, user };
-          } else {
-            throw new UnauthorizedException('Bad credentials');
-
-          }
-        }
+        break;
       }
 
+      case 'Admin': {
+      }
+
+      case 'VendorUser': {
+
+      }
     }
+        if (!this.user) {
+          throw new NotFoundException('User not found');
+        }
+
+        const [salt, storedHash] = this.user.password.split('.');
+        const hash = (await scrypt(loginBody.password, salt, 32)) as Buffer;
+        
+        console.log(storedHash)
+        console.log(hash.toString('hex'))
+        
+        if (storedHash !== hash.toString('hex')) {
+          throw new BadRequestException('Bad password');
+        }
+
+        return this.user;
 
   }
 
@@ -78,51 +64,41 @@ export class AuthService {
   async register(userBody: any) {
     switch (userBody.role) {
       case 'Customer': {
-        const { firstname, lastname, email, address, password, billingAddress, shippingAddress, profilePic } = userBody;
-        const customer = new Customer();
 
         /*Check if the user is already present in database, if yes, throw error */
-        const checkCustomer = await this.customer.findOne({ where: { email } });
+        const checkCustomer = await this.customer.findOne({ where: { email: userBody.email } });
 
         if (checkCustomer) {
+
           throw new BadRequestException('Please enter different email');
         } else {
-          customer.firstname = firstname;
-          customer.lastname = lastname;
-          customer.email = email;
-          customer.address = address;
-          customer.billingAddress = billingAddress;
-          customer.shippingAddress = shippingAddress;
-          customer.password = password;
-          customer.profilePic = profilePic;
+          const customer = new Customer();
+
+          Object.assign(customer, userBody);
           customer.role = UserRoles.Customer;
+          customer.password = await this.generateHash(userBody.password)
 
           this.customer.create(customer); // this will run any hooks present, such as password hashing
           await this.customer.save(customer);
+
           delete customer.password;
           return customer;
         }
       }
 
       case 'Vendor': {
-        console.log(userBody);
-
-        const { firstname, lastname, email, address, password, profilePic } = userBody;
 
         /*Check if the user is already present in database, if yes, throw error */
-        const checkVendor = await this.vendor.findOne({ where: { email } });
-        const vendor = new Vendor();
+        const checkVendor = await this.vendor.findOne({ where: { email: userBody.email } });
 
         if (checkVendor) {
           throw new BadRequestException('Please enter different email');
         } else {
-          vendor.firstname = firstname;
-          vendor.lastname = lastname;
-          vendor.email = email;
-          vendor.address = address;
-          vendor.password = password;
-          vendor.profilePic = profilePic;
-          vendor.role = UserRoles.Vendor;
+          const vendor = new Vendor();
+
+          Object.assign(vendor, userBody)
+          vendor.role = UserRoles.Vendor
+          vendor.password = await this.generateHash(userBody.password)
 
           this.vendor.create(vendor); // this will run any hooks present, such as password hashing
           await this.vendor.save(vendor);
@@ -140,7 +116,16 @@ export class AuthService {
 
   }
 
-  async verifyPassword(password: string, hash: string) {
-    return await bcrypt.compare(password, hash)
+  async generateHash(password: string) {
+    // Hash the users password
+    // Generate a salt
+    const salt = randomBytes(8).toString('hex');
+
+    // Hash the salt and the password together
+    const hash = (await scrypt(password, salt, 32)) as Buffer;
+
+    // Join the hashed result and the salt together
+    const hashedPassword = salt + '.' + hash.toString('hex');
+    return hashedPassword;
   }
 }

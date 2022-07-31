@@ -28,9 +28,7 @@ export class User {
     @Column({ default: null })
     profilePic: string;
 
-    @BeforeInsert()
-    hashPassword() {
-        this.password = bcrypt.hashSync(this.password, 10)
-    }
+    @Column({default:0})
+    deleted: boolean
 
 }

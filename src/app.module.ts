@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -18,6 +18,11 @@ import { NoteModule } from './controllers/note/note.module';
 import { AuthModule } from './auth/auth.module';
 import { AccessControlModule } from 'nest-access-control';
 import { roles } from './auth/user-roles';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthController } from './auth/auth.controller';
+import { AuthGuard } from './guards/auth.guard';
+import { AdminModule } from './controllers/admin/admin.module';
+const cookieSession = require('cookie-session');
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 const { createLogger, format, transports } = require('winston');
@@ -51,13 +56,27 @@ const { combine, timestamp, label, printf } = format;
     ColorModule,
     NoteModule,
     AuthModule,
-    AccessControlModule.forRoles(roles)
-
+    AccessControlModule.forRoles(roles),
+    AdminModule
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,{
+    provide:APP_GUARD,
+    useClass: AuthGuard,
+  }],
 })
-export class AppModule { }
+export class AppModule { 
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(
+        cookieSession({
+          keys: ['jdhkdjfghdfg'],
+          maxAge: 24 * 60 * 60 * 1000
+        }),
+      )
+      .forRoutes('*');
+  }
+}
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;

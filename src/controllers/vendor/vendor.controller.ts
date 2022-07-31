@@ -1,13 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session } from '@nestjs/common';
 import { VendorService } from './vendor.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { AuthService } from 'src/auth/auth.service';
 import { UserLoginDto } from 'src/auth/dto/user-login.dto';
 import { Response } from 'express';
-import { Request } from 'express';
 import { UserRoles } from 'src/auth/user-roles';
-import { logger } from 'src/app.module';
+import { AllowUnauthorizedRequest } from 'src/app.controller';
 
 @Controller('vendor')
 export class VendorController {
@@ -15,26 +14,27 @@ export class VendorController {
     private readonly authService: AuthService) { }
 
   @Post('register')
-  registerUser(@Body() body: CreateVendorDto) {
-    logger.info('Hello again distributed logs');
+  @AllowUnauthorizedRequest()
+  async registerUser(@Body() body: CreateVendorDto,@Session() session: any) {
+    
     body.role = UserRoles.Vendor
-    return this.authService.register(body);
+    const vendor = await this.authService.register(body);
+    
+    session.vendorId = vendor.id;
+    return vendor
   }
 
   @Post('login')
-  async login(@Body() userLoginDto: UserLoginDto, @Res() res: Response) {
+  @AllowUnauthorizedRequest()
+  async login(@Body() userLoginDto: UserLoginDto,@Session() session: any) {
 
     userLoginDto.role = UserRoles.Vendor;
 
-    const { token, user } = await this.authService.login(userLoginDto);
-
-    res.cookie('isAuthenticated', true, { maxAge: 2 * 60 * 60 * 1000 }) // max age 2 hours
-    res.cookie('Authentication', token, {
-      httpOnly: true,
-      maxAge: 2 * 60 * 60 * 1000
-    })
-
-    return res.send({ success: true, user })
+    const vendor = await this.authService.login(userLoginDto);
+    
+    session.vendorId = vendor.id;
+    return vendor
+    
   }
 
   @Get()

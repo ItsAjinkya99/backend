@@ -8,8 +8,6 @@ import { Express } from 'express';
 import { Request } from 'express';
 import { User } from 'src/auth/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { CurrentUserGuard } from 'src/auth/current-user.guard';
-import { CurrentUser } from 'src/auth/user.decorator';
 import { Customer } from '../customer/entities/customer.entity';
 import { ACGuard, UseRoles } from 'nest-access-control';
 
@@ -96,9 +94,7 @@ export class FruitsController {
     }
   }
   @Get()
-  @UseGuards(CurrentUserGuard)
-  findAll(@Query() query: any, @Req() req: Request, @CurrentUser() user: Customer) {
-    console.log(user)
+  findAll(@Query() query: any, @Req() req: Request) {
     return this.fruitsService.findAll(query);
   }
 

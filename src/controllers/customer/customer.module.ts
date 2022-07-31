@@ -7,6 +7,11 @@ import { Order } from '../orders/entities/order.entity';
 import { AuthModule } from 'src/auth/auth.module';
 import { AuthService } from 'src/auth/auth.service';
 
+const winston = require('winston');
+const DailyRotateFile = require('winston-daily-rotate-file');
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp, label, printf } = format;
+
 @Module({
   imports: [
     TypeOrmModule.forFeature([Vegetable, Order]),
@@ -16,3 +21,19 @@ import { AuthService } from 'src/auth/auth.service';
 })
 export class CustomerModule { }
 
+const myFormat = printf(({ level, message, label, timestamp }) => {
+  return `${timestamp} [${label}] ${level}: ${message}`;
+});
+
+export const logger = winston.createLogger({
+  transports: [
+    new winston.transports.Console(),
+    new DailyRotateFile({ filename: `log/customer/customer-%DATE%.log` }),
+  ],
+  format: combine(
+    label({ label: 'backend' }),
+    timestamp(),
+    myFormat
+  ),
+
+});
