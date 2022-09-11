@@ -28,7 +28,7 @@ export class User {
     @Column({ default: null })
     profilePic: string;
 
-    @Column({default:0})
+    @Column({ default: 0 })
     deleted: boolean
 
 }

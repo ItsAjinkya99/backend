@@ -21,7 +21,7 @@ import { roles } from './auth/user-roles';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthController } from './auth/auth.controller';
 import { AuthGuard } from './guards/auth.guard';
-import { AdminModule } from './controllers/admin/admin.module';
+import { RolesGuard } from './guards/roles.guard';
 const cookieSession = require('cookie-session');
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
@@ -56,13 +56,16 @@ const { combine, timestamp, label, printf } = format;
     ColorModule,
     NoteModule,
     AuthModule,
-    AccessControlModule.forRoles(roles),
-    AdminModule
+    AccessControlModule.forRoles(roles)
+
   ],
   controllers: [AppController],
   providers: [AppService,{
     provide:APP_GUARD,
-    useClass: AuthGuard,
+    useClass: AuthGuard
+  },{
+    provide:APP_GUARD,
+    useClass:RolesGuard
   }],
 })
 export class AppModule { 

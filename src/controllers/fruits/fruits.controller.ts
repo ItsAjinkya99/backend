@@ -8,33 +8,26 @@ import { Express } from 'express';
 import { Request } from 'express';
 import { User } from 'src/auth/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { Customer } from '../customer/entities/customer.entity';
-import { ACGuard, UseRoles } from 'nest-access-control';
+import { Roles } from 'src/decorators/roles.decorator';
+import { UserRoles } from 'src/auth/user-roles';
 
 @Controller('fruits')
 export class FruitsController {
   constructor(private readonly fruitsService: FruitsService) { }
 
   @Post()
-  @UseRoles({
-    possession:'any',
-    action:'create',
-    resource:'fruits'
-  })
-  @UseGuards(AuthGuard('jwt'), ACGuard)
-  @UseInterceptors( 
+  @UseInterceptors(
     FilesInterceptor('images', 10, {
       dest: "./uploads"
     }))
   async create(@UploadedFiles() files: Array<Express.Multer.File>,
     @Body() createFruitDto: CreateFruitDto, @Req() req: Request,
- ) {
+  ) {
     console.log(createFruitDto)
     // @ts-ignore
     var fruit = await this.fruitsService.create(createFruitDto, req.user as User)
 
   }
-
 
   @Post('images')
   @UseInterceptors(
@@ -56,7 +49,6 @@ export class FruitsController {
 
     // console.log("request has files");
     return this.fruitsService.saveFruitImages(files);
-
 
   }
   // Upload Picture to Server
@@ -93,7 +85,9 @@ export class FruitsController {
       return response;
     }
   }
+
   @Get()
+  @Roles(UserRoles.Vendor)
   findAll(@Query() query: any, @Req() req: Request) {
     return this.fruitsService.findAll(query);
   }

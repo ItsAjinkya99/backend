@@ -7,23 +7,22 @@ export class CreateVegetableDto {
     @IsNotEmpty()
     name: string;
 
-    @IsNotEmpty()
-    vitaminsId: string;
-
-    @IsNotEmpty()
-    mineralsId: string;
-
-    @IsOptional()
-    categoriesId: string;
-
     @IsString()
     @IsNotEmpty()
     mainImage: string;
 
     @IsOptional()
+    vitaminsId: string;
+
+    @IsOptional()
+    mineralsId: string;
+
+    @IsOptional()
+    categoriesId: string;
+
+    @IsOptional()
     category: Category;
 
     @IsOptional()
-    @IsNotEmpty()
     images: string[]
 }

@@ -9,7 +9,8 @@ export class AuthGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const request = context.switchToHttp().getRequest();
+    console.log(request.session)
     const allowUnauthorizedRequest = this.reflector.get<boolean>('allowUnauthorizedRequest', context.getHandler());
-    return allowUnauthorizedRequest || request.session.vendorId;
+    return allowUnauthorizedRequest || request.session.vendorId || request.session.customerId;
   }
 }

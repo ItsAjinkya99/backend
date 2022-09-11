@@ -1,4 +1,4 @@
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
 
 @Entity('shops')
@@ -9,13 +9,20 @@ export class Shop {
   @Column()
   name: string;
 
-  @Column({ nullable:/*  */ false })
+  @Column({ nullable: false })
   address: string;
 
   @Column({ nullable: false })
   email: string;
 
+  @Column()
+  vendorId: number
+
   @ManyToOne(() => Vendor, vendor => vendor.shops, { eager: true })
+  @JoinColumn({
+    referencedColumnName: 'id',
+    name: 'vendorId',
+  })
   vendor: Vendor;
 
 }

@@ -22,6 +22,7 @@ export class AuthService {
   async login(loginBody: any) {
     switch (loginBody.role) {
       case 'Customer': {
+        console.log("in cusotmer case")
         this.user = await this.customer.createQueryBuilder('customer')
           .addSelect('customer.password')
           .where('customer.email = :email', { email: loginBody.email }).getOne();
@@ -42,21 +43,19 @@ export class AuthService {
 
       }
     }
-        if (!this.user) {
-          throw new NotFoundException('User not found');
-        }
 
-        const [salt, storedHash] = this.user.password.split('.');
-        const hash = (await scrypt(loginBody.password, salt, 32)) as Buffer;
-        
-        console.log(storedHash)
-        console.log(hash.toString('hex'))
-        
-        if (storedHash !== hash.toString('hex')) {
-          throw new BadRequestException('Bad password');
-        }
+    if (!this.user) {
+      throw new NotFoundException('User not found');
+    }
 
-        return this.user;
+    const [salt, storedHash] = this.user.password.split('.');
+    const hash = (await scrypt(loginBody.password, salt, 32)) as Buffer;
+
+    if (storedHash !== hash.toString('hex')) {
+      throw new BadRequestException('Bad password');
+    }
+
+    return this.user;
 
   }
 

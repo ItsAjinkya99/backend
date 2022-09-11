@@ -30,37 +30,19 @@ export class VegetablesService {
 
     const vegetable = new Vegetable()
 
-    let findVitamin = await this.vitamin.findOneOrFail(parseInt(createVegetableDto.vitaminsId));
-
-    console.log("finding mineral")
-
-    let findMineral = await this.mineral.findOneOrFail(parseInt(createVegetableDto.mineralsId));
-
-    if (findVitamin && findMineral) {
-
       try {
         Object.assign(vegetable, createVegetableDto)
 
         this.repo.create(vegetable);
-
         let savedFruitData = await this.repo.save(vegetable);
-        console.log("Saved fruit data")
-        console.log(savedFruitData)
-        let vitaminData = await this.saveVitaminData(savedFruitData.id, parseInt(createVegetableDto.vitaminsId))
-        let mineralData = await this.saveMineralData(savedFruitData.id, parseInt(createVegetableDto.mineralsId))
-        console.log(vitaminData, mineralData)
+
         return savedFruitData;
+
       } catch (ex) {
         console.log("Some error occurred during saving Fruit data")
         console.log(ex)
       }
-
-    }
-
-    return 'This action adds a new vegetable';
   }
-
-
 
   async saveVitaminData(fruitId, vitaminId) {
     const vegVitamin = new vegetableVitamin;
@@ -101,7 +83,6 @@ export class VegetablesService {
     }
 
   }
-
 
   async findAll() {
     const myQuery = this.repo

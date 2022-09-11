@@ -1,13 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session } from '@nestjs/common';
 import { Response } from 'express';
-import { logger } from 'src/app.module';
+import { AllowUnauthorizedRequest } from 'src/app.controller';
 import { AuthService } from 'src/auth/auth.service';
 import { UserLoginDto } from 'src/auth/dto/user-login.dto';
 import { UserRoles } from 'src/auth/user-roles';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { Customer } from './entities/customer.entity';
 
 @Controller('customer')
 export class CustomerController {
@@ -16,36 +15,37 @@ export class CustomerController {
     private readonly authService: AuthService) { }
 
   @Post('register')
-  registerUser(@Body() body: CreateCustomerDto) {
+  @AllowUnauthorizedRequest()
+  async registerUser(@Body() body: CreateCustomerDto, @Session() session: any) {
     body.role = UserRoles.Customer
-    return this.authService.register(body);
+    const customer = await this.authService.register(body);
+    session.customerId = customer.id;
+    session.role = UserRoles.Customer
+    return customer
   }
 
-  /* @Get('authstatus')
-  authStatus(@CurrentUser() customer: Customer) {
-    console.log(!!customer);
-    return { status: !!customer, customer };
-  } */
-
   @Post('login')
-  async login(@Body() userLoginDto: UserLoginDto, @Res() res: Response) {
+  @AllowUnauthorizedRequest()
+  async login(@Body() userLoginDto: UserLoginDto, @Session() session: any) {
 
     userLoginDto.role = UserRoles.Customer;
-    console.log(userLoginDto);
-    const { token, user } = await this.authService.login(userLoginDto);
+    const customer = await this.authService.login(userLoginDto);
 
-    res.cookie('isAuthenticated', true, { maxAge: 2 * 60 * 60 * 1000 }) // max age 2 hours
-    res.cookie('Authentication', token, {
-      httpOnly: true,
-      maxAge: 2 * 60 * 60 * 1000
-    })
+    session.customerId = customer.id;
+    session.role = UserRoles.Customer
+    return customer
+  }
 
-    return res.send({ success: true, user })
+  @Post('/logout')
+  @AllowUnauthorizedRequest()
+  logout(@Session() session: any, @Res() res: Response) {
+    delete session.customerId;
+    delete session.role;
+    return res.json('Customer successfully logged out')
   }
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    console.log(id)
     return this.customerService.findOne(id);
   }
 

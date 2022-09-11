@@ -10,14 +10,4 @@ import { UserLoginDto } from './dto/user-login.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) { }
 
-
-
-  @Post()
-  logout(@Req() req: Request, @Res() res: Response) {
-    res.clearCookie('Authentication')
-    res.clearCookie('IsAuthenticated')
-    return res.status(200).send({ success: true });
-
-  }
-
 }

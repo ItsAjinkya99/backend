@@ -1,14 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Session } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
 
-@Controller('shop')
+@Controller('shops')
 export class ShopController {
-  constructor(private readonly shopService: ShopService) {}
+  constructor(private readonly shopService: ShopService) { }
 
-  @Post()
-  create(@Body() createShopDto: CreateShopDto) {
+  @Post('register')
+  create(@Body() createShopDto: CreateShopDto, @Session() session: any) {
+    createShopDto['vendorId'] = session.vendorId
     return this.shopService.create(createShopDto);
   }
 
