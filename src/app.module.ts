@@ -23,6 +23,7 @@ import { AuthController } from './auth/auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { AuthGuard, PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './auth/jwt.strategy';
+import { ResponseHeaders } from './middlewares/ResponseHeaders.middleware';
 const cookieSession = require('cookie-session');
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
@@ -70,7 +71,11 @@ const { combine, timestamp, label, printf } = format;
     } */
   ],
 })
-export class AppModule { }
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(ResponseHeaders).forRoutes("/")
+  }
+ }
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;
