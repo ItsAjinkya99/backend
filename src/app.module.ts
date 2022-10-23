@@ -20,8 +20,9 @@ import { AccessControlModule } from 'nest-access-control';
 import { roles } from './auth/user-roles';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthController } from './auth/auth.controller';
-import { AuthGuard } from './guards/auth.guard';
-import { RolesGuard } from './guards/roles.guard';
+import { JwtModule } from '@nestjs/jwt';
+import { AuthGuard, PassportModule } from '@nestjs/passport';
+import { JwtStrategy } from './auth/jwt.strategy';
 const cookieSession = require('cookie-session');
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
@@ -56,30 +57,20 @@ const { combine, timestamp, label, printf } = format;
     ColorModule,
     NoteModule,
     AuthModule,
-    AccessControlModule.forRoles(roles)
+    AccessControlModule.forRoles(roles),
 
   ],
   controllers: [AppController],
-  providers: [AppService,{
-    provide:APP_GUARD,
-    useClass: AuthGuard
-  },{
-    provide:APP_GUARD,
-    useClass:RolesGuard
-  }],
+  providers: [AppService, /*{
+    provide: APP_GUARD,
+    useClass: AuthGuard('jwt')
+  } , {
+      provide: APP_GUARD,
+      useClass: RolesGuard
+    } */
+  ],
 })
-export class AppModule { 
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(
-        cookieSession({
-          keys: ['jdhkdjfghdfg'],
-          maxAge: 24 * 60 * 60 * 1000
-        }),
-      )
-      .forRoutes('*');
-  }
-}
+export class AppModule { }
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;

@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Customer } from 'src/controllers/customer/entities/customer.entity';
 import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
@@ -7,30 +7,34 @@ import { UserRoles } from './user-roles';
 import { promisify } from 'util';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 const scrypt = promisify(_scrypt);
+import * as bcrypt from 'bcryptjs'
+import { JwtService } from '@nestjs/jwt';
+var user: any;
 
 @Injectable()
 export class AuthService {
 
-  user: any;
   constructor(
     @InjectRepository(Customer) private readonly customer: Repository<Customer>,
     @InjectRepository(Vendor) private readonly vendor: Repository<Vendor>,
+    private jwt: JwtService
   ) {
 
   }
 
   async login(loginBody: any) {
+    console.log("reached here");
     switch (loginBody.role) {
       case 'Customer': {
-        console.log("in cusotmer case")
-        this.user = await this.customer.createQueryBuilder('customer')
+        console.log("in customer case")
+        user = await this.customer.createQueryBuilder('customer')
           .addSelect('customer.password')
           .where('customer.email = :email', { email: loginBody.email }).getOne();
         break;
       }
 
       case 'Vendor': {
-        this.user = await this.vendor.createQueryBuilder('vendor')
+        user = await this.vendor.createQueryBuilder('vendor')
           .addSelect('vendor.password')
           .where('vendor.email = :email', { email: loginBody.email }).getOne();
         break;
@@ -44,19 +48,25 @@ export class AuthService {
       }
     }
 
-    if (!this.user) {
+    if (!user) {
       throw new NotFoundException('User not found');
+    } else {
+      if (await this.verifyPassword(loginBody.password, user.password)) {
+        const token = await this.jwt.signAsync({
+          email: user.email,
+          id: user.id
+        })
+        delete user.password
+        console.log(token)
+        return { token, user }
+      } else {
+        throw new UnauthorizedException("Bad credentials")
+      }
     }
+  }
 
-    const [salt, storedHash] = this.user.password.split('.');
-    const hash = (await scrypt(loginBody.password, salt, 32)) as Buffer;
-
-    if (storedHash !== hash.toString('hex')) {
-      throw new BadRequestException('Bad password');
-    }
-
-    return this.user;
-
+  async verifyPassword(password: string, hash: string) {
+    return await bcrypt.compare(password, hash)
   }
 
   //  Register User
@@ -75,7 +85,6 @@ export class AuthService {
 
           Object.assign(customer, userBody);
           customer.role = UserRoles.Customer;
-          customer.password = await this.generateHash(userBody.password)
 
           this.customer.create(customer); // this will run any hooks present, such as password hashing
           await this.customer.save(customer);

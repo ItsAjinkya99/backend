@@ -1,6 +1,5 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { Response } from 'express';
-import { AllowUnauthorizedRequest } from 'src/app.controller';
 import { AuthService } from 'src/auth/auth.service';
 import { UserLoginDto } from 'src/auth/dto/user-login.dto';
 import { UserRoles } from 'src/auth/user-roles';
@@ -15,32 +14,45 @@ export class CustomerController {
     private readonly authService: AuthService) { }
 
   @Post('register')
-  @AllowUnauthorizedRequest()
-  async registerUser(@Body() body: CreateCustomerDto, @Session() session: any) {
+  async registerUser(@Body() body: CreateCustomerDto) {
     body.role = UserRoles.Customer
-    const customer = await this.authService.register(body);
-    session.customerId = customer.id;
-    session.role = UserRoles.Customer
-    return customer
+    return this.authService.register(body);
+
   }
 
   @Post('login')
-  @AllowUnauthorizedRequest()
-  async login(@Body() userLoginDto: UserLoginDto, @Session() session: any) {
+  async login(@Body() userLoginDto: UserLoginDto,
+    @Res() res: Response) {
 
     userLoginDto.role = UserRoles.Customer;
-    const customer = await this.authService.login(userLoginDto);
+    const { token, user } = await this.authService.login(userLoginDto);
 
-    session.customerId = customer.id;
-    session.role = UserRoles.Customer
-    return customer
+    res.cookie('isAuthenticated', true, {
+      maxAge: 2 * 60 * 60 * 1000,
+      // sameSite: 'none',
+      // secure: true,
+      // path: "/api"
+    },) // max age two hours
+    res.cookie('Authentication', token,
+      {
+        httpOnly: true,
+        maxAge: 2 * 60 * 60 * 1000,
+        // sameSite: 'none',
+        // secure: true,
+        // path: "/api"
+      }
+    )
+
+    res.setHeader("Access-Control-Allow-Origin", "http://localhost:8100");
+    res.setHeader("Access-Control-Allow-Methods", "GET,HEAD,OPTIONS,POST,PUT");
+    res.setHeader("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, x-client-key, x-client-token, x-client-secret, Authorization");
+
+    return res.send({ success: true })
+
   }
 
   @Post('/logout')
-  @AllowUnauthorizedRequest()
-  logout(@Session() session: any, @Res() res: Response) {
-    delete session.customerId;
-    delete session.role;
+  logout(@Res() res: Response) {
     return res.json('Customer successfully logged out')
   }
 

@@ -15,24 +15,21 @@ export class VendorController {
 
   @Post('register')
   @AllowUnauthorizedRequest()
-  async registerUser(@Body() body: CreateVendorDto, @Session() session: any) {
+  async registerUser(@Body() body: CreateVendorDto) {
 
     body.role = UserRoles.Vendor
     const vendor = await this.authService.register(body);
 
-    session.vendorId = vendor.id;
     return vendor
   }
 
   @Post('login')
   @AllowUnauthorizedRequest()
-  async login(@Body() userLoginDto: UserLoginDto, @Session() session: any) {
+  async login(@Body() userLoginDto: UserLoginDto,) {
 
     userLoginDto.role = UserRoles.Vendor;
     const vendor = await this.authService.login(userLoginDto);
 
-    session.vendorId = vendor.id;
-    session.role = UserRoles.Vendor
     return vendor
 
   }

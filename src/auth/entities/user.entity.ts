@@ -31,4 +31,9 @@ export class User {
     @Column({ default: 0 })
     deleted: boolean
 
+    @BeforeInsert()
+    hashPassword(){
+        this.password = bcrypt.hashSync(this.password,10)
+    }
+
 }
