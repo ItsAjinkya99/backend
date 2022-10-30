@@ -37,7 +37,7 @@ export class ShopService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} shop`;
+    return this.shop.findOne({ where: { id } });
   }
 
   update(id: number, updateShopDto: UpdateShopDto) {

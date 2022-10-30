@@ -17,11 +17,9 @@ export class ShopController {
   }
 
   @Get()
-  async findAll(@Res() res: Response) {
+  async findAll() {
 
-    var shops = await this.shopService.findAll();
-
-    return res.send(shops)
+    return await this.shopService.findAll();
 
   }
 

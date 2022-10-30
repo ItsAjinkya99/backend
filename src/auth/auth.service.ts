@@ -23,10 +23,8 @@ export class AuthService {
   }
 
   async login(loginBody: any) {
-    console.log("reached here");
     switch (loginBody.role) {
       case 'Customer': {
-        console.log("in customer case")
         user = await this.customer.createQueryBuilder('customer')
           .addSelect('customer.password')
           .where('customer.email = :email', { email: loginBody.email }).getOne();
@@ -57,7 +55,6 @@ export class AuthService {
           id: user.id
         })
         delete user.password
-        console.log(token)
         return { token, user }
       } else {
         throw new UnauthorizedException("Bad credentials")

@@ -1,7 +1,9 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
+import { AuthStatus } from 'src/auth/authstatus.decorator';
 import { UserLoginDto } from 'src/auth/dto/user-login.dto';
+import { User } from 'src/auth/entities/user.entity';
 import { UserRoles } from 'src/auth/user-roles';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
@@ -28,18 +30,14 @@ export class CustomerController {
     const { token, user } = await this.authService.login(userLoginDto);
 
     res.cookie('isAuthenticated', true, {
-      maxAge: 2 * 60 * 60 * 1000,
-      // sameSite: 'none',
-      // secure: true,
-      // path: "/api"
+      maxAge: 24 * 60 * 60 * 1000,
+
     },) // max age two hours
     res.cookie('Authentication', token,
       {
         httpOnly: true,
-        maxAge: 2 * 60 * 60 * 1000,
-        // sameSite: 'none',
-        // secure: true,
-        // path: "/api"
+        maxAge: 24 * 60 * 60 * 1000,
+
       }
     )
 
@@ -50,6 +48,11 @@ export class CustomerController {
   @Post('/logout')
   logout(@Res() res: Response) {
     return res.json('Customer successfully logged out')
+  }
+
+  @Get('authstatus')
+  authStatus(@AuthStatus() user: User) {
+    return { status: !!user, user };
   }
 
   @Get(':id')
@@ -71,5 +74,6 @@ export class CustomerController {
   remove(@Param('id') id: string) {
     return this.customerService.remove(+id);
   }
+
 
 }
