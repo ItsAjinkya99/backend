@@ -19,6 +19,8 @@ import { AuthModule } from './auth/auth.module';
 import { AccessControlModule } from 'nest-access-control';
 import { roles } from './auth/user-roles';
 import { ResponseHeaders } from './middlewares/ResponseHeaders.middleware';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 const cookieSession = require('cookie-session');
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
@@ -36,6 +38,10 @@ const { combine, timestamp, label, printf } = format;
       database: 'backend',
       autoLoadEntities: true,
       synchronize: true,
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      exclude: ['/api*'],
     }),
     VegetablesModule,
     VendorModule,
@@ -70,7 +76,7 @@ export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(ResponseHeaders).forRoutes("/")
   }
- }
+}
 
 const myFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;

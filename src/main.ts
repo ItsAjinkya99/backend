@@ -4,23 +4,32 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NotAcceptableException, ValidationPipe } from '@nestjs/common';
+import path, { join } from 'path';
 const express = require('express');
 const cors = require('cors');
 
 async function bootstrap() {
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    logger: ['log', 'debug', 'verbose'], cors: true
+    logger: ['log', 'debug', 'verbose'], cors: true,
+
   });
 
   app.setGlobalPrefix('api');
   app.use(cookieParser());
 
+  // app.use('/uploads', express.static(__dirname + '/uploads'));
+
+  // app.use('/img',express.static(__dirname, 'uploads/vegetables'));
+  /* app.use(express.static('uploads'));
+  app.use('/api/vegetables', express.static('vegetables'));
+  app.use('/fruits', express.static('fruits')); */
+
   app.enableCors({
     origin: "http://localhost:8100",
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: "Content-Type, Accept",
-    credentials:true
+    credentials: true
   });
 
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));

@@ -1,7 +1,7 @@
 import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { createQueryBuilder, Repository } from 'typeorm';
 import { Category } from '../categories/entities/category.entity';
 import { vegetableCategory } from './entities/vegetableCategory.entity';
 import { vegetableMineral } from './entities/vegetableMineral.entity';
@@ -10,12 +10,14 @@ import { Mineral } from '../minerals/entities/mineral.entity';
 import { Vitamin } from '../vitamins/entities/vitamin.entity';
 import { CreateVegetableDto } from './dto/create-vegetable.dto';
 import { UpdateVegetableDto } from './dto/update-vegetable.dto';
+import { vegetableImage } from './entities/vegetableImages.entity';
 
 @Injectable()
 export class VegetablesService {
 
   constructor(
     @InjectRepository(Vegetable) private readonly repo: Repository<Vegetable>,
+    @InjectRepository(vegetableImage) private readonly vegetabeleImages: Repository<vegetableImage>,
     @InjectRepository(vegetableVitamin) private readonly vegetableVitamin: Repository<vegetableVitamin>,
     @InjectRepository(vegetableMineral) private readonly vegetableMineral: Repository<vegetableMineral>,
     @InjectRepository(vegetableCategory) private readonly vegetableCategory: Repository<vegetableCategory>,
@@ -29,19 +31,29 @@ export class VegetablesService {
   async create(createVegetableDto: CreateVegetableDto) {
 
     const vegetable = new Vegetable()
+    const vegetableImages = new vegetableImage()
+    try {
+      Object.assign(vegetable, createVegetableDto)
 
-      try {
-        Object.assign(vegetable, createVegetableDto)
+      this.repo.create(vegetable);
+      let savedFruitData = await this.repo.save(vegetable);
 
-        this.repo.create(vegetable);
-        let savedFruitData = await this.repo.save(vegetable);
+      createVegetableDto.images.forEach(async element => {
+        let image = {
+          vegetableId: savedFruitData.id,
+          imageName: element,
+        }
 
-        return savedFruitData;
+        this.vegetabeleImages.create(image);
+        await this.vegetabeleImages.save(image);
+      });
 
-      } catch (ex) {
-        console.log("Some error occurred during saving Fruit data")
-        console.log(ex)
-      }
+      return savedFruitData;
+
+    } catch (ex) {
+      console.log("Some error occurred during saving Fruit data")
+      console.log(ex)
+    }
   }
 
   async saveVitaminData(fruitId, vitaminId) {
@@ -87,15 +99,26 @@ export class VegetablesService {
   async findAll() {
     const myQuery = this.repo
       .createQueryBuilder('vegetable')
-      .select('id', 'name')
+      .select('id', 'name').andWhere("approved = 1")
+    // .leftJoinAndSelect('vegetableImage','vi')
 
     return await myQuery.getMany();
   }
 
   async findOne(id: number) {
     try {
-      const vegetable = await this.repo.findOneOrFail(id);
-      return vegetable;
+
+      const myQuery = await this.vegetabeleImages.createQueryBuilder("vi")
+                      .select('vi.imageName')
+                      .where(`vi.vegetableId=${id}`)
+                      .getRawMany();
+
+      const query = await this.repo.createQueryBuilder('vg')
+                    .select('vg.name')
+                    .where(`vg.id = ${id}`)
+                    .andWhere('vg.approved = 1').getRawMany();
+
+      return [query,myQuery];
     } catch (err) {
       throw new BadRequestException('Vegetable not found');
     }

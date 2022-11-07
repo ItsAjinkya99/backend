@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, StreamableFile, Res, UploadedFile, UseInterceptors, UploadedFiles } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, StreamableFile, Res, UploadedFile, UseInterceptors, UploadedFiles, Header } from '@nestjs/common';
 import { VegetablesService } from './vegetables.service';
 import { CreateVegetableDto } from './dto/create-vegetable.dto';
 import { UpdateVegetableDto } from './dto/update-vegetable.dto';
@@ -7,7 +7,11 @@ import { join } from 'path';
 import { Response } from 'express';
 import { AnyFilesInterceptor, FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-var fs = require('fs-extra');
+import { spawn } from 'child_process';
+import { Readable } from 'stream';
+var fs = require('fs');
+var path = require('path');
+// var Readable = require('stream').Readable
 
 @Controller('vegetables')
 export class VegetablesController {
@@ -40,19 +44,32 @@ export class VegetablesController {
       },
     }),
   )
+
   uploadFile(@UploadedFiles() files: Array<Express.Multer.File>, @Body() body: any) {
     console.log(files);
-    // console.log(body.title);
     var dir = body.title;
+    var images: string[] = [];
     files.forEach(file => {
-      fs.move('/tmp/' + file.filename, './upload/vegetables/' + dir + '/' + file.filename, function (err) {
+      let destinationPath = 'vegetables/' + dir + '/' + file.filename;
+      fs.move('/tmp/' + file.filename, destinationPath, function (err) {
         if (err) {
           return console.error(err);
+        } else {
+          images.push(destinationPath);
         }
-
       });
     });
 
+    let vegetable = {
+      name: body.title,
+      images: images,
+      mainImage: null,
+      vitaminsId: null,
+      mineralsId: null,
+      categoriesId: null
+    }
+
+    this.vegetablesService.create(vegetable);
     return true;
 
   }
@@ -71,8 +88,21 @@ export class VegetablesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.vegetablesService.findOne(+id);
+  @Header('Content-Type', 'application/json')
+  async findOne(@Param('id') id: string, @Res() res: Response) {
+
+    var data = await this.vegetablesService.findOne(+id);
+
+    var img1 = []
+    for (let i = 0; i < data[1].length; i++) {
+
+      var relativeFilePath = data[1][i].vi_imageName;
+
+      img1[i] = relativeFilePath
+
+    }
+    res.send(img1);
+
   }
 
   @Patch(':id')

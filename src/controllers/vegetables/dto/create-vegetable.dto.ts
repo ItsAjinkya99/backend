@@ -7,8 +7,11 @@ export class CreateVegetableDto {
     @IsNotEmpty()
     name: string;
 
+    @IsOptional()
+    images: string[]
+    
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     mainImage: string;
 
     @IsOptional()
@@ -20,9 +23,7 @@ export class CreateVegetableDto {
     @IsOptional()
     categoriesId: string;
 
-    @IsOptional()
-    category: Category;
+    /* @IsOptional()
+    category: Category; */
 
-    @IsOptional()
-    images: string[]
 }
