@@ -1,5 +1,5 @@
 import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createQueryBuilder, Repository } from 'typeorm';
 import { Category } from '../categories/entities/category.entity';
@@ -109,16 +109,21 @@ export class VegetablesService {
     try {
 
       const myQuery = await this.vegetabeleImages.createQueryBuilder("vi")
-                      .select('vi.imageName')
-                      .where(`vi.vegetableId=${id}`)
-                      .getRawMany();
+        .select('vi.imageName')
+        .where(`vi.vegetableId=${id}`)
+        .getRawMany();
 
       const query = await this.repo.createQueryBuilder('vg')
-                    .select('vg.name')
-                    .where(`vg.id = ${id}`)
-                    .andWhere('vg.approved = 1').getRawMany();
+        .select('vg.name')
+        .where(`vg.id = ${id}`)
+        .andWhere('vg.approved = 1').getRawMany();
 
-      return [query,myQuery];
+      if (query.length !== 0) {
+        return [query, myQuery];
+
+      } else {
+        throw new NotFoundException('Vegetable not found')
+      }
     } catch (err) {
       throw new BadRequestException('Vegetable not found');
     }

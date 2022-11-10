@@ -9,7 +9,7 @@ import { AnyFilesInterceptor, FileFieldsInterceptor, FileInterceptor, FilesInter
 import { diskStorage } from 'multer';
 import { spawn } from 'child_process';
 import { Readable } from 'stream';
-var fs = require('fs');
+var fs = require('fs-extra'); 
 var path = require('path');
 // var Readable = require('stream').Readable
 
@@ -50,12 +50,12 @@ export class VegetablesController {
     var dir = body.title;
     var images: string[] = [];
     files.forEach(file => {
-      let destinationPath = 'vegetables/' + dir + '/' + file.filename;
+      let destinationPath = 'uploads/vegetables/' + dir + '/' + file.filename;
       fs.move('/tmp/' + file.filename, destinationPath, function (err) {
         if (err) {
           return console.error(err);
         } else {
-          images.push(destinationPath);
+          images.push(destinationPath.replace('uploads/',''));
         }
       });
     });
