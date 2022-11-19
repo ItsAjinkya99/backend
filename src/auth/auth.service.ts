@@ -47,6 +47,7 @@ export class AuthService {
     }
 
     if (!user) {
+      console.log("user not found");
       throw new NotFoundException('User not found');
     } else {
       if (await this.verifyPassword(loginBody.password, user.password)) {
@@ -54,6 +55,7 @@ export class AuthService {
           email: user.email,
           id: user.id
         })
+        console.log("user found")
         delete user.password
         return { token, user }
       } else {

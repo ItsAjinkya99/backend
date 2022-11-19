@@ -32,7 +32,7 @@ export class CustomerController {
     res.cookie('isAuthenticated', true, {
       maxAge: 24 * 60 * 60 * 1000,
 
-    },) // max age two hours
+    },) // max age 24 hours
     res.cookie('Authentication', token,
       {
         httpOnly: true,
@@ -74,6 +74,5 @@ export class CustomerController {
   remove(@Param('id') id: string) {
     return this.customerService.remove(+id);
   }
-
 
 }
