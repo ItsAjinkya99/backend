@@ -32,8 +32,8 @@ export class User {
     deleted: boolean
 
     @BeforeInsert()
-    hashPassword(){
-        this.password = bcrypt.hashSync(this.password,10)
+    hashPassword() {
+        this.password = bcrypt.hashSync(this.password, 10)
     }
 
 }

@@ -9,7 +9,7 @@ import { AuthService } from 'src/auth/auth.service';
 
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
-const { createLogger, format, transports } = require('winston');
+const { format } = require('winston');
 const { combine, timestamp, label, printf } = format;
 
 @Module({

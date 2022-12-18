@@ -19,7 +19,7 @@ export class VendorController {
 
     body.role = UserRoles.Vendor
     const vendor = await this.authService.register(body);
-
+    this.vendorService.createDB(body.firstname)
     return vendor
   }
 

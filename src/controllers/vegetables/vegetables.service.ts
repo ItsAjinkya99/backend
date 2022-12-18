@@ -130,7 +130,7 @@ export class VegetablesService {
   }
 
   async update(id: number, updateVegetableDto: UpdateVegetableDto) {
-    const vegetable = await this.repo.findOne({ id });
+    const vegetable = await this.repo.findOne({where:{id: id}});
 
     if (!vegetable) {
       throw new BadRequestException('post not found');
@@ -143,7 +143,7 @@ export class VegetablesService {
   }
 
   async remove(id: number) {
-    const vegetable = await this.repo.findOne(id);
+    const vegetable = await this.repo.findOneBy({id: id});
     await this.repo.remove(vegetable);
     return { success: true, vegetable };
   }

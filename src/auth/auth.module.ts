@@ -11,7 +11,7 @@ import { JwtStrategy } from './jwt.strategy';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Customer, Vendor]),
+  imports: [TypeOrmModule.forFeature([Customer, Vendor]),
   JwtModule.register({
     secret:'secretStringThatNoOneCanGuess',
     signOptions:{

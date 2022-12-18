@@ -43,11 +43,11 @@ export class FruitsService {
     }
 
     console.log("finding vitamin")
-    let findVitamin = await this.vitamin.findOneOrFail(parseInt(createFruitDto.vitaminsId));
+    let findVitamin = await this.vitamin.findOneOrFail({where:{id: parseInt(createFruitDto.vitaminsId)}});
 
     console.log("finding mineral")
 
-    let findMineral = await this.mineral.findOneOrFail(parseInt(createFruitDto.mineralsId));
+    let findMineral = await this.mineral.findOneOrFail({where:{id: parseInt(createFruitDto.mineralsId)}});
 
 
     console.log(findVitamin)
@@ -151,7 +151,7 @@ export class FruitsService {
 
   async findOne(id: number) {
     try {
-      const fruit = await this.repo.findOneOrFail(id);
+      const fruit = await this.repo.findOneOrFail({where:{id: (id)}});
       return fruit;
     } catch (err) {
       throw new BadRequestException('Fruit not found');
@@ -160,7 +160,7 @@ export class FruitsService {
 
   async findByVitamin(vitaminsId: number) {
     try {
-      const fruit = await this.fruitVitamin.findOne({ vitaminsId });
+      const fruit = await this.fruitVitamin.findOne({where:{vitaminsId: (vitaminsId)}});
       return fruit;
     } catch (err) {
       throw new BadRequestException(`Fruit with vitaminId ${vitaminsId} not found`);
@@ -179,7 +179,7 @@ export class FruitsService {
   } */
 
   async update(id: number, updateFruitDto: UpdateFruitDto) {
-    const fruit = await this.repo.findOne({ id });
+    const fruit = await this.repo.findOne({where:{id: (id)}});
 
     if (!fruit) {
       throw new BadRequestException('post not found');
@@ -192,7 +192,7 @@ export class FruitsService {
   }
 
   async remove(id: number) {
-    const fruit = await this.repo.findOne(id);
+    const fruit = await this.repo.findOne({where:{id: (id)}});
     await this.repo.remove(fruit);
     return { success: true, fruit };
   }

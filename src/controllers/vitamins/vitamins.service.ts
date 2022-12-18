@@ -34,7 +34,7 @@ export class VitaminsService {
 
   async findOne(id: number) {
     try {
-      const vitamin = await this.vitamin.findOneOrFail(id);
+      const vitamin = await this.vitamin.findOneOrFail({where:{id: id}});
       return vitamin;
     } catch (err) {
       throw new BadRequestException('Vitamin not found');
@@ -42,7 +42,7 @@ export class VitaminsService {
   }
 
   async update(id: number, updateVitaminDto: UpdateVitaminDto) {
-    const fruit = await this.vitamin.findOne({ id });
+    const fruit = await this.vitamin.findOne({where:{id: id}});
 
     if (!fruit) {
       throw new BadRequestException('post not found');

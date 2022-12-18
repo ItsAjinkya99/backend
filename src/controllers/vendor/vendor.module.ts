@@ -8,7 +8,7 @@ import { vendorShop } from './entities/vendorShop.entity';
 
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
-const { createLogger, format, transports } = require('winston');
+const { format } = require('winston');
 const { combine, timestamp, label, printf } = format;
 
 @Module({

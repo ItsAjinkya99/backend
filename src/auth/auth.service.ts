@@ -55,7 +55,6 @@ export class AuthService {
           email: user.email,
           id: user.id
         })
-        console.log("user found")
         delete user.password
         return { token, user }
       } else {

@@ -22,7 +22,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!payload) {
       throw new UnauthorizedException();
     }
-    const user = await this.repo.findOne({ email: payload.email });
+    const user = await this.repo.findOne({where:{email: (payload.email)}});
     if (!user) {
       throw new UnauthorizedException();
     }
