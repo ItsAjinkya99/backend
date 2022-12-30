@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 import { UserRoles } from "../user-roles";
 
 export class UserLoginDto {
@@ -11,4 +11,7 @@ export class UserLoginDto {
     password: string;
 
     role: UserRoles;
+
+    @IsOptional()
+    vendorId: string;
 }

@@ -1,14 +1,20 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
 import { Shop } from './entities/shop.entity';
+import { AuthService } from 'src/auth/auth.service';
+import { BehaviorSubject, Subject, take } from 'rxjs';
 
 @Injectable()
 export class ShopService {
 
-  constructor(@InjectRepository(Shop) private readonly shop: Repository<Shop>) { }
+  myShops: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  public myShopsObservable = this.myShops.asObservable();
+  allShops: any[] = [];
+  constructor(private authService: AuthService,
+    @InjectRepository(Shop) private shop: Repository<Shop>) { }
 
   async create(createShopDto: CreateShopDto) {
 
@@ -31,9 +37,18 @@ export class ShopService {
   }
 
   async findAll() {
-    const myQuery = this.shop.find();
 
-    return await myQuery;
+    let myData = await new Promise(resolve => {
+      this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
+        const vendorShops = data.getRepository(Shop);
+        const myQuery = await vendorShops.find();
+        this.allShops = myQuery
+        resolve(this.allShops);
+      })
+    })
+
+    return myData;
+
   }
 
   findOne(id: number) {

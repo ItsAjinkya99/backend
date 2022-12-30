@@ -18,19 +18,32 @@ export class VendorController {
   async registerUser(@Body() body: CreateVendorDto) {
 
     body.role = UserRoles.Vendor
-    const vendor = await this.authService.register(body);
-    this.vendorService.createDB(body.firstname)
-    return vendor
+    return this.authService.createDB(body)
+    // const vendor = await this.authService.register(body);
+    
   }
 
   @Post('login')
   @AllowUnauthorizedRequest()
-  async login(@Body() userLoginDto: UserLoginDto,) {
-
+  async login(@Body() userLoginDto: UserLoginDto,
+  @Res() res: Response) {
     userLoginDto.role = UserRoles.Vendor;
-    const vendor = await this.authService.login(userLoginDto);
+    console.log(userLoginDto);
+    const { token, vendorUser } = await this.authService.login(userLoginDto);
 
-    return vendor
+    res.cookie('isAuthenticated', true, {
+      maxAge: 24 * 60 * 60 * 1000,
+
+    },) // max age 24 hours
+    res.cookie('Authentication', token,
+      {
+        httpOnly: true,
+        maxAge: 24 * 60 * 60 * 1000,
+
+      }
+    )
+
+    return res.send({ success: true })
 
   }
 

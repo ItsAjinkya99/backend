@@ -14,8 +14,7 @@ const { combine, timestamp, label, printf } = format;
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Vegetable, Order]),
-    forwardRef(() => AuthModule)],
+    TypeOrmModule.forFeature([Vegetable, Order])],
   controllers: [CustomerController],
   providers: [CustomerService]
 })

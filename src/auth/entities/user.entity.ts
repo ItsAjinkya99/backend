@@ -1,6 +1,8 @@
-import { BeforeInsert, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { UserRoles } from "../user-roles";
 import * as bcrypt from 'bcryptjs';
+import { Shop } from "src/controllers/shop/entities/shop.entity";
+import { Order } from "src/controllers/orders/entities/order.entity";
 
 @Entity('Users')
 export class User {
@@ -30,6 +32,12 @@ export class User {
 
     @Column({ default: 0 })
     deleted: boolean
+
+    /* @OneToMany(() => Shop, shop => shop.user)
+    shops: Shop[]; */
+
+    @OneToMany(() => Order, order => order.user)
+    orders: Order[];
 
     @BeforeInsert()
     hashPassword() {

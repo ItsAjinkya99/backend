@@ -1,5 +1,5 @@
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Customer } from 'src/controllers/customer/entities/customer.entity';
+import { User } from 'src/auth/entities/user.entity';
 
 @Entity('order')
 export class Order {
@@ -10,9 +10,9 @@ export class Order {
     orderId: string;
 
     @Column()
-    customerId: string;
+    userId: string;
 
-    @ManyToOne(() => Customer, customer => customer.orders, { eager: true })
-    customer: Customer;
+    @ManyToOne(() => User, user => user.orders, { eager: true })
+    user: User;
 
 }

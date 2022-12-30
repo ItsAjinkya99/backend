@@ -13,7 +13,4 @@ export class Customer extends User {
   @Column({ nullable: false })
   shippingAddress: string;
 
-  @OneToMany(() => Order, order => order.customer)
-  orders: Order[];
-
 }

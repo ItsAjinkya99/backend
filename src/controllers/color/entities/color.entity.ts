@@ -3,7 +3,7 @@ import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColum
 
 import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
 import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
-import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
+// import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
 
 @Entity('color')
 export class Color {

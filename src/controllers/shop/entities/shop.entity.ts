@@ -1,5 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/auth/entities/user.entity';
+import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
+import { ShopVegetables } from './shopVegetables.entity';
+import { ShopFruits } from './shopFruits.entity';
 
 @Entity('shops')
 export class Shop {
@@ -16,13 +19,19 @@ export class Shop {
   email: string;
 
   @Column()
-  vendorId: number
+  userId: number
 
-  @ManyToOne(() => Vendor, vendor => vendor.shops, { eager: true })
+  /* @ManyToOne(() => User, user => user.shops, { eager: true })
   @JoinColumn({
     referencedColumnName: 'id',
-    name: 'vendorId',
+    name: 'userId',
   })
-  vendor: Vendor;
+  user: User; */
+
+  /* @OneToMany(() => ShopVegetables, shopVegetable => shopVegetable.shop)
+  vegetables: ShopVegetables[];
+  
+  @OneToMany(() => ShopFruits, shopFruit => shopFruit.shop)
+  fruits: ShopFruits[]; */
 
 }
