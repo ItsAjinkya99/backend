@@ -18,15 +18,8 @@ async function bootstrap() {
   app.setGlobalPrefix('api');
   app.use(cookieParser());
 
-  // app.use('/uploads', express.static(__dirname + '/uploads'));
-
-  // app.use('/img',express.static(__dirname, 'uploads/vegetables'));
-  /* app.use(express.static('uploads'));
-  app.use('/api/vegetables', express.static('vegetables'));
-  app.use('/fruits', express.static('fruits')); */
-
   app.enableCors({
-    origin: "http://localhost:8100",
+    origin: ["http://localhost:8100", "http://localhost:8101"],
     methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
     allowedHeaders: "Content-Type, Accept",
     credentials: true

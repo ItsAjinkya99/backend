@@ -19,19 +19,6 @@ export class Shop {
   email: string;
 
   @Column()
-  userId: number
-
-  /* @ManyToOne(() => User, user => user.shops, { eager: true })
-  @JoinColumn({
-    referencedColumnName: 'id',
-    name: 'userId',
-  })
-  user: User; */
-
-  /* @OneToMany(() => ShopVegetables, shopVegetable => shopVegetable.shop)
-  vegetables: ShopVegetables[];
-  
-  @OneToMany(() => ShopFruits, shopFruit => shopFruit.shop)
-  fruits: ShopFruits[]; */
+  vendorId: number
 
 }

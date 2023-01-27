@@ -8,7 +8,7 @@ export class Vendor {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({unique:true, default:null})
+  @Column({ unique: true, default: null })
   vendorId: number;
 
   /* @BeforeInsert()

@@ -16,7 +16,8 @@ const { combine, timestamp, label, printf } = format;
   imports: [
     TypeOrmModule.forFeature([Vegetable, Order])],
   controllers: [CustomerController],
-  providers: [CustomerService]
+  providers: [CustomerService],
+  exports: [CustomerService],
 })
 export class CustomerModule { }
 

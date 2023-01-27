@@ -1,17 +1,21 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, Sse } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
 import { Shop } from './entities/shop.entity';
 import { AuthService } from 'src/auth/auth.service';
-import { BehaviorSubject, Subject, take } from 'rxjs';
+import { BehaviorSubject, Observable, Subject, take } from 'rxjs';
+import { OnEvent } from '@nestjs/event-emitter';
+import { OrderCreatedEvent } from '../customer/entities/OrderCreated.event';
+import { vendorShops } from '../vendor/entities/vendorShop.entity';
 
 @Injectable()
 export class ShopService {
 
-  myShops: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
-  public myShopsObservable = this.myShops.asObservable();
+  myOrders: BehaviorSubject<any[]> = new BehaviorSubject<any[]>([]);
+  public myOrdersObservable = this.myOrders.asObservable();
+
   allShops: any[] = [];
   constructor(private authService: AuthService,
     @InjectRepository(Shop) private shop: Repository<Shop>) { }
@@ -36,12 +40,12 @@ export class ShopService {
     }
   }
 
-  async findAll() {
+  async findVendorShops() {
 
     let myData = await new Promise(resolve => {
       this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
-        const vendorShops = data.getRepository(Shop);
-        const myQuery = await vendorShops.find();
+        const vendorShops1 = data.getRepository(vendorShops);
+        const myQuery = await vendorShops1.find();
         this.allShops = myQuery
         resolve(this.allShops);
       })
@@ -49,6 +53,10 @@ export class ShopService {
 
     return myData;
 
+  }
+
+  async findAllShops() {
+    return this.shop.find();
   }
 
   findOne(id: number) {
@@ -62,4 +70,9 @@ export class ShopService {
   remove(id: number) {
     return `This action removes a #${id} shop`;
   }
+
+  setDataSource(shops) {
+    this.myOrders.next(shops);
+  }
+
 }

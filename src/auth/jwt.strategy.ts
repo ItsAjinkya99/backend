@@ -9,14 +9,13 @@ import { Order } from 'src/controllers/orders/entities/order.entity';
 import { Shop } from 'src/controllers/shop/entities/shop.entity';
 import { ShopFruits } from 'src/controllers/shop/entities/shopFruits.entity';
 import { ShopVegetables } from 'src/controllers/shop/entities/shopVegetables.entity';
-import { vendorShop } from 'src/controllers/vendor/entities/vendorShop.entity';
+import { vendorShops } from 'src/controllers/vendor/entities/vendorShop.entity';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from './auth.service';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
-  private _dataSource: BehaviorSubject<DataSource> = new BehaviorSubject<DataSource>(null);;
-  public dataSourceObservable: Observable<DataSource>;
-  user
+
+  user: object;
 
   constructor(@InjectRepository(User) private readonly repo: Repository<User>,
     private authService: AuthService) {
@@ -33,7 +32,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!payload) {
       throw new UnauthorizedException();
     }
-    console.log(typeof payload.vendorId)
+    console.log(payload.vendorId);
     if (typeof payload.vendorId !== "undefined") {
       const options: DataSourceOptions = {
         type: 'mysql',
@@ -44,7 +43,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         database: "vendor_db_" + payload.vendorId,
         // autoLoadEntities: true,
         synchronize: true,
-        entities: [User, Shop, vendorShop, Order, ShopFruits, ShopVegetables]
+        entities: [User, vendorShops, Order, ShopFruits, ShopVegetables]
       };
 
       const dataSource = new DataSource(options);
@@ -66,7 +65,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new BadRequestException('User not found');
     }
     req.user = this.user;
-    
+    this.user = undefined;
+
     return req.user;
   }
 }

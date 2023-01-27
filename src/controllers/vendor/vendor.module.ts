@@ -4,8 +4,10 @@ import { VendorController } from './vendor.controller';
 import { Shop } from '../shop/entities/shop.entity';
 // import { Vendor } from './entities/vendor.entity';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { vendorShop } from './entities/vendorShop.entity';
+import { vendorShops } from './entities/vendorShop.entity';
 import { User } from 'src/auth/entities/user.entity';
+import { Vendor } from './entities/vendor.entity';
+import { ShopService } from '../shop/shop.service';
 
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
@@ -14,9 +16,9 @@ const { combine, timestamp, label, printf } = format;
 
 @Module({
   controllers: [VendorController],
-  imports: [TypeOrmModule.forFeature([User, Shop])
+  imports: [TypeOrmModule.forFeature([User, Shop, Vendor])
   ],
-  providers: [VendorService]
+  providers: [VendorService, ShopService]
 })
 export class VendorModule { }
 

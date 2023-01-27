@@ -7,10 +7,13 @@ export class Order {
     id: number;
 
     @Column()
-    orderId: string;
-
+    shopId: string;
+    
     @Column()
-    userId: string;
+    customerId: string;
+
+    @Column({type: "longtext"})
+    orderData: string 
 
     @ManyToOne(() => User, user => user.orders, { eager: true })
     user: User;

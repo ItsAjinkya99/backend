@@ -21,6 +21,7 @@ import { roles } from './auth/user-roles';
 import { ResponseHeaders } from './middlewares/ResponseHeaders.middleware';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { EventEmitterModule } from '@nestjs/event-emitter';
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 const { format } = require('winston');
@@ -50,16 +51,16 @@ const { combine, timestamp, label, printf } = format;
     MulterModule.register({
       dest: "./uploads"
     }),
-    VitaminsModule,
-    MineralsModule,
-    BenefitsModule,
-    CategoriesModule,
+    // VitaminsModule,
+    // MineralsModule,
+    // BenefitsModule,
+    // CategoriesModule,
     OrdersModule,
-    ColorModule,
-    NoteModule,
+    // ColorModule,
+    // NoteModule,
     AuthModule,
     AccessControlModule.forRoles(roles),
-
+    EventEmitterModule.forRoot()
   ],
   controllers: [AppController],
   providers: [AppService, /*{

@@ -1,22 +1,37 @@
-import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
-import { Shop } from 'src/controllers/shop/entities/shop.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { User } from 'src/auth/entities/user.entity';
+import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
+/* import { ShopVegetables } from './shopVegetables.entity';
+import { ShopFruits } from './shopFruits.entity'; */
 
-@Entity('vendorShop')
-export class vendorShop {
+@Entity('shops')
+export class vendorShops {
     @PrimaryGeneratedColumn()
     id: number;
 
     @Column()
-    vendorId: number;
+    name: string;
+
+    @Column({ nullable: false })
+    address: string;
+
+    @Column({ nullable: false })
+    email: string;
 
     @Column()
-    shopId: number;
+    userId: number
 
-    @ManyToOne(() => Shop, shop => shop.id, { eager: true })
+    /* @ManyToOne(() => User, user => user.shops, { eager: true })
     @JoinColumn({
-        referencedColumnName: 'id',
-        name: 'shopId',
+      referencedColumnName: 'id',
+      name: 'userId',
     })
-    shops: Shop;
+    user: User; */
+
+    /* @OneToMany(() => ShopVegetables, shopVegetable => shopVegetable.shop)
+    vegetables: ShopVegetables[];
+    
+    @OneToMany(() => ShopFruits, shopFruit => shopFruit.shop)
+    fruits: ShopFruits[]; */
+
 }

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session, UseGuards } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthStatus } from 'src/auth/authstatus.decorator';
@@ -8,7 +8,9 @@ import { UserRoles } from 'src/auth/user-roles';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
+import { AuthGuard } from '@nestjs/passport';
 
+@UseGuards(AuthGuard('jwt'))
 @Controller('customer')
 export class CustomerController {
 
@@ -47,7 +49,8 @@ export class CustomerController {
 
   @Post('/logout')
   logout(@Res() res: Response) {
-    return res.json('Customer successfully logged out')
+    res.clearCookie('Authentication');
+    return res.status(200).send({ success: true });
   }
 
   @Get('authstatus')
@@ -73,6 +76,11 @@ export class CustomerController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.customerService.remove(+id);
+  }
+
+  @Post('placeorder')
+  placeOrder(@Body() orderBody: any, @Session() session: any) {
+    return this.customerService.placeOrder(orderBody);
   }
 
 }
