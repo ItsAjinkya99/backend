@@ -39,17 +39,25 @@ export class ShopController {
 
   @Get()
   findAll(@Res() res: Response, @Req() req: Request, @Query() query: any) {
-    console.log(query.role)
-    // if (query.role !== 'Customer') {
+
     new Promise(resolve => {
       let myDAta = this.shopService.findAllShops()
       resolve(myDAta);
     }).then((data) => {
       return res.send(data)
     })
-    /* } else {
-      throw new UnauthorizedException("Shops only visible to vendors")
-    } */
+
+  }
+
+  @Get('findMyShops')
+  findMyShops(@Res() res: Response, @Req() req: Request, @Query() query: any) {
+
+    new Promise(resolve => {
+      let myDAta = this.shopService.findVendorShops()
+      resolve(myDAta);
+    }).then((data) => {
+      return res.send(data)
+    })
 
   }
 

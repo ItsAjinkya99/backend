@@ -7,30 +7,33 @@ import { UserLoginDto } from 'src/auth/dto/user-login.dto';
 import { Response } from 'express';
 import { roles, UserRoles } from 'src/auth/user-roles';
 import { AllowUnauthorizedRequest } from 'src/app.controller';
-import { Observable } from 'rxjs';
-import { OnEvent } from '@nestjs/event-emitter';
-import { OrderCreatedEvent } from '../customer/entities/OrderCreated.event';
-import { session } from 'passport';
 import { CreateUserDto } from 'src/auth/dto/create-user.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { AuthStatus } from 'src/auth/authstatus.decorator';
 import { User } from 'src/auth/entities/user.entity';
+import { CreateShopDto } from '../shop/dto/create-shop.dto';
+import { JwtAuthGuard } from 'src/auth/jwt.auth-guard';
 
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 @Controller('vendor')
 export class VendorController {
   constructor(private readonly vendorService: VendorService,
     private readonly authService: AuthService) { }
 
+  @Get('getAllUsers')
+  getAllUsers() {
+    return this.vendorService.findAll()
+  }
+
   @Get('authstatus')
-  @AllowUnauthorizedRequest()
-  authStatus(@AuthStatus() user: User) {
+  // @AllowUnauthorizedRequest()
+  authStatus(@AuthStatus() user: User, @Req() req: any) {
+
     return { status: !!user, user };
   }
 
   @Post('register')
   @AllowUnauthorizedRequest()
-  async registerUser(@Body() body: CreateVendorDto) {
+  async registerVendor(@Body() body: CreateVendorDto) {
 
     body.role = UserRoles.Vendor
     return this.vendorService.createDB(body)
@@ -43,8 +46,8 @@ export class VendorController {
     @Res() res: Response) {
     userLoginDto.role = UserRoles.Vendor;
 
-    const { token, vendorUser } = await this.authService.login(userLoginDto);
-
+    const { token, user } = await this.authService.login(userLoginDto);
+    console.log(token)
     res.cookie('isAuthenticated', true, {
       maxAge: 24 * 60 * 60 * 1000,
 
@@ -65,6 +68,7 @@ export class VendorController {
   @AllowUnauthorizedRequest()
   logout(@Res() res: Response) {
     res.clearCookie('Authentication');
+    res.clearCookie('isAuthenticated');
     return res.status(200).send({ success: true });
   }
 
@@ -89,7 +93,7 @@ export class VendorController {
   }
 
   @Post('createshop')
-  async createShop(@Body() body: any) {
+  async createShop(@Body() body: CreateShopDto) {
 
     return this.vendorService.createVendorShop(body)
 
@@ -99,6 +103,5 @@ export class VendorController {
   createUser(@Body() body: CreateUserDto) {
     return this.vendorService.createVendorUser(body)
   }
-
 
 }

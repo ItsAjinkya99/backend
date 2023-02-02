@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session, UseGuards, Req } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from 'src/auth/auth.service';
 import { AuthStatus } from 'src/auth/authstatus.decorator';
@@ -9,8 +9,10 @@ import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { JwtAuthGuard } from 'src/auth/jwt.auth-guard';
+import { AllowUnauthorizedRequest } from 'src/app.controller';
 
-@UseGuards(AuthGuard('jwt'))
+@UseGuards(JwtAuthGuard)
 @Controller('customer')
 export class CustomerController {
 
@@ -25,6 +27,7 @@ export class CustomerController {
   }
 
   @Post('login')
+  @AllowUnauthorizedRequest()
   async login(@Body() userLoginDto: UserLoginDto,
     @Res() res: Response) {
 
@@ -50,11 +53,13 @@ export class CustomerController {
   @Post('/logout')
   logout(@Res() res: Response) {
     res.clearCookie('Authentication');
+    res.clearCookie('isAuthenticated');
     return res.status(200).send({ success: true });
   }
 
   @Get('authstatus')
-  authStatus(@AuthStatus() user: User) {
+  authStatus(@AuthStatus() user: User, @Req() req: any) {
+
     return { status: !!user, user };
   }
 

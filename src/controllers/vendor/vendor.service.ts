@@ -27,8 +27,16 @@ export class VendorService {
     return 'This action adds a new vendor';
   }
 
-  findAll() {
-    return `This action returns all vendor`;
+  async findAll() {
+    let myData = await new Promise(resolve => {
+      this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
+        const vendorUsers = data.getRepository(User);
+        const myQuery = await vendorUsers.find();
+        resolve(myQuery)
+      })
+    })
+
+    return myData
   }
 
   findOne(id: number) {
@@ -101,7 +109,6 @@ export class VendorService {
     let myData = await new Promise(resolve => {
       this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
         const vendorShops1 = data.getRepository(vendorShops);
-        object.userId = 1
         const myQuery = await vendorShops1.save(object);
         this.shopsService.create(object)
         resolve(true);

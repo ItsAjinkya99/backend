@@ -6,32 +6,32 @@ import { ShopFruits } from './shopFruits.entity'; */
 
 @Entity('shops')
 export class vendorShops {
-    @PrimaryGeneratedColumn()
-    id: number;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-    name: string;
+  @Column()
+  name: string;
 
-    @Column({ nullable: false })
-    address: string;
+  @Column({ nullable: false })
+  address: string;
 
-    @Column({ nullable: false })
-    email: string;
+  @Column({ nullable: false })
+  contact: string;
 
-    @Column()
-    userId: number
+  @Column()
+  userId: number
 
-    /* @ManyToOne(() => User, user => user.shops, { eager: true })
-    @JoinColumn({
-      referencedColumnName: 'id',
-      name: 'userId',
-    })
-    user: User; */
+  /* @ManyToOne(() => User, user => user.shops, { eager: true })
+  @JoinColumn({
+    referencedColumnName: 'id',
+    name: 'userId',
+  })
+  user: User; */
 
-    /* @OneToMany(() => ShopVegetables, shopVegetable => shopVegetable.shop)
-    vegetables: ShopVegetables[];
-    
-    @OneToMany(() => ShopFruits, shopFruit => shopFruit.shop)
-    fruits: ShopFruits[]; */
+  /* @OneToMany(() => ShopVegetables, shopVegetable => shopVegetable.shop)
+  vegetables: ShopVegetables[];
+  
+  @OneToMany(() => ShopFruits, shopFruit => shopFruit.shop)
+  fruits: ShopFruits[]; */
 
 }

@@ -10,19 +10,21 @@ import { Shop } from 'src/controllers/shop/entities/shop.entity';
 import { ShopFruits } from 'src/controllers/shop/entities/shopFruits.entity';
 import { ShopVegetables } from 'src/controllers/shop/entities/shopVegetables.entity';
 import { vendorShops } from 'src/controllers/vendor/entities/vendorShop.entity';
-import { BehaviorSubject, Observable } from 'rxjs';
 import { AuthService } from './auth.service';
+import { JwtService } from '@nestjs/jwt';
 
 export class JwtStrategy extends PassportStrategy(Strategy) {
 
   user: object;
 
   constructor(@InjectRepository(User) private readonly repo: Repository<User>,
-    private authService: AuthService) {
+    private authService: AuthService, private jwt: JwtService) {
     super({
       ignoreExpiration: false,
       secretOrKey: 'secretStringThatNoOneCanGuess',
       jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
+        const decodedJwtAccessToken: any = this.jwt.decode(request?.cookies?.Authentication);
+        console.log(decodedJwtAccessToken?.vendorId)
         return request?.cookies?.Authentication;
       }]),
     });
@@ -32,7 +34,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (!payload) {
       throw new UnauthorizedException();
     }
-    console.log(payload.vendorId);
+
     if (typeof payload.vendorId !== "undefined") {
       const options: DataSourceOptions = {
         type: 'mysql',
@@ -65,7 +67,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new BadRequestException('User not found');
     }
     req.user = this.user;
-    this.user = undefined;
 
     return req.user;
   }

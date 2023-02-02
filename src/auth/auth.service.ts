@@ -63,7 +63,6 @@ export class AuthService {
           username: 'root',
           password: 'mysql',
           database: "vendor_db_" + loginBody.vendorId,
-          // database: "vendor_db_46891",
           // autoLoadEntities: true,
           synchronize: true,
           entities: [User, vendorShops, Order, ShopFruits, ShopVegetables]
@@ -74,31 +73,30 @@ export class AuthService {
           await dataSource.initialize()
           const vendorDB = dataSource.getRepository(User);
 
-          const vendorUser = await vendorDB.createQueryBuilder('Users')
+          const user = await vendorDB.createQueryBuilder('Users')
             .addSelect('Users.password')
             .where('Users.role = :role', { role: loginBody.role })
             .andWhere('Users.email = :email', { email: loginBody.email }).getOne();
 
-          if (!vendorUser) {
+          if (!user) {
             throw new NotFoundException('User not found');
           } else {
-            if (await this.verifyPassword(loginBody.password, vendorUser.password)) {
+            if (await this.verifyPassword(loginBody.password, user.password)) {
               const token = await this.jwt.signAsync({
-                email: vendorUser.email,
-                id: vendorUser.id,
+                email: user.email,
+                id: user.id,
                 vendorId: loginBody.vendorId,
               })
-              delete vendorUser.password
-              return { token, vendorUser }
+              console.log(user.email)
+              delete user.password
+              return { token, user }
             } else {
               throw new UnauthorizedException("Bad credentials")
             }
           }
         } catch (Exception) {
-          throw new BadRequestException("Vendor not exist")
+          throw new BadRequestException(Exception)
         }
-
-        // this._dataSource.next(dataSource);
 
       }
     }
@@ -135,8 +133,6 @@ export class AuthService {
     }
 
   }
-
-
 
   async generateHash(password: string) {
     // Hash the users password

@@ -1,4 +1,4 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsOptional, IsString } from "class-validator";
 
 export class CreateShopDto {
     @IsString()
@@ -11,5 +11,13 @@ export class CreateShopDto {
 
     @IsString()
     @IsNotEmpty()
-    email: string;
+    contact: string;
+
+    @IsString()
+    @IsNotEmpty()
+    userId: string;
+
+    @IsString()
+    @IsOptional()
+    vendorId: string;
 }

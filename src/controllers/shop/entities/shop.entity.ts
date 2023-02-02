@@ -16,7 +16,7 @@ export class Shop {
   address: string;
 
   @Column({ nullable: false })
-  email: string;
+  contact: string;
 
   @Column()
   vendorId: number

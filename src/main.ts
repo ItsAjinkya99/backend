@@ -4,7 +4,6 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { NotAcceptableException, ValidationPipe } from '@nestjs/common';
-import path, { join } from 'path';
 const express = require('express');
 const cors = require('cors');
 
