@@ -5,7 +5,7 @@ import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity'
 import { Exclude } from 'class-transformer';
 
 
-@Entity('vitamin')
+@Entity('vitamins')
 export class Vitamin {
   @PrimaryGeneratedColumn()
   id: number;

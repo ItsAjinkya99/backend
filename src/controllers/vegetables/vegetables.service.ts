@@ -38,15 +38,17 @@ export class VegetablesService {
       this.repo.create(vegetable);
       let savedFruitData = await this.repo.save(vegetable);
 
-      createVegetableDto.images.forEach(async element => {
-        let image = {
-          vegetableId: savedFruitData.id,
-          imageName: element,
-        }
+      if (createVegetableDto?.images) {
+        createVegetableDto?.images.forEach(async element => {
+          let image = {
+            vegetableId: savedFruitData.id,
+            imageName: element,
+          }
 
-        this.vegetabeleImages.create(image);
-        await this.vegetabeleImages.save(image);
-      });
+          this.vegetabeleImages.create(image);
+          await this.vegetabeleImages.save(image);
+        });
+      }
 
       return savedFruitData;
 
@@ -97,12 +99,15 @@ export class VegetablesService {
   }
 
   async findAll() {
-    const myQuery = this.repo
+    const myQuery = await this.repo
       .createQueryBuilder('vegetable')
-      .select('id', 'name').andWhere("approved = 1")
+      .select('id', 'name').where("approved = 0").getRawMany()
     // .leftJoinAndSelect('vegetableImage','vi')
 
-    return await myQuery.getMany();
+    const myQuery1 = await this.repo.find()
+    console.log(myQuery1)
+
+    return myQuery1;
   }
 
   async findOne(id: number) {
@@ -130,7 +135,7 @@ export class VegetablesService {
   }
 
   async update(id: number, updateVegetableDto: UpdateVegetableDto) {
-    const vegetable = await this.repo.findOne({where:{id: id}});
+    const vegetable = await this.repo.findOne({ where: { id: id } });
 
     if (!vegetable) {
       throw new BadRequestException('post not found');
@@ -143,7 +148,7 @@ export class VegetablesService {
   }
 
   async remove(id: number) {
-    const vegetable = await this.repo.findOneBy({id: id});
+    const vegetable = await this.repo.findOneBy({ id: id });
     await this.repo.remove(vegetable);
     return { success: true, vegetable };
   }

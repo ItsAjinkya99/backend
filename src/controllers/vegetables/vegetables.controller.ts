@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, StreamableFile, Res, UploadedFile, UseInterceptors, UploadedFiles, Header } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, StreamableFile, Res, UploadedFile, UseInterceptors, UploadedFiles, Header, UseGuards } from '@nestjs/common';
 import { VegetablesService } from './vegetables.service';
 import { CreateVegetableDto } from './dto/create-vegetable.dto';
 import { UpdateVegetableDto } from './dto/update-vegetable.dto';
@@ -9,15 +9,17 @@ import { AnyFilesInterceptor, FileFieldsInterceptor, FileInterceptor, FilesInter
 import { diskStorage } from 'multer';
 import { spawn } from 'child_process';
 import { Readable } from 'stream';
-var fs = require('fs-extra'); 
+import { JwtAuthGuard } from 'src/auth/jwt.auth-guard';
+var fs = require('fs-extra');
 var path = require('path');
 // var Readable = require('stream').Readable
 
 @Controller('vegetables')
+@UseGuards(JwtAuthGuard)
 export class VegetablesController {
   constructor(private readonly vegetablesService: VegetablesService) { }
 
-  @Post()
+  @Post('createvegetable')
   create(@Body() createVegetableDto: CreateVegetableDto) {
     return this.vegetablesService.create(createVegetableDto);
   }
@@ -55,7 +57,7 @@ export class VegetablesController {
         if (err) {
           return console.error(err);
         } else {
-          images.push(destinationPath.replace('uploads/',''));
+          images.push(destinationPath.replace('uploads/', ''));
         }
       });
     });
@@ -84,6 +86,7 @@ export class VegetablesController {
 
   @Get()
   findAll() {
+    console.log("hello")
     return this.vegetablesService.findAll();
   }
 

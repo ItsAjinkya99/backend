@@ -9,21 +9,9 @@ export class CreateVegetableDto {
 
     @IsOptional()
     images: string[]
-    
+
     @IsString()
     @IsOptional()
     mainImage: string;
-
-    @IsOptional()
-    vitaminsId: string;
-
-    @IsOptional()
-    mineralsId: string;
-
-    @IsOptional()
-    categoriesId: string;
-
-    /* @IsOptional()
-    category: Category; */
 
 }

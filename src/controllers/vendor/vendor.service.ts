@@ -22,7 +22,8 @@ export class VendorService {
 
   constructor(private readonly authService: AuthService,
     private readonly shopsService: ShopService,
-    @InjectRepository(Vendor) private readonly vendor: Repository<Vendor>,) { }
+    @InjectRepository(Vendor) private readonly vendor: Repository<Vendor>
+  ) { }
   create(createVendorDto: CreateVendorDto) {
     return 'This action adds a new vendor';
   }
@@ -108,10 +109,14 @@ export class VendorService {
   async createVendorShop(object) {
     let myData = await new Promise(resolve => {
       this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
+        let gotDBName = data.options.database.toString()
+        let dbName = gotDBName.substring(gotDBName.length - 5, gotDBName.length)
+        object.vendorId = dbName
         const vendorShops1 = data.getRepository(vendorShops);
-        const myQuery = await vendorShops1.save(object);
-        this.shopsService.create(object)
-        resolve(true);
+        await vendorShops1.save(object);
+
+        var shopCreated = this.shopsService.create(object)
+        resolve(shopCreated);
       })
     })
     return myData
