@@ -22,6 +22,9 @@ import { ResponseHeaders } from './middlewares/ResponseHeaders.middleware';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { EventEmitterModule } from '@nestjs/event-emitter';
+import { APP_GUARD } from '@nestjs/core';
+import { AuthGuard } from '@nestjs/passport';
+import { RolesGuard } from './auth/guards/roles.guard';
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 const { format } = require('winston');
@@ -63,13 +66,14 @@ const { combine, timestamp, label, printf } = format;
     EventEmitterModule.forRoot()
   ],
   controllers: [AppController],
-  providers: [AppService, /*{
-    provide: APP_GUARD,
-    useClass: AuthGuard('jwt')
-  } , {
+  providers: [AppService,
+    {
+      provide: APP_GUARD,
+      useClass: AuthGuard('jwt')
+    }, {
       provide: APP_GUARD,
       useClass: RolesGuard
-    } */
+    }
   ],
 })
 export class AppModule {

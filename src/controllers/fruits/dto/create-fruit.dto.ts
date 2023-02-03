@@ -8,17 +8,8 @@ export class CreateFruitDto {
     @IsNotEmpty()
     name: string;
 
-    @IsNotEmpty()
-    vitaminsId: string;
-
-    @IsNotEmpty()
-    mineralsId: string;
-
-    @IsOptional()
-    categoriesId: string;
-
     @IsString()
-    @IsNotEmpty()
+    @IsOptional()
     mainImage: string;
 
     @IsOptional()

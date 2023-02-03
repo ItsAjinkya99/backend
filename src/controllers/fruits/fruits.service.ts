@@ -42,37 +42,18 @@ export class FruitsService {
       mainImage: createFruitDto.mainImage
     }
 
-    console.log("finding vitamin")
-    let findVitamin = await this.vitamin.findOneOrFail({where:{id: parseInt(createFruitDto.vitaminsId)}});
+    try {
+      Object.assign(fruit, fruitData)
 
-    console.log("finding mineral")
+      this.repo.create(fruit);
+      let savedFruitData = await this.repo.save(fruit);
 
-    let findMineral = await this.mineral.findOneOrFail({where:{id: parseInt(createFruitDto.mineralsId)}});
-
-
-    console.log(findVitamin)
-    console.log(findMineral)
-
-    if (findVitamin && findMineral) {
-
-      try {
-        Object.assign(fruit, fruitData)
-
-        this.repo.create(fruit);
-
-        let savedFruitData = await this.repo.save(fruit);
-        console.log("Saved fruit data")
-        console.log(savedFruitData)
-        let vitaminData = await this.saveVitaminData(savedFruitData.id, parseInt(createFruitDto.vitaminsId))
-        let mineralData = await this.saveMineralData(savedFruitData.id, parseInt(createFruitDto.mineralsId))
-        console.log(vitaminData, mineralData)
-        return savedFruitData;
-      } catch (ex) {
-        console.log("Some error occurred during saving Fruit data")
-        console.log(ex)
-      }
-
+      return savedFruitData;
+    } catch (ex) {
+      console.log("Some error occurred during saving Fruit data")
+      console.log(ex)
     }
+
   }
 
   async saveVitaminData(fruitId, vitaminId) {
@@ -141,17 +122,16 @@ export class FruitsService {
   }
 
   async findAll(query?: string) {
-    const myQuery = this.repo
-      .createQueryBuilder('fruit')
-      .select('id', 'name')
 
-    return await myQuery.getMany();
+    const myQuery = await this.repo.find()
+
+    return myQuery;
 
   }
 
   async findOne(id: number) {
     try {
-      const fruit = await this.repo.findOneOrFail({where:{id: (id)}});
+      const fruit = await this.repo.findOneOrFail({ where: { id: (id) } });
       return fruit;
     } catch (err) {
       throw new BadRequestException('Fruit not found');
@@ -160,7 +140,7 @@ export class FruitsService {
 
   async findByVitamin(vitaminsId: number) {
     try {
-      const fruit = await this.fruitVitamin.findOne({where:{vitaminsId: (vitaminsId)}});
+      const fruit = await this.fruitVitamin.findOne({ where: { vitaminsId: (vitaminsId) } });
       return fruit;
     } catch (err) {
       throw new BadRequestException(`Fruit with vitaminId ${vitaminsId} not found`);
@@ -179,7 +159,7 @@ export class FruitsService {
   } */
 
   async update(id: number, updateFruitDto: UpdateFruitDto) {
-    const fruit = await this.repo.findOne({where:{id: (id)}});
+    const fruit = await this.repo.findOne({ where: { id: (id) } });
 
     if (!fruit) {
       throw new BadRequestException('post not found');
@@ -192,7 +172,7 @@ export class FruitsService {
   }
 
   async remove(id: number) {
-    const fruit = await this.repo.findOne({where:{id: (id)}});
+    const fruit = await this.repo.findOne({ where: { id: (id) } });
     await this.repo.remove(fruit);
     return { success: true, fruit };
   }

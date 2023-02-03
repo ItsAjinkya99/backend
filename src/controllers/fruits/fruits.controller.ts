@@ -15,7 +15,7 @@ import { UserRoles } from 'src/auth/user-roles';
 export class FruitsController {
   constructor(private readonly fruitsService: FruitsService) { }
 
-  @Post()
+  @Post('createfruit')
   @UseInterceptors(
     FilesInterceptor('images', 10, {
       dest: "./uploads"
@@ -25,7 +25,7 @@ export class FruitsController {
   ) {
     console.log(createFruitDto)
     // @ts-ignore
-    var fruit = await this.fruitsService.create(createFruitDto, req.user as User)
+    return this.fruitsService.create(createFruitDto, req.user as User)
 
   }
 
@@ -37,17 +37,6 @@ export class FruitsController {
   uploadFiles(@UploadedFiles() files: Array<Express.Multer.File>) {
     console.log(files);
 
-    /* const response = [];
-    files.forEach(file => {
-      const fileReponse = {
-        originalname: file.originalname,
-        filename: file.filename,
-      };
-      response.push(fileReponse);
-    });
-    return response; */
-
-    // console.log("request has files");
     return this.fruitsService.saveFruitImages(files);
 
   }

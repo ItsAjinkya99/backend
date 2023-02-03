@@ -105,7 +105,6 @@ export class VegetablesService {
     // .leftJoinAndSelect('vegetableImage','vi')
 
     const myQuery1 = await this.repo.find()
-    console.log(myQuery1)
 
     return myQuery1;
   }

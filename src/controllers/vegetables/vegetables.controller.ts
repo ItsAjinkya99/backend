@@ -9,7 +9,7 @@ import { AnyFilesInterceptor, FileFieldsInterceptor, FileInterceptor, FilesInter
 import { diskStorage } from 'multer';
 import { spawn } from 'child_process';
 import { Readable } from 'stream';
-import { JwtAuthGuard } from 'src/auth/jwt.auth-guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 var fs = require('fs-extra');
 var path = require('path');
 // var Readable = require('stream').Readable

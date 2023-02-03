@@ -9,7 +9,7 @@ import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { JwtAuthGuard } from 'src/auth/jwt.auth-guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AllowUnauthorizedRequest } from 'src/app.controller';
 
 @UseGuards(JwtAuthGuard)

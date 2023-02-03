@@ -11,7 +11,7 @@ import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 import { AuthStatus } from 'src/auth/authstatus.decorator';
 import { User } from 'src/auth/entities/user.entity';
 import { CreateShopDto } from '../shop/dto/create-shop.dto';
-import { JwtAuthGuard } from 'src/auth/jwt.auth-guard';
+import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)
 @Controller('vendor')
