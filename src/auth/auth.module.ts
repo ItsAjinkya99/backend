@@ -16,20 +16,20 @@ import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Order, Shop, Vegetable, ShopFruits, ShopVegetables, Vendor]),
+  imports: [TypeOrmModule.forFeature([User, Order, Shop, Vegetable, Vendor]),
   JwtModule.register({
-    secret:'secretStringThatNoOneCanGuess',
-    signOptions:{
-      algorithm:'HS512',
-      expiresIn:'1d',
+    secret: 'secretStringThatNoOneCanGuess',
+    signOptions: {
+      algorithm: 'HS512',
+      expiresIn: '1d',
     }
   }),
   PassportModule.register({
-    defaultStrategy:'jwt'
+    defaultStrategy: 'jwt'
   })
   ],
   controllers: [AuthController],
   providers: [AuthService, JwtStrategy],
-  exports:[AuthService]
+  exports: [AuthService]
 })
 export class AuthModule { }

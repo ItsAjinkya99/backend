@@ -10,7 +10,7 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from './entities/user.entity';
 import { Shop } from 'src/controllers/shop/entities/shop.entity';
 import { createDatabase, useDataSource } from 'typeorm-extension';
-import { vendorShops } from 'src/controllers/vendor/entities/vendorShop.entity';
+import { VendorShops } from 'src/controllers/vendor/entities/vendorShop.entity';
 import { Order } from 'src/controllers/orders/entities/order.entity';
 import { ShopFruits } from 'src/controllers/shop/entities/shopFruits.entity';
 import { ShopVegetables } from 'src/controllers/shop/entities/shopVegetables.entity';
@@ -33,7 +33,6 @@ export class AuthService {
 
     switch (loginBody.role) {
       case 'Customer': {
-        console.log("in customer case")
         const user = await this.user.createQueryBuilder('user')
           .addSelect('user.password')
           .where('user.role = :role', { role: loginBody.role })
@@ -65,7 +64,7 @@ export class AuthService {
           database: "vendor_db_" + loginBody.vendorId,
           // autoLoadEntities: true,
           synchronize: true,
-          entities: [User, vendorShops, Order, ShopFruits, ShopVegetables]
+          entities: [User, VendorShops, Order, ShopFruits, ShopVegetables]
         };
 
         try {
@@ -87,7 +86,6 @@ export class AuthService {
                 id: user.id,
                 vendorId: loginBody.vendorId,
               })
-              console.log(user.email)
               delete user.password
               return { token, user }
             } else {

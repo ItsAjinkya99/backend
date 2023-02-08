@@ -25,6 +25,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { APP_GUARD } from '@nestjs/core';
 import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from './auth/guards/roles.guard';
+import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 const { format } = require('winston');
@@ -69,7 +70,7 @@ const { combine, timestamp, label, printf } = format;
   providers: [AppService,
     {
       provide: APP_GUARD,
-      useClass: AuthGuard('jwt')
+      useClass: JwtAuthGuard
     }, {
       provide: APP_GUARD,
       useClass: RolesGuard

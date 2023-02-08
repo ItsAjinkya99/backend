@@ -11,7 +11,6 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     }
 
     canActivate(context: ExecutionContext) {
-        const request = context.switchToHttp().getRequest();
         const allowUnauthorizedRequest = this.reflector.get<boolean>('allowUnauthorizedRequest', context.getHandler());
         return (
             allowUnauthorizedRequest

@@ -11,9 +11,10 @@ import { Order } from '../orders/entities/order.entity';
 import { VendorService } from '../vendor/vendor.service';
 import { VendorModule } from '../vendor/vendor.module';
 import { Vendor } from '../vendor/entities/vendor.entity';
+import { VendorShops } from '../vendor/entities/vendorShop.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Shop, Order, Vendor]), CustomerModule, VendorModule],
+  imports: [TypeOrmModule.forFeature([Shop, Order, Vendor]), CustomerModule],
   controllers: [ShopController],
   providers: [ShopService, CustomerService, VendorService],
 })

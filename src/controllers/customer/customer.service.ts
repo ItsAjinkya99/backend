@@ -51,7 +51,6 @@ export class CustomerService {
   }
 
   setShopId(id: number) {
-    console.log("settings shop is" + id);
     this.myShopId.next(id);
     this.shopId = id;
   }

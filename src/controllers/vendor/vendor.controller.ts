@@ -13,7 +13,6 @@ import { User } from 'src/auth/entities/user.entity';
 import { CreateShopDto } from '../shop/dto/create-shop.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
-@UseGuards(JwtAuthGuard)
 @Controller('vendor')
 export class VendorController {
   constructor(private readonly vendorService: VendorService,
@@ -94,14 +93,17 @@ export class VendorController {
 
   @Post('createshop')
   async createShop(@Body() body: CreateShopDto) {
-
     return this.vendorService.createVendorShop(body)
-
   }
 
   @Post('createuser')
   createUser(@Body() body: CreateUserDto) {
     return this.vendorService.createVendorUser(body)
+  }
+
+  @Post('addVegetables')
+  addVegetables(@Body() body: object) {
+    return this.vendorService.addVegetables(body)
   }
 
 }

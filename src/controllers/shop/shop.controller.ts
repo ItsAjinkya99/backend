@@ -61,9 +61,9 @@ export class ShopController {
 
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.shopService.findOne(+id);
+  @Get('getShopData')
+  findOne(@Query('shopId') id: string, @Query('vendorId') vendorId: string) {
+    return this.shopService.findOne(id, vendorId);
   }
 
   @Patch(':id')

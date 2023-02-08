@@ -13,9 +13,10 @@ import { Order } from '../orders/entities/order.entity';
 import { ShopFruits } from '../shop/entities/shopFruits.entity';
 import { ShopVegetables } from '../shop/entities/shopVegetables.entity';
 import { Vendor } from './entities/vendor.entity';
-import { vendorShops } from './entities/vendorShop.entity';
+import { VendorShops } from './entities/vendorShop.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopService } from '../shop/shop.service';
+import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 
 @Injectable()
 export class VendorService {
@@ -78,7 +79,7 @@ export class VendorService {
         database: "vendor_db_" + vendorBody.vendorId,
         // autoLoadEntities: true,
         synchronize: true,
-        entities: [User, vendorShops, Order, ShopFruits, ShopVegetables]
+        entities: [User, VendorShops, Order, ShopFruits, ShopVegetables]
       };
 
       // Create the database with specification of the DataSource options
@@ -109,14 +110,21 @@ export class VendorService {
   async createVendorShop(object) {
     let myData = await new Promise(resolve => {
       this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
+
         let gotDBName = data.options.database.toString()
         let dbName = gotDBName.substring(gotDBName.length - 5, gotDBName.length)
         object.vendorId = dbName
-        const vendorShops1 = data.getRepository(vendorShops);
-        await vendorShops1.save(object);
 
-        var shopCreated = this.shopsService.create(object)
-        resolve(shopCreated);
+        var shopCreated = await this.shopsService.create(object)
+
+        if (shopCreated) {
+
+          object.shopId = shopCreated.id
+          const VendorShops1 = data.getRepository(VendorShops);
+          await VendorShops1.save(object);
+          resolve(shopCreated);
+
+        }
       })
     })
     return myData
@@ -127,10 +135,34 @@ export class VendorService {
       this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
         const vendorUsers = data.getRepository(User);
         const myQuery = await vendorUsers.save(object);
-        /* this.allShops = myQuery
-        resolve(this.allShops); */
+        resolve(myQuery);
       })
     })
+    return myData
+  }
+
+  async addVegetables(body: object) {
+    let myData = await new Promise(resolve => {
+      this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
+        const shopVegetables = data.getRepository(ShopVegetables);
+
+        const myQuery = this.saveShopVegetables(shopVegetables, body)
+
+        resolve(myQuery);
+      })
+    })
+    return myData
+  }
+
+  saveShopVegetables(shopVegetables, body) {
+    body.vegetables.forEach(async element => {
+      let obj = {
+        shopId: body.shopId,
+        vegetableId: element
+      }
+      await shopVegetables.save(obj);
+
+    });
   }
 
 }

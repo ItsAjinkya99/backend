@@ -1,11 +1,11 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
-/* import { ShopVegetables } from './shopVegetables.entity';
-import { ShopFruits } from './shopFruits.entity'; */
+import { ShopFruits } from 'src/controllers/shop/entities/shopFruits.entity';
+import { ShopVegetables } from 'src/controllers/shop/entities/shopVegetables.entity';
 
-@Entity('shops')
-export class vendorShops {
+@Entity('VendorShops')
+export class VendorShops {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -21,17 +21,7 @@ export class vendorShops {
   @Column()
   userId: number
 
-  /* @ManyToOne(() => User, user => user.shops, { eager: true })
-  @JoinColumn({
-    referencedColumnName: 'id',
-    name: 'userId',
-  })
-  user: User; */
-
-  /* @OneToMany(() => ShopVegetables, shopVegetable => shopVegetable.shop)
-  vegetables: ShopVegetables[];
-  
-  @OneToMany(() => ShopFruits, shopFruit => shopFruit.shop)
-  fruits: ShopFruits[]; */
+  @Column()
+  shopId: number
 
 }

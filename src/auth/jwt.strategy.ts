@@ -9,7 +9,7 @@ import { Order } from 'src/controllers/orders/entities/order.entity';
 import { Shop } from 'src/controllers/shop/entities/shop.entity';
 import { ShopFruits } from 'src/controllers/shop/entities/shopFruits.entity';
 import { ShopVegetables } from 'src/controllers/shop/entities/shopVegetables.entity';
-import { vendorShops } from 'src/controllers/vendor/entities/vendorShop.entity';
+import { VendorShops } from 'src/controllers/vendor/entities/vendorShop.entity';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 
@@ -24,7 +24,6 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       secretOrKey: 'secretStringThatNoOneCanGuess',
       jwtFromRequest: ExtractJwt.fromExtractors([(request: Request) => {
         const decodedJwtAccessToken: any = this.jwt.decode(request?.cookies?.Authentication);
-        console.log(decodedJwtAccessToken?.vendorId)
         return request?.cookies?.Authentication;
       }]),
     });
@@ -45,7 +44,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
         database: "vendor_db_" + payload.vendorId,
         // autoLoadEntities: true,
         synchronize: true,
-        entities: [User, vendorShops, Order, ShopFruits, ShopVegetables]
+        entities: [User, VendorShops, Order, ShopFruits, ShopVegetables]
       };
 
       const dataSource = new DataSource(options);
