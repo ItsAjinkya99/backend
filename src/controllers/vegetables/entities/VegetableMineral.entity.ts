@@ -1,10 +1,10 @@
-import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
+import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { Mineral } from 'src/controllers/minerals/entities/mineral.entity';
 import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 
-@Entity('vegetableMineral')
-export class vegetableMineral {
+@Entity('VegetableMineral')
+export class VegetableMineral {
     @PrimaryGeneratedColumn()
     id: number;
 

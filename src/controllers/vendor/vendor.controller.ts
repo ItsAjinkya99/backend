@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session, Sse, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session, Sse, Req, UseGuards, Query } from '@nestjs/common';
 import { VendorService } from './vendor.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
@@ -12,11 +12,13 @@ import { AuthStatus } from 'src/auth/authstatus.decorator';
 import { User } from 'src/auth/entities/user.entity';
 import { CreateShopDto } from '../shop/dto/create-shop.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { ShopService } from '../shop/shop.service';
 
 @Controller('vendor')
 export class VendorController {
   constructor(private readonly vendorService: VendorService,
-    private readonly authService: AuthService) { }
+    private readonly authService: AuthService,
+    private shopService: ShopService) { }
 
   @Get('getAllUsers')
   getAllUsers() {
@@ -46,7 +48,6 @@ export class VendorController {
     userLoginDto.role = UserRoles.Vendor;
 
     const { token, user } = await this.authService.login(userLoginDto);
-    console.log(token)
     res.cookie('isAuthenticated', true, {
       maxAge: 24 * 60 * 60 * 1000,
 
@@ -69,6 +70,18 @@ export class VendorController {
     res.clearCookie('Authentication');
     res.clearCookie('isAuthenticated');
     return res.status(200).send({ success: true });
+  }
+
+  @Get('findMyShops')
+  findMyShops(@Res() res: Response, @Query() query: any) {
+
+    new Promise(resolve => {
+      let myDAta = this.shopService.findVendorShops()
+      resolve(myDAta);
+    }).then((data) => {
+      return res.send(data)
+    })
+
   }
 
   @Get()

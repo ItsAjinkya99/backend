@@ -99,6 +99,7 @@ export class VendorService {
 
       userRepo.create(user); // this will run any hooks present, such as password hashing
       await userRepo.save(user);
+      await dataSource.destroy()
 
       return vendorBody.vendorId
       // Object.assign(vendor, userBody);

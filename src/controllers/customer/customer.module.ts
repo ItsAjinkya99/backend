@@ -1,4 +1,4 @@
-import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
+import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { forwardRef, Module } from '@nestjs/common';
 import { CustomerService } from './customer.service';
 import { CustomerController } from './customer.controller';

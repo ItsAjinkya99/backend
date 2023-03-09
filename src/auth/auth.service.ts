@@ -87,16 +87,21 @@ export class AuthService {
                 vendorId: loginBody.vendorId,
               })
               delete user.password
+              await dataSource.destroy()
+
               return { token, user }
             } else {
               throw new UnauthorizedException("Bad credentials")
             }
+
           }
+
         } catch (Exception) {
           throw new BadRequestException(Exception)
         }
 
       }
+
     }
   }
 

@@ -11,7 +11,7 @@ import { Order } from 'src/controllers/orders/entities/order.entity';
 import { Shop } from 'src/controllers/shop/entities/shop.entity';
 import { ShopFruits } from 'src/controllers/shop/entities/shopFruits.entity';
 import { ShopVegetables } from 'src/controllers/shop/entities/shopVegetables.entity';
-import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
+import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
 
 @Global()

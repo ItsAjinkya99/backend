@@ -37,6 +37,18 @@ export class ShopController {
     return this.shopService.create(createShopDto);
   }
 
+  @Get('getShopData/:id')
+  async findOne(@Param('id') id: string, @Res() res: Response) {
+
+    new Promise(resolve => {
+      let myDAta = this.shopService.findOne(id)
+      resolve(myDAta);
+    }).then((data) => {
+      return res.send(data)
+    })
+
+  }
+
   @Get()
   findAll(@Res() res: Response, @Req() req: Request, @Query() query: any) {
 
@@ -49,23 +61,6 @@ export class ShopController {
 
   }
 
-  @Get('findMyShops')
-  findMyShops(@Res() res: Response, @Req() req: Request, @Query() query: any) {
-
-    new Promise(resolve => {
-      let myDAta = this.shopService.findVendorShops()
-      resolve(myDAta);
-    }).then((data) => {
-      return res.send(data)
-    })
-
-  }
-
-  @Get('getShopData')
-  findOne(@Query('shopId') id: string, @Query('vendorId') vendorId: string) {
-    return this.shopService.findOne(id, vendorId);
-  }
-
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateShopDto: UpdateShopDto) {
     return this.shopService.update(+id, updateShopDto);
@@ -76,4 +71,8 @@ export class ShopController {
     return this.shopService.remove(+id);
   }
 
+  @Post('addShopItems')
+  addShopItems(@Body() createSHopItems: any) {
+    console.log(createSHopItems)
+  }
 }

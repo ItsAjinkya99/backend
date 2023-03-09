@@ -1,16 +1,16 @@
-import { Vegetable } from 'src/controllers/vegetables/entities/vegetable.entity';
+import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createQueryBuilder, Repository } from 'typeorm';
 import { Category } from '../categories/entities/category.entity';
-import { vegetableCategory } from './entities/vegetableCategory.entity';
-import { vegetableMineral } from './entities/vegetableMineral.entity';
-import { vegetableVitamin } from './entities/vegetableVitamin.entity';
+import { vegetableCategory } from './entities/VegetableCategory.entity';
+import { VegetableMineral } from './entities/VegetableMineral.entity';
+import { VegetableVitamin } from './entities/VegetableVitamin.entity';
 import { Mineral } from '../minerals/entities/mineral.entity';
 import { Vitamin } from '../vitamins/entities/vitamin.entity';
 import { CreateVegetableDto } from './dto/create-vegetable.dto';
 import { UpdateVegetableDto } from './dto/update-vegetable.dto';
-import { vegetableImage } from './entities/vegetableImages.entity';
+import { vegetableImage } from './entities/VegetableImages.entity';
 
 @Injectable()
 export class VegetablesService {
@@ -18,8 +18,8 @@ export class VegetablesService {
   constructor(
     @InjectRepository(Vegetable) private readonly repo: Repository<Vegetable>,
     @InjectRepository(vegetableImage) private readonly vegetabeleImages: Repository<vegetableImage>,
-    @InjectRepository(vegetableVitamin) private readonly vegetableVitamin: Repository<vegetableVitamin>,
-    @InjectRepository(vegetableMineral) private readonly vegetableMineral: Repository<vegetableMineral>,
+    @InjectRepository(VegetableVitamin) private readonly VegetableVitamin: Repository<VegetableVitamin>,
+    @InjectRepository(VegetableMineral) private readonly VegetableMineral: Repository<VegetableMineral>,
     @InjectRepository(vegetableCategory) private readonly vegetableCategory: Repository<vegetableCategory>,
     // @InjectRepository(fruitImage) private readonly image: Repository<fruitImage>,
     @InjectRepository(Vitamin) private readonly vitamin: Repository<Vitamin>,
@@ -59,7 +59,7 @@ export class VegetablesService {
   }
 
   async saveVitaminData(fruitId, vitaminId) {
-    const vegVitamin = new vegetableVitamin;
+    const vegVitamin = new VegetableVitamin;
     console.log(fruitId, vitaminId)
     let vitaminData = {
       fruitId: fruitId,
@@ -67,10 +67,10 @@ export class VegetablesService {
       // image: createFruitDto.images
     }
     try {
-      Object.assign(vegetableVitamin, vitaminData)
+      Object.assign(VegetableVitamin, vitaminData)
 
-      this.vegetableVitamin.create(vegVitamin)
-      this.vegetableVitamin.insert(vegVitamin);
+      this.VegetableVitamin.create(vegVitamin)
+      this.VegetableVitamin.insert(vegVitamin);
       return "vitamin data saved"
 
     } catch (ex) {
@@ -79,17 +79,17 @@ export class VegetablesService {
 
   }
   async saveMineralData(fruitId, mineralId) {
-    const vegMineral = new vegetableMineral();
+    const vegMineral = new VegetableMineral();
     let mineralData = {
       fruitId: fruitId,
       mineralsId: mineralId
       // image: createFruitDto.images
     }
     try {
-      Object.assign(vegetableMineral, mineralData)
+      Object.assign(VegetableMineral, mineralData)
 
-      this.vegetableMineral.create(vegMineral)
-      let data = this.vegetableMineral.insert(vegMineral);
+      this.VegetableMineral.create(vegMineral)
+      let data = this.VegetableMineral.insert(vegMineral);
       console.log("MIneral data" + data)
 
     } catch (ex) {

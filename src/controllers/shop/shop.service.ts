@@ -68,49 +68,24 @@ export class ShopService {
     return await this.shop.find();
   }
 
-  async findOne(id, vendorId) {
+  async findOne(id) {
 
-    const options: DataSourceOptions = {
-      type: 'mysql',
-      host: 'localhost',
-      port: 3306,
-      username: 'root',
-      password: 'mysql',
-      database: "vendor_db_" + vendorId,
-      // autoLoadEntities: true,
-      synchronize: true,
-      entities: [User, VendorShops, Order, ShopFruits, ShopVegetables]
-    };
+    const myData = await new Promise(resolve => {
+      this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
+        const sfRepo = data.getRepository(ShopFruits)
+        const shopFruits = await sfRepo.find({ where: { shopId: id } });
 
-    const dataSource = new DataSource(options);
-    await dataSource.initialize()
+        const svRepo = data.getRepository(ShopVegetables)
+        const shopVegetables = await svRepo.find({ where: { shopId: id } });
 
-    const shopFruits = await dataSource
-      .createQueryBuilder('ShopFruits', 'sf')
-      .select('sf.shopId', 'shopId')
-      .addSelect('sf.fruitId', 'fruitId')
-      .where('sf.shopId = :id', { id })
-      .getRawMany() // depend on what you need really
+        const shopItems = [shopFruits, shopVegetables]
 
-    const shopVegetables = await dataSource
-      .createQueryBuilder('ShopVegetables', 'sv')
-      .select('sv.vegetableId', 'vegetableId')
-      .where('sv.shopId = :id', { id })
-      .getRawMany() // depend on what you need really
+        // console.log(shopItems)
+        resolve(shopItems);
+      })
+    })
 
-    /* const shopVegetables = await dataSource
-      .createQueryBuilder('ShopFruits', 'sf')
-      .select('sf.shopId', 'shopId')
-      .addSelect('sf.fruitId', 'fruitId')
-      .innerJoin('ShopVegetables', 'sv', 'sf.shopId = sv.shopId') //INNER JOIN table2 t2 ON t1.id = t2.id
-      .select('sv.vegetableId', 'vegetableId') // INNER JOIN table3 t3 ON t2.event = t3.event
-      .where('sf.shopId = :id', { id })
-      .getRawMany() // depend on what you need really */
-
-    const shopItems = [shopFruits, shopVegetables]
-
-    console.log(shopItems)
-    return shopItems
+    return myData
   }
 
   update(id: number, updateShopDto: UpdateShopDto) {
