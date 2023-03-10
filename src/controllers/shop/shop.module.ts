@@ -12,9 +12,13 @@ import { VendorService } from '../vendor/vendor.service';
 import { VendorModule } from '../vendor/vendor.module';
 import { Vendor } from '../vendor/entities/vendor.entity';
 import { VendorShops } from '../vendor/entities/vendorShop.entity';
+import { Vegetable } from '../vegetables/entities/Vegetable.entity';
+import { Fruit } from '../fruits/entities/fruit.entity';
+import { VegetablesModule } from '../vegetables/vegetables.module';
+import { FruitsModule } from '../fruits/fruits.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Shop, Order, Vendor]), CustomerModule],
+  imports: [TypeOrmModule.forFeature([Shop, Order, Vendor, Vegetable, Fruit]), CustomerModule],
   controllers: [ShopController],
   providers: [ShopService, CustomerService, VendorService],
 })

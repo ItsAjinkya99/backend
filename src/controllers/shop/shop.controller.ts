@@ -37,23 +37,11 @@ export class ShopController {
     return this.shopService.create(createShopDto);
   }
 
-  @Get('getShopData/:id')
-  async findOne(@Param('id') id: string, @Res() res: Response) {
+  @Get('getShopData')
+  getShopData(@Query('shopId') id: string, @Res() res: Response) {
 
-    new Promise(resolve => {
-      let myDAta = this.shopService.findOne(id)
-      resolve(myDAta);
-    }).then((data) => {
-      return res.send(data)
-    })
-
-  }
-
-  @Get()
-  findAll(@Res() res: Response, @Req() req: Request, @Query() query: any) {
-
-    new Promise(resolve => {
-      let myDAta = this.shopService.findAllShops()
+    new Promise(async resolve => {
+      let myDAta = await this.shopService.getShopItems(parseInt(id))
       resolve(myDAta);
     }).then((data) => {
       return res.send(data)
@@ -71,8 +59,4 @@ export class ShopController {
     return this.shopService.remove(+id);
   }
 
-  @Post('addShopItems')
-  addShopItems(@Body() createSHopItems: any) {
-    console.log(createSHopItems)
-  }
 }

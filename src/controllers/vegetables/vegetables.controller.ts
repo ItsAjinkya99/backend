@@ -86,7 +86,6 @@ export class VegetablesController {
 
   @Get()
   findAll() {
-    console.log("hello")
     return this.vegetablesService.findAll();
   }
 
