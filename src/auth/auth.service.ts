@@ -55,21 +55,10 @@ export class AuthService {
       }
       case 'Vendor': {
 
-        const options: DataSourceOptions = {
-          type: 'mysql',
-          host: 'localhost',
-          port: 3306,
-          username: 'root',
-          password: 'mysql',
-          database: "vendor_db_" + loginBody.vendorId,
-          // autoLoadEntities: true,
-          synchronize: true,
-          entities: [User, VendorShops, Order, ShopFruits, ShopVegetables]
-        };
+        const dataSource = await this.getVendorDB(loginBody.vendorId)
 
         try {
-          const dataSource = new DataSource(options);
-          await dataSource.initialize()
+
           const vendorDB = dataSource.getRepository(User);
 
           const user = await vendorDB.createQueryBuilder('Users')
@@ -156,6 +145,32 @@ export class AuthService {
 
   getDataSource(): Observable<DataSource> {
     return this._dataSource.asObservable()
+  }
+
+  async getVendorDB(vendorId: number, create?: boolean) {
+    const options: DataSourceOptions = {
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'mysql',
+      database: "vendor_db_" + vendorId,
+      // autoLoadEntities: true,
+      synchronize: true,
+      entities: [User, VendorShops, Order, ShopFruits, ShopVegetables]
+    };
+
+    if (create === true) {
+      await createDatabase({
+        options
+      });
+    }
+
+    const dataSource = new DataSource(options);
+    await dataSource.initialize()
+    this.setDataSource(dataSource);
+
+    return dataSource;
   }
 
 }

@@ -35,23 +35,8 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     }
 
     if (typeof payload.vendorId !== "undefined") {
-      const options: DataSourceOptions = {
-        type: 'mysql',
-        host: 'localhost',
-        port: 3306,
-        username: 'root',
-        password: 'mysql',
-        database: "vendor_db_" + payload.vendorId,
-        // autoLoadEntities: true,
-        synchronize: true,
-        entities: [User, VendorShops, Order, ShopFruits, ShopVegetables]
-      };
 
-      const dataSource = new DataSource(options);
-      await dataSource.initialize()
-
-      this.authService.setDataSource(dataSource);
-
+      const dataSource = await this.authService.getVendorDB(payload.vendorId)
       const vendorDB = dataSource.getRepository(User);
 
       this.user = await vendorDB.createQueryBuilder('Users')
