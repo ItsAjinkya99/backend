@@ -19,6 +19,11 @@ export class ShopController {
   constructor(private readonly shopService: ShopService,
     private readonly customerService: CustomerService) { }
 
+  @Get()
+  findAll() {
+    return this.shopService.findAll();
+  }
+
   @Post('register')
   create(@Body() createShopDto: CreateShopDto, @Session() session: any) {
     createShopDto['vendorId'] = session.vendorId
@@ -26,10 +31,10 @@ export class ShopController {
   }
 
   @Get('getShopData')
-  getShopData(@Query('shopId') id: string, @Res() res: Response) {
+  getShopData(@Query('shopId') id: string, @Query('vendorId') vendorId: string, @Res() res: Response) {
 
     new Promise(async resolve => {
-      let myDAta = await this.shopService.getShopItems(parseInt(id))
+      let myDAta = await this.shopService.getShopItems(parseInt(id), parseInt(vendorId))
       resolve(myDAta);
     }).then((data) => {
       return res.send(data)

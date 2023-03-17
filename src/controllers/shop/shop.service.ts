@@ -69,55 +69,51 @@ export class ShopService {
 
   }
 
-  async findAllShops() {
+  async findAll() {
     return await this.shop.find();
   }
 
-  async getShopItems(id: number) {
+  async getShopItems(id: number, vendorId: number) {
 
-    const myData = await new Promise(resolve => {
-      this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
+    const data = await this.authService.getVendorDB(vendorId)
 
-        const sfRepo = data.getRepository(ShopFruits)
-        const shopFruits = await sfRepo.createQueryBuilder('fruits')
-          .addSelect('fruits.fruitId')
-          .where('fruits.shopId = :shopId', { shopId: id }).getMany();
+    const sfRepo = data.getRepository(ShopFruits)
+    const shopFruits = await sfRepo.createQueryBuilder('fruits')
+      .addSelect('fruits.fruitId')
+      .where('fruits.shopId = :shopId', { shopId: id }).getMany();
 
-        const svRepo = data.getRepository(ShopVegetables)
-        const shopVegetables = await svRepo.createQueryBuilder('vegetables')
-          .addSelect('vegetables.vegetableId')
-          .where('vegetables.shopId = :shopId', { shopId: id }).getMany();
+    const svRepo = data.getRepository(ShopVegetables)
+    const shopVegetables = await svRepo.createQueryBuilder('vegetables')
+      .addSelect('vegetables.vegetableId')
+      .where('vegetables.shopId = :shopId', { shopId: id }).getMany();
 
-        const fruits = await this.fruit.find()
-        const vegetables = await this.vegetable.find()
+    const fruits = await this.fruit.find()
+    const vegetables = await this.vegetable.find()
 
-        shopFruits.forEach((fruit) => {
-          fruits.forEach((fruit1) => {
-            if (fruit.fruitId == fruit1.id) {
-              fruit['name'] = fruit1.name
-              fruit['image'] = fruit1.mainImage
-              return
-            }
-          })
+    shopFruits.forEach((fruit) => {
+      fruits.forEach((fruit1) => {
+        if (fruit.fruitId == fruit1.id) {
+          fruit['name'] = fruit1.name
+          fruit['image'] = fruit1.mainImage
           return
-        })
-
-        shopVegetables.forEach((vegetable) => {
-          vegetables.forEach((vegetable1) => {
-            if (vegetable.vegetableId == vegetable1.id) {
-              vegetable['name'] = vegetable1.name
-              vegetable['image'] = vegetable1.mainImage
-              return
-            }
-          })
-          return
-        })
-
-        const shopItems = [shopFruits, shopVegetables]
-        resolve(shopItems);
+        }
       })
+      return
     })
-    return myData
+
+    shopVegetables.forEach((vegetable) => {
+      vegetables.forEach((vegetable1) => {
+        if (vegetable.vegetableId == vegetable1.id) {
+          vegetable['name'] = vegetable1.name
+          vegetable['image'] = vegetable1.mainImage
+          return
+        }
+      })
+      return
+    })
+
+    const shopItems = [shopFruits, shopVegetables]
+    return shopItems
   }
 
   update(id: number, updateShopDto: UpdateShopDto) {
