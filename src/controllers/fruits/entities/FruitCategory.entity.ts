@@ -1,8 +1,8 @@
 import { Category } from "src/controllers/categories/entities/category.entity";
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 
-@Entity('fruitCategory')
-export class fruitCategory {
+@Entity('FruitCategory')
+export class FruitCategory {
   @PrimaryGeneratedColumn()
   id: number;
 

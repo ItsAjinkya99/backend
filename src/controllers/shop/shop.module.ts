@@ -13,7 +13,7 @@ import { VendorModule } from '../vendor/vendor.module';
 import { Vendor } from '../vendor/entities/vendor.entity';
 import { VendorShops } from '../vendor/entities/vendorShop.entity';
 import { Vegetable } from '../vegetables/entities/Vegetable.entity';
-import { Fruit } from '../fruits/entities/fruit.entity';
+import { Fruit } from '../fruits/entities/Fruit.entity';
 import { VegetablesModule } from '../vegetables/vegetables.module';
 import { FruitsModule } from '../fruits/fruits.module';
 

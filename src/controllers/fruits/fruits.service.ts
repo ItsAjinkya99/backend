@@ -1,13 +1,13 @@
-import { fruitImage } from './entities/fruitImages.entity';
-import { fruitVitamin } from './entities/fruitVitamins.entity';
+import { FruitImage } from './entities/FruitImages.entity';
+import { FruitVitamin } from './entities/FruitVitamins.entity';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateFruitDto } from './dto/create-fruit.dto';
 import { UpdateFruitDto } from './dto/update-fruit.dto';
-import { Fruit } from './entities/fruit.entity';
-import { fruitMineral } from './entities/fruitMineral.entity';
-import { fruitCategory } from './entities/fruitCategory.entity';
+import { Fruit } from './entities/Fruit.entity';
+import { FruitMineral } from './entities/FruitMineral.entity';
+import { FruitCategory } from './entities/FruitCategory.entity';
 import { Vitamin } from '../vitamins/entities/vitamin.entity';
 import { Mineral } from '../minerals/entities/mineral.entity';
 import { Category } from '../categories/entities/category.entity';
@@ -18,37 +18,38 @@ export class FruitsService {
 
   constructor(
     @InjectRepository(Fruit) private readonly repo: Repository<Fruit>,
-    @InjectRepository(fruitVitamin) private readonly fruitVitamin: Repository<fruitVitamin>,
-    @InjectRepository(fruitMineral) private readonly fruitMineral: Repository<fruitMineral>,
-    @InjectRepository(fruitCategory) private readonly vitaminCategory: Repository<fruitCategory>,
-    @InjectRepository(fruitImage) private readonly image: Repository<fruitImage>,
+    @InjectRepository(FruitVitamin) private readonly FruitVitamin: Repository<FruitVitamin>,
+    @InjectRepository(FruitMineral) private readonly FruitMineral: Repository<FruitMineral>,
+    @InjectRepository(FruitCategory) private readonly FruitCategory: Repository<FruitCategory>,
+    @InjectRepository(FruitImage) private readonly FruitImage: Repository<FruitImage>,
     @InjectRepository(Vitamin) private readonly vitamin: Repository<Vitamin>,
     @InjectRepository(Mineral) private readonly mineral: Repository<Mineral>,
     @InjectRepository(Category) private readonly category: Repository<Category>,
   ) {
 
   }
-  async create(createFruitDto: CreateFruitDto, user: User) {
-    const fruit = new Fruit();
-    //@ts-ignore
-    fruit.userId = 1;
-    let images;
-    if (createFruitDto.images) {
-      images = createFruitDto.images
-    }
-
-    let fruitData = {
-      name: createFruitDto.name,
-      mainImage: createFruitDto.mainImage
-    }
-
+  async create(createFruitDto: CreateFruitDto) {
+    const fruit = new Fruit()
     try {
-      Object.assign(fruit, fruitData)
+      Object.assign(fruit, createFruitDto)
 
       this.repo.create(fruit);
       let savedFruitData = await this.repo.save(fruit);
 
+      /* if (createFruitDto?.images) {
+        createFruitDto?.images.forEach(async element => {
+          let image = {
+            fruitId: savedFruitData.id,
+            imageName: element,
+          }
+
+          this.FruitImage.create(image);
+          await this.FruitImage.save(image);
+        });
+      } */
+
       return savedFruitData;
+
     } catch (ex) {
       console.log("Some error occurred during saving Fruit data")
       console.log(ex)
@@ -57,7 +58,7 @@ export class FruitsService {
   }
 
   async saveVitaminData(fruitId, vitaminId) {
-    const fruitvitamin = new fruitVitamin();
+    const fruitVitamin = new FruitVitamin();
     console.log(fruitId, vitaminId)
     let vitaminData = {
       fruitId: fruitId,
@@ -65,10 +66,10 @@ export class FruitsService {
       // image: createFruitDto.images
     }
     try {
-      Object.assign(fruitvitamin, vitaminData)
+      Object.assign(FruitVitamin, vitaminData)
 
-      this.fruitVitamin.create(fruitvitamin)
-      this.fruitVitamin.insert(fruitvitamin);
+      this.FruitVitamin.create(fruitVitamin)
+      this.FruitVitamin.insert(fruitVitamin);
       return "vitamin data saved"
 
     } catch (ex) {
@@ -78,17 +79,17 @@ export class FruitsService {
   }
 
   async saveMineralData(fruitId, mineralId) {
-    const fruitmineral = new fruitMineral();
+    const fruitMineral = new FruitMineral();
     let mineralData = {
       fruitId: fruitId,
       mineralsId: mineralId
       // image: createFruitDto.images
     }
     try {
-      Object.assign(fruitmineral, mineralData)
+      Object.assign(FruitMineral, mineralData)
 
-      this.fruitMineral.create(fruitmineral)
-      let data = this.fruitMineral.insert(fruitmineral);
+      this.FruitMineral.create(fruitMineral)
+      let data = this.FruitMineral.insert(fruitMineral);
       console.log("MIneral data" + data)
 
     } catch (ex) {
@@ -101,7 +102,7 @@ export class FruitsService {
     console.log("in save fruit images")
     try {
       files.forEach(file => {
-        let images = new fruitImage();
+        let images = new FruitImage();
 
         // console.log("\n" + file.originalname + "\n")
         let fileReponse = {
@@ -109,8 +110,8 @@ export class FruitsService {
           imageName: file.originalname,
         };
         Object.assign(images, fileReponse)
-        this.image.create(images)
-        this.image.save(images)
+        this.FruitImage.create(images)
+        this.FruitImage.save(images)
 
       });
 
@@ -140,7 +141,7 @@ export class FruitsService {
 
   async findByVitamin(vitaminsId: number) {
     try {
-      const fruit = await this.fruitVitamin.findOne({ where: { vitaminsId: (vitaminsId) } });
+      const fruit = await this.FruitVitamin.findOne({ where: { vitaminsId: (vitaminsId) } });
       return fruit;
     } catch (err) {
       throw new BadRequestException(`Fruit with vitaminId ${vitaminsId} not found`);
@@ -148,10 +149,10 @@ export class FruitsService {
   }
 
   /* async findByMineral(mineralsId: string) {
-    const mineral = new fruitMineral();
+    const mineral = new FruitMineral();
 
     try {
-      const fruit = await this.fruitMineral.findOne({ mineralsId });
+      const fruit = await this.FruitMineral.findOne({ mineralsId });
       return fruit;
     } catch (err) {
       throw new BadRequestException(`Fruit with slug ${mineralsId} not found`);

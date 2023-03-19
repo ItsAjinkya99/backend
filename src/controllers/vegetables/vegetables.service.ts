@@ -10,14 +10,14 @@ import { Mineral } from '../minerals/entities/mineral.entity';
 import { Vitamin } from '../vitamins/entities/vitamin.entity';
 import { CreateVegetableDto } from './dto/create-vegetable.dto';
 import { UpdateVegetableDto } from './dto/update-vegetable.dto';
-import { vegetableImage } from './entities/VegetableImages.entity';
+import { VegetableImage } from './entities/VegetableImages.entity';
 
 @Injectable()
 export class VegetablesService {
 
   constructor(
     @InjectRepository(Vegetable) private readonly repo: Repository<Vegetable>,
-    @InjectRepository(vegetableImage) private readonly vegetabeleImages: Repository<vegetableImage>,
+    @InjectRepository(VegetableImage) private readonly vegetabeleImages: Repository<VegetableImage>,
     @InjectRepository(VegetableVitamin) private readonly VegetableVitamin: Repository<VegetableVitamin>,
     @InjectRepository(VegetableMineral) private readonly VegetableMineral: Repository<VegetableMineral>,
     @InjectRepository(vegetableCategory) private readonly vegetableCategory: Repository<vegetableCategory>,
@@ -31,14 +31,13 @@ export class VegetablesService {
   async create(createVegetableDto: CreateVegetableDto) {
 
     const vegetable = new Vegetable()
-    const vegetableImages = new vegetableImage()
     try {
       Object.assign(vegetable, createVegetableDto)
 
       this.repo.create(vegetable);
       let savedFruitData = await this.repo.save(vegetable);
 
-      if (createVegetableDto?.images) {
+      /* if (createVegetableDto?.images) {
         createVegetableDto?.images.forEach(async element => {
           let image = {
             vegetableId: savedFruitData.id,
@@ -48,7 +47,7 @@ export class VegetablesService {
           this.vegetabeleImages.create(image);
           await this.vegetabeleImages.save(image);
         });
-      }
+      } */
 
       return savedFruitData;
 
@@ -98,15 +97,10 @@ export class VegetablesService {
 
   }
 
-  async findAll() {
-    const myQuery = await this.repo
-      .createQueryBuilder('vegetable')
-      .select('id', 'name').where("approved = 0").getRawMany()
-    // .leftJoinAndSelect('vegetableImage','vi')
+  async findAll(num: string) {
 
-    const myQuery1 = await this.repo.find()
-
-    return myQuery1;
+    const myQuery = await this.repo.query(`select * from vegetable where approved = "${num}"`);
+    return myQuery;
   }
 
   async findOne(id: number) {

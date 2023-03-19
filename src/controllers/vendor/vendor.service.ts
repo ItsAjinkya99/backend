@@ -5,7 +5,7 @@ import { DataSourceOptions, Repository } from 'typeorm';
 import { createDatabase } from 'typeorm-extension';
 import { DataSource } from "typeorm"
 import { User } from 'src/auth/entities/user.entity';
-import { Fruit } from '../fruits/entities/fruit.entity';
+import { Fruit } from '../fruits/entities/Fruit.entity';
 import { Shop } from '../shop/entities/shop.entity';
 import { AuthService } from 'src/auth/auth.service';
 import { take } from 'rxjs';

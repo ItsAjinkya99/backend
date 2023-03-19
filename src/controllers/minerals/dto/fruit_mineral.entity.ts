@@ -1,9 +1,9 @@
-import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
+import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
 import { Mineral } from '../entities/mineral.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 
-@Entity('fruitVitamin')
-export class fruitVitamin {
+@Entity('FruitVitamin')
+export class FruitVitamin {
     @PrimaryGeneratedColumn()
     id: number;
 

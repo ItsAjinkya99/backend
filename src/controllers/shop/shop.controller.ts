@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Session, UseGuards, Res, Req, Query, UnauthorizedException, Sse } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Session, UseGuards, Res, Req, Query, UnauthorizedException, Sse, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ShopService } from './shop.service';
 import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
@@ -7,6 +7,10 @@ import { Response, Request, query } from 'express';
 import { BehaviorSubject, Observable, Subject, map, subscribeOn, takeUntil, tap } from 'rxjs';
 import { AllowUnauthorizedRequest } from 'src/app.controller';
 import { CustomerService } from '../customer/customer.service';
+import { session } from 'passport';
+import { FilesInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+var fs = require('fs-extra');
 
 @UseGuards(AuthGuard('jwt'))
 @Controller('shops')
@@ -25,9 +29,44 @@ export class ShopController {
   }
 
   @Post('register')
-  create(@Body() createShopDto: CreateShopDto, @Session() session: any) {
-    createShopDto['vendorId'] = session.vendorId
-    return this.shopService.create(createShopDto);
+  @UseInterceptors(
+    FilesInterceptor('files[]', 20, {
+      storage: diskStorage({
+        destination: '/tmp',
+        filename: (req, file, cb) => {
+          const name = file.originalname.split('.')[0];
+          const fileExtension = file.originalname.split('.')[1];
+          const newFilename =
+            name.split(' ').join('_') + '_' + Date.now() + '.' + fileExtension;
+          cb(null, newFilename);
+
+        },
+      }),
+      fileFilter: (req, file, callback) => {
+        if (!file.originalname.match(/\.(jpg|jpeg|png|gif)$/)) {
+          return callback(null, false);
+        }
+        callback(null, true);
+      },
+    }),
+  )
+  create(@Body() body: any, @UploadedFiles() files: Array<Express.Multer.File>) {
+
+    console.log(files);
+    var dir = body.title;
+    var images: string[] = [];
+    files.forEach(file => {
+      let destinationPath = 'uploads/shops/' + dir + '/' + file.filename;
+      fs.move('/tmp/' + file.filename, destinationPath, function (err) {
+        if (err) {
+          return console.error(err);
+        } else {
+          images.push(destinationPath.replace('uploads/', ''));
+        }
+      });
+    });
+
+    return this.shopService.create(body);
   }
 
   @Get('getShopData')

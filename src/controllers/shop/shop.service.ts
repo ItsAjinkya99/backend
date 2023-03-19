@@ -14,7 +14,7 @@ import { Order } from '../orders/entities/order.entity';
 import { ShopFruits } from './entities/shopFruits.entity';
 import { ShopVegetables } from './entities/shopVegetables.entity';
 import { Vegetable } from '../vegetables/entities/Vegetable.entity';
-import { Fruit } from '../fruits/entities/fruit.entity';
+import { Fruit } from '../fruits/entities/Fruit.entity';
 
 @Injectable()
 export class ShopService {

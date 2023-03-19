@@ -1,13 +1,13 @@
 import { VitaminsModule } from './../vitamins/vitamins.module';
-import { fruitImage } from 'src/controllers/fruits/entities/fruitImages.entity';
-import { fruitCategory } from './entities/fruitCategory.entity';
-import { fruitMineral } from './entities/fruitMineral.entity';
-import { fruitVitamin } from './entities/fruitVitamins.entity';
+import { FruitImage } from 'src/controllers/fruits/entities/FruitImages.entity';
+import { FruitCategory } from './entities/FruitCategory.entity';
+import { FruitMineral } from './entities/FruitMineral.entity';
+import { FruitVitamin } from './entities/FruitVitamins.entity';
 import { forwardRef, Module } from '@nestjs/common';
 import { FruitsService } from './fruits.service';
 import { FruitsController } from './fruits.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Fruit } from './entities/fruit.entity';
+import { Fruit } from './entities/Fruit.entity';
 import { Mineral } from '../minerals/entities/mineral.entity';
 import { Category } from '../categories/entities/category.entity';
 import { Vitamin } from '../vitamins/entities/vitamin.entity';
@@ -16,8 +16,8 @@ import { roles } from 'src/auth/user-roles';
 
 @Module({
   imports: [
-  TypeOrmModule.forFeature([Fruit, fruitVitamin, fruitMineral,
-    fruitCategory, fruitImage, Mineral, Category, Vitamin]),
+    TypeOrmModule.forFeature([Fruit, FruitVitamin, FruitMineral,
+      FruitCategory, FruitImage, Mineral, Category, Vitamin]),
   ],
   controllers: [FruitsController],
   providers: [FruitsService]

@@ -3,7 +3,7 @@ import { Category } from 'src/controllers/categories/entities/category.entity';
 import { Mineral } from 'src/controllers/minerals/entities/mineral.entity';
 import { Vitamin } from 'src/controllers/vitamins/entities/vitamin.entity';
 
-@Entity('vegetable')
+@Entity('Vegetable')
 export class Vegetable {
   @PrimaryGeneratedColumn()
   id: number;
@@ -15,7 +15,7 @@ export class Vegetable {
   mainImage: string;
 
   // 0 = Not approved yet, 1 = Approved, 3 = Disapproved
-  @Column({ type: 'enum', enum: [0,1,2], enumName: 'roles', default: 0 })
+  @Column({ type: 'enum', enum: [0, 1, 2], enumName: 'roles', default: 0 })
   approved: number;
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

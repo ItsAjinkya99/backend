@@ -1,11 +1,11 @@
-import { fruitMineral } from '../../fruits/entities/fruitMineral.entity';
+import { FruitMineral } from '../../fruits/entities/FruitMineral.entity';
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
+import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
 import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { Exclude } from 'class-transformer';
 // import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
 
-@Entity('mineral')
+@Entity('Mineral')
 export class Mineral {
   @PrimaryGeneratedColumn()
   id: number;
@@ -23,10 +23,10 @@ export class Mineral {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   modifiedOn: Date;
 
-  @ManyToMany(() => fruitMineral, fruit => fruit.minerals)
+  @ManyToMany(() => FruitMineral, fruit => fruit.minerals)
   fruits: Fruit[];
 
-  @ManyToMany(() => fruitMineral, fruit => fruit.minerals)
+  @ManyToMany(() => FruitMineral, fruit => fruit.minerals)
   vegetables: Fruit[];
 
 }

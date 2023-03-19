@@ -8,14 +8,10 @@ export class CreateFruitDto {
     @IsNotEmpty()
     name: string;
 
+    @IsOptional()
+    images: string[]
+
     @IsString()
     @IsOptional()
     mainImage: string;
-
-    @IsOptional()
-    category: Category;
-
-    @IsOptional()
-    @IsNotEmpty()
-    images: string[]
 }

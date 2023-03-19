@@ -1,8 +1,8 @@
 import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
 
-@Entity('vegetableImage')
-export class vegetableImage {
+@Entity('VegetableImage')
+export class VegetableImage {
     @PrimaryGeneratedColumn()
     id: number;
 

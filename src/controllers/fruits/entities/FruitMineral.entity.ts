@@ -1,9 +1,9 @@
-import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
-import { Vitamin } from 'src/controllers/vitamins/entities/vitamin.entity';
+import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
+import { Mineral } from 'src/controllers/minerals/entities/mineral.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 
-@Entity('fruitVitamin')
-export class fruitVitamin {
+@Entity('FruitMineral')
+export class FruitMineral {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -11,14 +11,14 @@ export class fruitVitamin {
   fruitId: number;
 
   @Column()
-  vitaminsId: number;
+  mineralsId: number;
 
-  @ManyToOne(() => Vitamin, vitamin => vitamin.id, { eager: true })
+  @ManyToOne(() => Mineral, mineral => mineral.id, { eager: true })
   @JoinColumn({
     referencedColumnName: 'id',
-    name: 'vitaminsId',
+    name: 'mineralsId',
   })
-  vitamins: Vitamin;
+  minerals: Mineral;
 
   @ManyToOne(() => Fruit, fruit => fruit.id, { eager: true })
   @JoinColumn({

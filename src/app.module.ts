@@ -44,7 +44,7 @@ const { combine, timestamp, label, printf } = format;
       synchronize: true,
     }),
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'uploads'),
+      rootPath: join(__dirname, '..',),
       exclude: ['/api*'],
     }),
     VegetablesModule,

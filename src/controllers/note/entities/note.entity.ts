@@ -1,5 +1,5 @@
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
+import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
 import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 
 @Entity('note')

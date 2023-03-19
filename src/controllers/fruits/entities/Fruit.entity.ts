@@ -1,6 +1,6 @@
 import { BeforeInsert, Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
-@Entity('fruit')
+@Entity('Fruit')
 export class Fruit {
   @PrimaryGeneratedColumn()
   id: number;

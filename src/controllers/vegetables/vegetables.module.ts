@@ -1,4 +1,4 @@
-import { vegetableImage } from './entities/VegetableImages.entity';
+import { VegetableImage } from './entities/VegetableImages.entity';
 import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { Note } from '../note/entities/note.entity';
 import { forwardRef, Module } from '@nestjs/common';
@@ -23,7 +23,7 @@ import { MulterModule } from '@nestjs/platform-express/multer';
       Category,
       Vitamin,
       Vegetable,
-      vegetableImage]),
+      VegetableImage]),
     MulterModule.register({
       dest: './upload/vegetables',
     })],

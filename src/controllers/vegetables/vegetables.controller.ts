@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, StreamableFile, Res, UploadedFile, UseInterceptors, UploadedFiles, Header, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, StreamableFile, Res, UploadedFile, UseInterceptors, UploadedFiles, Header, UseGuards, Query } from '@nestjs/common';
 import { VegetablesService } from './vegetables.service';
 import { CreateVegetableDto } from './dto/create-vegetable.dto';
 import { UpdateVegetableDto } from './dto/update-vegetable.dto';
@@ -10,12 +10,13 @@ import { diskStorage } from 'multer';
 import { spawn } from 'child_process';
 import { Readable } from 'stream';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { AllowUnauthorizedRequest } from 'src/app.controller';
 var fs = require('fs-extra');
 var path = require('path');
 // var Readable = require('stream').Readable
 
 @Controller('vegetables')
-@UseGuards(JwtAuthGuard)
+@AllowUnauthorizedRequest()
 export class VegetablesController {
   constructor(private readonly vegetablesService: VegetablesService) { }
 
@@ -24,7 +25,7 @@ export class VegetablesController {
     return this.vegetablesService.create(createVegetableDto);
   }
 
-  @Post('uploadVegetable')
+  @Post('uploadvegetable')
   @UseInterceptors(
     FilesInterceptor('files[]', 20, {
       storage: diskStorage({
@@ -57,21 +58,21 @@ export class VegetablesController {
         if (err) {
           return console.error(err);
         } else {
-          images.push(destinationPath.replace('uploads/', ''));
+          images.push();
         }
+
       });
+      let vegetable = {
+        name: body.title,
+        images: images,
+        mainImage: destinationPath,
+        vitaminsId: null,
+        mineralsId: null,
+        categoriesId: null
+      }
+      this.vegetablesService.create(vegetable);
+
     });
-
-    let vegetable = {
-      name: body.title,
-      images: images,
-      mainImage: null,
-      vitaminsId: null,
-      mineralsId: null,
-      categoriesId: null
-    }
-
-    this.vegetablesService.create(vegetable);
     return true;
 
   }
@@ -85,8 +86,8 @@ export class VegetablesController {
   }
 
   @Get()
-  findAll() {
-    return this.vegetablesService.findAll();
+  findAll(@Query('isAuth') isAuth: string,) {
+    return this.vegetablesService.findAll(isAuth);
   }
 
   @Get(':id')

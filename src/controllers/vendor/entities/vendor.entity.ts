@@ -2,7 +2,7 @@ import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn, Unique
 import { Shop } from 'src/controllers/shop/entities/shop.entity';
 import { User } from 'src/auth/entities/user.entity';
 
-@Entity('vendor')
+@Entity('Vendor')
 export class Vendor {
 
   @PrimaryGeneratedColumn()

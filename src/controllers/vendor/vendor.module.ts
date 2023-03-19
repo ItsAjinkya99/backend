@@ -11,7 +11,7 @@ import { ShopService } from '../shop/shop.service';
 import { ShopVegetables } from '../shop/entities/shopVegetables.entity';
 import { ShopFruits } from '../shop/entities/shopFruits.entity';
 import { Vegetable } from '../vegetables/entities/Vegetable.entity';
-import { Fruit } from '../fruits/entities/fruit.entity';
+import { Fruit } from '../fruits/entities/Fruit.entity';
 
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');

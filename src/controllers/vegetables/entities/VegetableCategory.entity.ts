@@ -1,7 +1,7 @@
 import { Category } from "src/controllers/categories/entities/category.entity";
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 
-@Entity('vegetableCategory')
+@Entity('VegetableCategory')
 export class vegetableCategory {
     @PrimaryGeneratedColumn()
     id: number;

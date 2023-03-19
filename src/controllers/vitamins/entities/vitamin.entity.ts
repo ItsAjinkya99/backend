@@ -1,11 +1,11 @@
-import { fruitVitamin } from '../../fruits/entities/fruitVitamins.entity';
+import { FruitVitamin } from '../../fruits/entities/FruitVitamins.entity';
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Fruit } from 'src/controllers/fruits/entities/fruit.entity';
+import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
 import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { Exclude } from 'class-transformer';
 
 
-@Entity('vitamins')
+@Entity('Vitamin')
 export class Vitamin {
   @PrimaryGeneratedColumn()
   id: number;
@@ -23,7 +23,7 @@ export class Vitamin {
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   modifiedOn: Date;
 
-  @OneToMany(() => fruitVitamin, fruit => fruit.vitamins)
+  @OneToMany(() => FruitVitamin, fruit => fruit.vitamins)
   fruits: Fruit[];
 
 }
