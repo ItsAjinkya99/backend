@@ -90,7 +90,7 @@ export class FruitsController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.fruitsService.findOne(+id);
+    return this.fruitsService.findOne(parseInt(id));
   }
 
   @Patch(':id')

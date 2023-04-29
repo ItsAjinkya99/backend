@@ -99,7 +99,7 @@ export class VegetablesService {
 
   async findAll(num: string) {
 
-    const myQuery = await this.repo.query(`select * from vegetable where approved = "${num}"`);
+    const myQuery = await this.repo.query(`select * from Vegetable where approved = "${num}"`);
     return myQuery;
   }
 
@@ -144,5 +144,14 @@ export class VegetablesService {
     const vegetable = await this.repo.findOneBy({ id: id });
     await this.repo.remove(vegetable);
     return { success: true, vegetable };
+  }
+
+  authorize(data: any) {
+    data.forEach(async element => {
+      const vegetable = await this.repo.findOne({ where: { id: element } });
+      vegetable.approved = 1;
+      this.repo.save(vegetable)
+    });
+    return true
   }
 }

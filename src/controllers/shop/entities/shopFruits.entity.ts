@@ -8,7 +8,7 @@ export class ShopFruits {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ default: null })
+  @Column({ default: null, nullable: false })
   shopId: number
 
   @Column()

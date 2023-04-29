@@ -26,7 +26,6 @@ export class VendorController {
   }
 
   @Get('authstatus')
-  // @AllowUnauthorizedRequest()
   authStatus(@AuthStatus() user: User, @Req() req: any) {
 
     return { status: !!user, user };
@@ -112,11 +111,6 @@ export class VendorController {
   @Post('createuser')
   createUser(@Body() body: CreateUserDto) {
     return this.vendorService.createVendorUser(body)
-  }
-
-  @Post('addVegetables')
-  addVegetables(@Body() body: object) {
-    return this.vendorService.addVegetables(body)
   }
 
 }

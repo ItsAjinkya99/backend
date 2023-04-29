@@ -8,15 +8,11 @@ import { Response } from 'express';
 import { AnyFilesInterceptor, FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { spawn } from 'child_process';
-import { Readable } from 'stream';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { AllowUnauthorizedRequest } from 'src/app.controller';
 var fs = require('fs-extra');
 var path = require('path');
-// var Readable = require('stream').Readable
 
 @Controller('vegetables')
-@AllowUnauthorizedRequest()
 export class VegetablesController {
   constructor(private readonly vegetablesService: VegetablesService) { }
 
@@ -77,14 +73,6 @@ export class VegetablesController {
 
   }
 
-  @Get('images')
-  getFile(@Res() res: Response) {
-
-    const file = createReadStream(join(process.cwd(), 'img1.png'));
-    file.pipe(res);
-
-  }
-
   @Get()
   findAll(@Query('isAuth') isAuth: string,) {
     return this.vegetablesService.findAll(isAuth);
@@ -116,5 +104,10 @@ export class VegetablesController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.vegetablesService.remove(+id);
+  }
+
+  @Post('authorize')
+  authorize(@Body() data: any) {
+    return this.vegetablesService.authorize(data)
   }
 }

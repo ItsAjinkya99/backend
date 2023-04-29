@@ -57,8 +57,8 @@ export class VendorService {
     (async () => {
 
       const vendorId = await this.vendor.query(`SELECT FLOOR(RAND() * 99999) AS random_num
-      FROM vendor
-      WHERE ("random_num" NOT IN (SELECT vendorId FROM vendor))
+      FROM Vendor
+      WHERE ("random_num" NOT IN (SELECT vendorId FROM Vendor))
       LIMIT 1`)
 
       let vendorBody = {

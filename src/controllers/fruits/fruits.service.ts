@@ -132,7 +132,7 @@ export class FruitsService {
 
   async findOne(id: number) {
     try {
-      const fruit = await this.repo.findOneOrFail({ where: { id: (id) } });
+      const fruit = await this.repo.findOne({ where: { id: (id) } });
       return fruit;
     } catch (err) {
       throw new BadRequestException('Fruit not found');

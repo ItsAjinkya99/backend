@@ -2,14 +2,9 @@ import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { DataSource, DataSourceOptions, Repository } from 'typeorm';
+import { Repository } from 'typeorm';
 import { BadRequestException, UnauthorizedException } from '@nestjs/common';
 import { Request } from 'express';
-import { Order } from 'src/controllers/orders/entities/order.entity';
-import { Shop } from 'src/controllers/shop/entities/shop.entity';
-import { ShopFruits } from 'src/controllers/shop/entities/shopFruits.entity';
-import { ShopVegetables } from 'src/controllers/shop/entities/shopVegetables.entity';
-import { VendorShops } from 'src/controllers/vendor/entities/vendorShop.entity';
 import { AuthService } from './auth.service';
 import { JwtService } from '@nestjs/jwt';
 

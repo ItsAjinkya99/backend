@@ -1,13 +1,10 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Session, UseGuards, Res, Req, Query, UnauthorizedException, Sse, UploadedFiles, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Res, Query, UploadedFiles, UseInterceptors } from '@nestjs/common';
 import { ShopService } from './shop.service';
-import { CreateShopDto } from './dto/create-shop.dto';
 import { UpdateShopDto } from './dto/update-shop.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { Response, Request, query } from 'express';
-import { BehaviorSubject, Observable, Subject, map, subscribeOn, takeUntil, tap } from 'rxjs';
-import { AllowUnauthorizedRequest } from 'src/app.controller';
+import { Response } from 'express';
+import { BehaviorSubject } from 'rxjs';
 import { CustomerService } from '../customer/customer.service';
-import { session } from 'passport';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 var fs = require('fs-extra');
@@ -78,7 +75,6 @@ export class ShopController {
     }).then((data) => {
       return res.send(data)
     })
-
   }
 
   @Patch(':id')
@@ -89,6 +85,11 @@ export class ShopController {
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.shopService.remove(+id);
+  }
+
+  @Post('addShopItems')
+  addVegetables(@Body() body: object) {
+    return this.shopService.createShopItems(body)
   }
 
 }

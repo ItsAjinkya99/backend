@@ -138,45 +138,57 @@ export class ShopService {
         const sfRepo = data.getRepository(ShopFruits)
 
         // loop through incoming data
-        if (shopData[1]) {
-          shopData[1].forEach(async element => {
+        if (shopData['vegetables']) {
+          shopData['vegetables'].forEach(async element => {
 
             let vegetable = await svRepo.createQueryBuilder('shop')
               .addSelect('shop.shopId')
-              .where('shop.shopId = :shopId', { shopId: shopData[0] })
-              .andWhere('shop.vegetableId = :vegetableId', { vegetableId: element.vegetableId }).getOne();
+              .where('shop.shopId = :shopId', { shopId: shopData['shopId'] })
+              .andWhere('shop.vegetableId = :vegetableId', { vegetableId: element }).getOne();
 
             if (vegetable) {
-              return;
+              return
+            }
+            const veg1 = new ShopVegetables()
+            var myObj = {
+              shopId: shopData['shopId'],
+              vegetableId: element
             }
 
-            var myObj = {
-              shopId: shopData[0],
-              fruitId: element.vegetableId
+            Object.assign(veg1, myObj)
+            try {
+              console.log("reaching here")
+              svRepo.create(veg1)
+              await svRepo.save(veg1);
+
+            } catch (Exception) {
+              console.log(Exception)
             }
-            svRepo.create(myObj)
-            await svRepo.save(myObj);
+
           });
         }
 
-        if (shopData[2]) {
-          shopData[2].forEach(async element => {
+        if (shopData['fruits']) {
+          shopData['fruits'].forEach(async element => {
 
             let fruit = await sfRepo.createQueryBuilder('shop')
               .addSelect('shop.shopId')
-              .where('shop.shopId = :shopId', { shopId: shopData[0] })
-              .andWhere('shop.fruitId = :fruitId', { fruitId: element.fruitId }).getOne();
+              .where('shop.shopId = :shopId', { shopId: shopData['shopId'] })
+              .andWhere('shop.fruitId = :fruitId', { fruitId: element }).getOne()
 
             if (fruit) {
               return;
             }
 
+            const fruit1 = new ShopFruits()
             let myObj = {
-              shopId: shopData[0],
-              fruitId: element.fruitId
+              shopId: shopData['shopId'],
+              fruitId: element
             }
-            sfRepo.create(myObj)
-            await sfRepo.save(myObj);
+            Object.assign(fruit1, myObj)
+
+            sfRepo.create(fruit1)
+            await sfRepo.save(fruit1);
           });
         }
 
