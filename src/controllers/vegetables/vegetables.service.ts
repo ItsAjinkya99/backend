@@ -105,23 +105,8 @@ export class VegetablesService {
 
   async findOne(id: number) {
     try {
-
-      const myQuery = await this.vegetabeleImages.createQueryBuilder("vi")
-        .select('vi.imageName')
-        .where(`vi.vegetableId=${id}`)
-        .getRawMany();
-
-      const query = await this.repo.createQueryBuilder('vg')
-        .select('vg.name')
-        .where(`vg.id = ${id}`)
-        .andWhere('vg.approved = 1').getRawMany();
-
-      if (query.length !== 0) {
-        return [query, myQuery];
-
-      } else {
-        throw new NotFoundException('Vegetable not found')
-      }
+      const vegetable = await this.repo.findOne({ where: { id: (id) } });
+      return vegetable;
     } catch (err) {
       throw new BadRequestException('Vegetable not found');
     }

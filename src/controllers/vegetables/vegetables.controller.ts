@@ -73,27 +73,14 @@ export class VegetablesController {
 
   }
 
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.vegetablesService.findOne(parseInt(id));
+  }
+
   @Get()
   findAll(@Query('isAuth') isAuth: string,) {
     return this.vegetablesService.findAll(isAuth);
-  }
-
-  @Get(':id')
-  @Header('Content-Type', 'application/json')
-  async findOne(@Param('id') id: string, @Res() res: Response) {
-
-    var data = await this.vegetablesService.findOne(+id);
-
-    var img1 = []
-    for (let i = 0; i < data[1].length; i++) {
-
-      var relativeFilePath = data[1][i].vi_imageName;
-
-      img1[i] = relativeFilePath
-
-    }
-    res.send(img1);
-
   }
 
   @Patch(':id')
