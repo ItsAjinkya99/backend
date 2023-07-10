@@ -20,20 +20,3 @@ const { combine, timestamp, label, printf } = format;
   exports: [CustomerService],
 })
 export class CustomerModule { }
-
-const myFormat = printf(({ level, message, label, timestamp }) => {
-  return `${timestamp} [${label}] ${level}: ${message}`;
-});
-
-export const logger = winston.createLogger({
-  transports: [
-    new winston.transports.Console(),
-    new DailyRotateFile({ filename: `log/customer/customer-%DATE%.log` }),
-  ],
-  format: combine(
-    label({ label: 'backend' }),
-    timestamp(),
-    myFormat
-  ),
-
-});

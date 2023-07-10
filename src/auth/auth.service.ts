@@ -16,6 +16,7 @@ import { ShopFruits } from 'src/controllers/shop/entities/shopFruits.entity';
 import { ShopVegetables } from 'src/controllers/shop/entities/shopVegetables.entity';
 import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
 import { BehaviorSubject, Observable, take } from 'rxjs';
+import { customerLogger, vendorLogger } from 'src/app.module';
 
 @Injectable()
 export class AuthService {
@@ -25,7 +26,6 @@ export class AuthService {
 
   constructor(
     @InjectRepository(User) private readonly user: Repository<User>,
-
     private jwt: JwtService
   ) { }
 
@@ -47,6 +47,7 @@ export class AuthService {
               id: user.id
             })
             delete user.password
+            customerLogger.info('customer logged in')
             return { token, user }
           } else {
             throw new UnauthorizedException("Bad credentials")
@@ -77,20 +78,17 @@ export class AuthService {
               })
               delete user.password
               await dataSource.destroy()
-
+              vendorLogger.info('vendor logged in')
               return { token, user }
             } else {
               throw new UnauthorizedException("Bad credentials")
             }
-
           }
 
         } catch (Exception) {
           throw new BadRequestException(Exception)
         }
-
       }
-
     }
   }
 

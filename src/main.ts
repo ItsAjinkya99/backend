@@ -11,7 +11,6 @@ async function bootstrap() {
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     logger: ['log', 'debug', 'verbose'], cors: true,
-
   });
 
   app.setGlobalPrefix('api');

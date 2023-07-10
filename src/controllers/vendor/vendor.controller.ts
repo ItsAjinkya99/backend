@@ -27,7 +27,6 @@ export class VendorController {
 
   @Get('authstatus')
   authStatus(@AuthStatus() user: User, @Req() req: any) {
-
     return { status: !!user, user };
   }
 

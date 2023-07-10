@@ -87,10 +87,36 @@ const myFormat = printf(({ level, message, label, timestamp }) => {
   return `${timestamp} [${label}] ${level}: ${message}`;
 });
 
-export const logger = winston.createLogger({
+export const appLogger = winston.createLogger({
   transports: [
     new winston.transports.Console(),
     new DailyRotateFile({ filename: `log/combined-%DATE%.log` }),
+  ],
+  format: combine(
+    label({ label: 'backend' }),
+    timestamp(),
+    myFormat
+  ),
+
+});
+
+export const customerLogger = winston.createLogger({
+  transports: [
+    new winston.transports.Console(),
+    new DailyRotateFile({ filename: `log/customer/customer-%DATE%.log` }),
+  ],
+  format: combine(
+    label({ label: 'backend' }),
+    timestamp(),
+    myFormat
+  ),
+
+});
+
+export const vendorLogger = winston.createLogger({
+  transports: [
+    new winston.transports.Console(),
+    new DailyRotateFile({ filename: `log/vendor/vendor-%DATE%.log` }),
   ],
   format: combine(
     label({ label: 'backend' }),
