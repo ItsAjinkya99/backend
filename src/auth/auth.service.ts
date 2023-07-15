@@ -1,22 +1,19 @@
 import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, DataSourceOptions, Repository } from 'typeorm';
-import { UserRoles } from './user-roles';
 import { promisify } from 'util';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 const scrypt = promisify(_scrypt);
 import * as bcrypt from 'bcryptjs'
 import { JwtService } from '@nestjs/jwt';
 import { User } from './entities/user.entity';
-import { Shop } from 'src/controllers/shop/entities/shop.entity';
-import { createDatabase, useDataSource } from 'typeorm-extension';
-import { VendorShops } from 'src/controllers/vendor/entities/vendorShop.entity';
-import { Order } from 'src/controllers/orders/entities/order.entity';
-import { ShopFruits } from 'src/controllers/shop/entities/shopFruits.entity';
-import { ShopVegetables } from 'src/controllers/shop/entities/shopVegetables.entity';
-import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
-import { BehaviorSubject, Observable, take } from 'rxjs';
-import { customerLogger, vendorLogger } from 'src/app.module';
+import { createDatabase } from 'typeorm-extension';
+import { VendorShops } from '../controllers/vendor/entities/vendorShop.entity';
+import { Order } from '../controllers/orders/entities/order.entity';
+import { ShopFruits } from '../controllers/shop/entities/shopFruits.entity';
+import { ShopVegetables } from '../controllers/shop/entities/shopVegetables.entity';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { customerLogger, vendorLogger } from '../app.module';
 
 @Injectable()
 export class AuthService {

@@ -1,17 +1,16 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session, Sse, Req, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Req, Query } from '@nestjs/common';
 import { VendorService } from './vendor.service';
 import { CreateVendorDto } from './dto/create-vendor.dto';
 import { UpdateVendorDto } from './dto/update-vendor.dto';
-import { AuthService } from 'src/auth/auth.service';
-import { UserLoginDto } from 'src/auth/dto/user-login.dto';
+import { AuthService } from '../../auth/auth.service';
+import { UserLoginDto } from '../../auth/dto/user-login.dto';
 import { Response } from 'express';
-import { roles, UserRoles } from 'src/auth/user-roles';
-import { AllowUnauthorizedRequest } from 'src/app.controller';
-import { CreateUserDto } from 'src/auth/dto/create-user.dto';
-import { AuthStatus } from 'src/auth/authstatus.decorator';
-import { User } from 'src/auth/entities/user.entity';
+import { UserRoles } from '../../auth/user-roles';
+import { AllowUnauthorizedRequest } from '../../app.controller';
+import { CreateUserDto } from '../../auth/dto/create-user.dto';
+import { AuthStatus } from '../../decorators/authstatus.decorator';
+import { User } from '../../auth/entities/user.entity';
 import { CreateShopDto } from '../shop/dto/create-shop.dto';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { ShopService } from '../shop/shop.service';
 
 @Controller('vendor')

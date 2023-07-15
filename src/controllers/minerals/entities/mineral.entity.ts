@@ -1,5 +1,5 @@
 import { FruitMineral } from '../../fruits/entities/FruitMineral.entity';
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
 import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
 import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { Exclude } from 'class-transformer';
@@ -24,9 +24,9 @@ export class Mineral {
   modifiedOn: Date;
 
   @ManyToMany(() => FruitMineral, fruit => fruit.minerals)
-  fruits: Fruit[];
+  fruits: Relation<Fruit[]>;
 
   @ManyToMany(() => FruitMineral, fruit => fruit.minerals)
-  vegetables: Fruit[];
+  vegetables: Relation<Fruit[]>;
 
 }

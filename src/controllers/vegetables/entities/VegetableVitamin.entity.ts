@@ -1,6 +1,6 @@
-import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
+import { Vegetable } from '../../vegetables/entities/Vegetable.entity';
 import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
-import { Vitamin } from 'src/controllers/vitamins/entities/vitamin.entity';
+import { Vitamin } from '../../vitamins/entities/vitamin.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 
 @Entity('VegetableVitamin')

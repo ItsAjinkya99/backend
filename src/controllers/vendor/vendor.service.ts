@@ -4,10 +4,8 @@ import { UpdateVendorDto } from './dto/update-vendor.dto';
 import { DataSourceOptions, Repository } from 'typeorm';
 import { createDatabase } from 'typeorm-extension';
 import { DataSource } from "typeorm"
-import { User } from 'src/auth/entities/user.entity';
-import { Fruit } from '../fruits/entities/Fruit.entity';
-import { Shop } from '../shop/entities/shop.entity';
-import { AuthService } from 'src/auth/auth.service';
+import { User } from '../../auth/entities/user.entity';
+import { AuthService } from '../../auth/auth.service';
 import { take } from 'rxjs';
 import { Order } from '../orders/entities/order.entity';
 import { ShopFruits } from '../shop/entities/shopFruits.entity';
@@ -16,7 +14,6 @@ import { Vendor } from './entities/vendor.entity';
 import { VendorShops } from './entities/vendorShop.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopService } from '../shop/shop.service';
-import { CreateUserDto } from 'src/auth/dto/create-user.dto';
 
 @Injectable()
 export class VendorService {

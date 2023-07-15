@@ -1,16 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UploadedFile, UseInterceptors, Query, UploadedFiles, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Req, UseInterceptors, Query, UploadedFiles, UseGuards } from '@nestjs/common';
 import { FruitsService } from './fruits.service';
-import { CreateFruitDto } from './dto/create-fruit.dto';
 import { UpdateFruitDto } from './dto/update-fruit.dto';
-import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { Express } from 'express';
 import { Request } from 'express';
-import { User } from 'src/auth/entities/user.entity';
 import { AuthGuard } from '@nestjs/passport';
-import { Roles } from 'src/decorators/roles.decorator';
-import { UserRoles } from 'src/auth/user-roles';
-import { AllowUnauthorizedRequest } from 'src/app.controller';
+import { Roles } from '../../decorators/roles.decorator';
+import { UserRoles } from '../../auth/user-roles';
+import { AllowUnauthorizedRequest } from '../../app.controller';
 var fs = require('fs-extra');
 
 @Controller('fruits')

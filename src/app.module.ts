@@ -10,11 +10,6 @@ import { ShopModule } from './controllers/shop/shop.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { VitaminsModule } from './controllers/vitamins/vitamins.module';
 import { MineralsModule } from './controllers/minerals/minerals.module';
-import { BenefitsModule } from './controllers/benefits/benefits.module';
-import { CategoriesModule } from './controllers/categories/categories.module';
-import { OrdersModule } from './controllers/orders/orders.module';
-import { ColorModule } from './controllers/color/color.module';
-import { NoteModule } from './controllers/note/note.module';
 import { AuthModule } from './auth/auth.module';
 import { AccessControlModule } from 'nest-access-control';
 import { roles } from './auth/user-roles';
@@ -23,7 +18,6 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { EventEmitterModule } from '@nestjs/event-emitter';
 import { APP_GUARD } from '@nestjs/core';
-import { AuthGuard } from '@nestjs/passport';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
 const winston = require('winston');
@@ -55,11 +49,11 @@ const { combine, timestamp, label, printf } = format;
     MulterModule.register({
       dest: "./uploads"
     }),
-    // VitaminsModule,
-    // MineralsModule,
+    VitaminsModule,
+    MineralsModule,
     // BenefitsModule,
     // CategoriesModule,
-    OrdersModule,
+    // OrdersModule,
     // ColorModule,
     // NoteModule,
     AuthModule,

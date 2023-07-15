@@ -1,5 +1,5 @@
-import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
+import { Fruit } from './Fruit.entity';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany, Relation } from "typeorm";
 
 @Entity('FruitImage')
 export class FruitImage {
@@ -17,5 +17,5 @@ export class FruitImage {
     referencedColumnName: 'id',
     name: 'fruitId',
   })
-  fruits: Fruit;
+  fruits: Relation<Fruit>;
 }

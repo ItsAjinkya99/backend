@@ -7,12 +7,10 @@ import { AuthController } from './auth.controller';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
-import { Order } from 'src/controllers/orders/entities/order.entity';
-import { Shop } from 'src/controllers/shop/entities/shop.entity';
-import { ShopFruits } from 'src/controllers/shop/entities/shopFruits.entity';
-import { ShopVegetables } from 'src/controllers/shop/entities/shopVegetables.entity';
-import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
-import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
+import { Order } from '../controllers/orders/entities/order.entity';
+import { Shop } from '../controllers/shop/entities/shop.entity';
+import { Vegetable } from '../controllers/vegetables/entities/Vegetable.entity';
+import { Vendor } from '../controllers/vendor/entities/vendor.entity';
 
 @Global()
 @Module({

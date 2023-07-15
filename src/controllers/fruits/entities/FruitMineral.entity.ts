@@ -1,6 +1,6 @@
-import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
-import { Mineral } from 'src/controllers/minerals/entities/mineral.entity';
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Fruit } from './Fruit.entity';
+import { Mineral } from '../../minerals/entities/mineral.entity'
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Relation } from "typeorm";
 
 @Entity('FruitMineral')
 export class FruitMineral {
@@ -18,13 +18,13 @@ export class FruitMineral {
     referencedColumnName: 'id',
     name: 'mineralsId',
   })
-  minerals: Mineral;
+  minerals: Relation<Mineral>;
 
   @ManyToOne(() => Fruit, fruit => fruit.id, { eager: true })
   @JoinColumn({
     referencedColumnName: 'id',
     name: 'fruitId',
   })
-  fruit: Fruit
+  fruit: Relation<Fruit>
 
 }

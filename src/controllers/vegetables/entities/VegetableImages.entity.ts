@@ -1,5 +1,5 @@
-import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, OneToMany } from "typeorm";
+import { Vegetable } from "./Vegetable.entity";
 
 @Entity('VegetableImage')
 export class VegetableImage {

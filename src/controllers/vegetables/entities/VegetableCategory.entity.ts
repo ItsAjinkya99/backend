@@ -1,5 +1,5 @@
-import { Category } from "src/controllers/categories/entities/category.entity";
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
+import { Category } from "../../categories/entities/category.entity";
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Relation } from "typeorm";
 
 @Entity('VegetableCategory')
 export class vegetableCategory {
@@ -17,5 +17,5 @@ export class vegetableCategory {
         referencedColumnName: 'id',
         name: 'categoriesId',
     })
-    categories: Category[];
+    categories: Relation<Category[]>;
 }

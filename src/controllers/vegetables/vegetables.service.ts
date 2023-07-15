@@ -1,9 +1,8 @@
-import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { createQueryBuilder, Repository } from 'typeorm';
 import { Category } from '../categories/entities/category.entity';
-import { vegetableCategory } from './entities/VegetableCategory.entity';
+// import { vegetableCategory } from './entities/VegetableCategory.entity';
 import { VegetableMineral } from './entities/VegetableMineral.entity';
 import { VegetableVitamin } from './entities/VegetableVitamin.entity';
 import { Mineral } from '../minerals/entities/mineral.entity';
@@ -11,6 +10,8 @@ import { Vitamin } from '../vitamins/entities/vitamin.entity';
 import { CreateVegetableDto } from './dto/create-vegetable.dto';
 import { UpdateVegetableDto } from './dto/update-vegetable.dto';
 import { VegetableImage } from './entities/VegetableImages.entity';
+import { Vegetable } from './entities/Vegetable.entity';
+import { vegetableCategory } from './entities/VegetableCategory.entity';
 
 @Injectable()
 export class VegetablesService {

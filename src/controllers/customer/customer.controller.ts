@@ -1,16 +1,16 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session, UseGuards, Req } from '@nestjs/common';
 import { Response } from 'express';
-import { AuthService } from 'src/auth/auth.service';
-import { AuthStatus } from 'src/auth/authstatus.decorator';
-import { UserLoginDto } from 'src/auth/dto/user-login.dto';
-import { User } from 'src/auth/entities/user.entity';
-import { UserRoles } from 'src/auth/user-roles';
+import { AuthService } from './../../auth/auth.service';
+import { AuthStatus } from '../../decorators/authstatus.decorator';
+import { UserLoginDto } from '../../auth/dto/user-login.dto';
+import { User } from '../../auth/entities/user.entity';
+import { UserRoles } from '../../auth/user-roles';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { AuthGuard } from '@nestjs/passport';
-import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
-import { AllowUnauthorizedRequest } from 'src/app.controller';
+import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
+import { AllowUnauthorizedRequest } from '../../app.controller';
 
 @UseGuards(JwtAuthGuard)
 @Controller('customer')

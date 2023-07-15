@@ -1,7 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from 'src/auth/entities/user.entity';
-import { Shop } from './shop.entity';
-import { VendorShops } from 'src/controllers/vendor/entities/vendorShop.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('ShopVegetables')
 export class ShopVegetables {
@@ -13,5 +10,8 @@ export class ShopVegetables {
 
   @Column()
   vegetableId: number;
+
+  @Column()
+  price: number;
 
 }

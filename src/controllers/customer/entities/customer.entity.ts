@@ -1,7 +1,4 @@
-import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Order } from 'src/controllers/orders/entities/order.entity';
-import * as bcrypt from 'bcryptjs';
-import { UserRoles } from 'src/auth/user-roles';
+import { Column, Entity } from 'typeorm';
 import { User } from 'src/auth/entities/user.entity';
 
 @Entity('customers')

@@ -1,5 +1,5 @@
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { User } from 'src/auth/entities/user.entity';
+import { Column, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { User } from '../../../auth/entities/user.entity';
 
 @Entity('Order')
 export class Order {
@@ -16,6 +16,6 @@ export class Order {
     orderData: string
 
     @ManyToOne(() => User, user => user.orders, { eager: true })
-    user: User;
+    user: Relation<User>;
 
 }
