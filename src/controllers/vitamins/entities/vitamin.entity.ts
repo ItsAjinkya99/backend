@@ -1,7 +1,6 @@
 import { FruitVitamin } from '../../fruits/entities/FruitVitamins.entity';
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
+import { Column, Entity, OneToMany, PrimaryGeneratedColumn, Relation } from 'typeorm';
 import { Fruit } from '../../fruits/entities/Fruit.entity';
-import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
 import { Exclude } from 'class-transformer';
 
 @Entity('Vitamin')

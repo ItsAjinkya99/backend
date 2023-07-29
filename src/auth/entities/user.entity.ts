@@ -1,8 +1,9 @@
 import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn, Relation } from "typeorm";
 import { UserRoles } from "../user-roles";
 import * as bcrypt from 'bcryptjs';
-import { Shop } from "src/controllers/shop/entities/shop.entity";
 import { Order } from "../../controllers/orders/entities/order.entity";
+import { Address } from "./user-address.entity";
+import { IsOptional } from "class-validator";
 
 @Entity('Users')
 export class User {
@@ -19,9 +20,6 @@ export class User {
     password: string;
 
     @Column({ nullable: false })
-    address: string;
-
-    @Column({ nullable: false })
     email: string;
 
     @Column({ type: 'enum', enum: UserRoles, enumName: 'roles', default: UserRoles.Customer })
@@ -33,10 +31,11 @@ export class User {
     @Column({ default: 0 })
     deleted: boolean
 
-    /* @OneToMany(() => Shop, shop => shop.user)
-    shops: Shop[]; */
+    @Column({ default: null })
+    @IsOptional()
+    vendorId?: boolean
 
-    @OneToMany(() => Order, order => order.user)
+    @OneToMany(() => Order, order => order.customer)
     orders: Relation<Order[]>;
 
     @BeforeInsert()

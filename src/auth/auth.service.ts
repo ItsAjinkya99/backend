@@ -14,6 +14,7 @@ import { ShopFruits } from '../controllers/shop/entities/shopFruits.entity';
 import { ShopVegetables } from '../controllers/shop/entities/shopVegetables.entity';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { customerLogger, vendorLogger } from '../app.module';
+import { Address } from './entities/user-address.entity';
 
 @Injectable()
 export class AuthService {
@@ -23,6 +24,7 @@ export class AuthService {
 
   constructor(
     @InjectRepository(User) private readonly user: Repository<User>,
+    @InjectRepository(Address) private readonly address: Repository<Address>,
     private jwt: JwtService
   ) { }
 
@@ -44,7 +46,7 @@ export class AuthService {
               id: user.id
             })
             delete user.password
-            customerLogger.info('customer logged in')
+            customerLogger.info(JSON.stringify(user) + ' customer logged in')
             return { token, user }
           } else {
             throw new UnauthorizedException("Bad credentials")
@@ -75,7 +77,7 @@ export class AuthService {
               })
               delete user.password
               await dataSource.destroy()
-              vendorLogger.info('vendor logged in')
+              vendorLogger.info(JSON.stringify(user) + ' vendor logged in')
               return { token, user }
             } else {
               throw new UnauthorizedException("Bad credentials")
@@ -113,7 +115,19 @@ export class AuthService {
       user.role = userBody.role;
 
       this.user.create(user); // this will run any hooks present, such as password hashing
-      await this.user.save(user);
+      const savedUserDetails = await this.user.save(user);
+
+      if (userBody?.address) {
+
+        const address = {
+          userId: savedUserDetails.id,
+          title: userBody?.address,
+        }
+
+        this.address.create(address);
+        await this.address.save(address);
+
+      }
 
       delete user.password;
       return user;
@@ -150,7 +164,6 @@ export class AuthService {
       username: 'root',
       password: 'mysql',
       database: "vendor_db_" + vendorId,
-      // autoLoadEntities: true,
       synchronize: true,
       entities: [User, VendorShops, Order, ShopFruits, ShopVegetables]
     };
@@ -162,7 +175,9 @@ export class AuthService {
     }
 
     const dataSource = new DataSource(options);
-    await dataSource.initialize()
+    if (!dataSource.isInitialized) {
+      await dataSource.initialize()
+    }
     this.setDataSource(dataSource);
 
     return dataSource;

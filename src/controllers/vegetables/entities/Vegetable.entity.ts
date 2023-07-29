@@ -1,7 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Category } from 'src/controllers/categories/entities/category.entity';
-import { Mineral } from 'src/controllers/minerals/entities/mineral.entity';
-import { Vitamin } from 'src/controllers/vitamins/entities/vitamin.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('Vegetable')
 export class Vegetable {

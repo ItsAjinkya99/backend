@@ -14,20 +14,23 @@ import { Vendor } from './entities/vendor.entity';
 import { VendorShops } from './entities/vendorShop.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ShopService } from '../shop/shop.service';
+import { Address } from '../../auth/entities/user-address.entity';
 
 @Injectable()
 export class VendorService {
 
   constructor(private readonly authService: AuthService,
     private readonly shopsService: ShopService,
-    @InjectRepository(Vendor) private readonly vendor: Repository<Vendor>
+    @InjectRepository(Vendor) private readonly vendor: Repository<Vendor>,
+    @InjectRepository(Address) private readonly address: Repository<Address>,
+    @InjectRepository(User) private readonly user: Repository<User>
   ) { }
   create(createVendorDto: CreateVendorDto) {
     return 'This action adds a new vendor';
   }
 
   async findAll() {
-    let myData = await new Promise(resolve => {
+    const myData = await new Promise(resolve => {
       this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
         const vendorUsers = data.getRepository(User);
         const myQuery = await vendorUsers.find();
@@ -50,8 +53,8 @@ export class VendorService {
     return `This action removes a #${id} vendor`;
   }
 
-  createDB(userBody) {
-    (async () => {
+  async createVendorDB(userBody) {
+    const vendorId = await new Promise(async resolve => {
 
       const vendorId = await this.vendor.query(`SELECT FLOOR(RAND() * 99999) AS random_num
       FROM Vendor
@@ -74,35 +77,49 @@ export class VendorService {
         username: 'root',
         password: 'mysql',
         database: "vendor_db_" + vendorBody.vendorId,
-        // autoLoadEntities: true,
         synchronize: true,
-        entities: [User, VendorShops, Order, ShopFruits, ShopVegetables]
+        entities: [User, VendorShops, Order, ShopFruits, ShopVegetables, Address]
       };
+      try {
+        // Create the database with specification of the DataSource options
+        await createDatabase({
+          options
+        });
 
-      // Create the database with specification of the DataSource options
-      await createDatabase({
-        options
-      });
+        const dataSource = new DataSource(options);
+        await dataSource.initialize()
 
-      const dataSource = new DataSource(options);
-      await dataSource.initialize()
+        const userRepo = dataSource.getRepository(User);
 
-      const userRepo = dataSource.getRepository(User);
+        const user = new User();
+        Object.assign(user, userBody);
 
-      const user = new User();
-      Object.assign(user, userBody);
+        user.role = userBody.role;
 
-      user.role = userBody.role;
+        userRepo.create(user); // this will run any hooks present, such as password hashing
+        this.user.create(user); // this will run any hooks present, such as password hashing
+        await userRepo.save(user);
+        const savedUser = await this.user.save(user);
 
-      userRepo.create(user); // this will run any hooks present, such as password hashing
-      await userRepo.save(user);
-      await dataSource.destroy()
+        if (userBody?.address) {
 
-      return vendorBody.vendorId
-      // Object.assign(vendor, userBody);
+          const address = {
+            userId: savedUser.id,
+            title: userBody.address,
+          }
 
-      // do something with the DataSource
-    })();[]
+          this.address.create(address);
+          await this.address.save(address);
+          await dataSource.destroy()
+          resolve(vendorBody.vendorId)
+        }
+      } catch (Exception) {
+        console.log(Exception)
+      }
+
+    })
+
+    return vendorId
   }
 
   async createVendorShop(object) {
@@ -133,6 +150,17 @@ export class VendorService {
       this.authService.getDataSource().pipe(take(1)).subscribe(async (data) => {
         const vendorUsers = data.getRepository(User);
         const myQuery = await vendorUsers.save(object);
+        if (object?.address) {
+
+          const address = {
+            userId: myQuery.id,
+            title: object.address,
+          }
+
+          this.address.create(address);
+          await this.address.save(address);
+
+        }
         resolve(myQuery);
       })
     })

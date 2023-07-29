@@ -90,6 +90,10 @@ export class ShopService {
         if (fruit.fruitId == fruit1.id) {
           fruit['name'] = fruit1.name
           fruit['image'] = fruit1.mainImage
+          fruit['quantity'] = 0
+          fruit['quantityInKg'] = 0
+          fruit['shopId'] = id
+          fruit['vendorId'] = vendorId
           return
         }
       })
@@ -101,12 +105,15 @@ export class ShopService {
         if (vegetable.vegetableId == vegetable1.id) {
           vegetable['name'] = vegetable1.name
           vegetable['image'] = vegetable1.mainImage
+          vegetable['quantity'] = 0
+          vegetable['quantityInKg'] = 0
+          vegetable['shopId'] = id
+          vegetable['vendorId'] = vendorId
           return
         }
       })
       return
     })
-
     const shopItems = [shopFruits, shopVegetables]
     return shopItems
   }
@@ -133,37 +140,37 @@ export class ShopService {
         const sfRepo = data.getRepository(ShopFruits)
 
         // loop through incoming data
-        if (shopData['vegetables']) {
-          shopData['vegetables'].forEach(async element => {
 
-            let vegetable = await svRepo.createQueryBuilder('shop')
+        for (var key of Object.keys(shopData['vegetables'])) {
+          if (shopData['vegetables'][key]) {
+            const vegetable = await svRepo.createQueryBuilder('shop')
               .addSelect('shop.shopId')
               .where('shop.shopId = :shopId', { shopId: shopData['shopId'] })
-              .andWhere('shop.vegetableId = :vegetableId', { vegetableId: element }).getOne();
+              .andWhere('shop.vegetableId = :vegetableId', { vegetableId: key }).getOne();
 
             if (vegetable) {
-              return
+              continue;
             }
             const veg1 = new ShopVegetables()
-            var myObj = {
+            const myObj = {
               shopId: shopData['shopId'],
-              vegetableId: element
+              vegetableId: key,
+              price: shopData['vegetables'][key]
             }
-
             Object.assign(veg1, myObj)
             try {
-              console.log("reaching here")
               svRepo.create(veg1)
               await svRepo.save(veg1);
 
             } catch (Exception) {
               console.log(Exception)
             }
-
-          });
+          } else {
+            continue;
+          }
         }
 
-        if (shopData['fruits']) {
+        /* if (shopData['fruits']) {
           shopData['fruits'].forEach(async element => {
 
             let fruit = await sfRepo.createQueryBuilder('shop')
@@ -185,9 +192,8 @@ export class ShopService {
             sfRepo.create(fruit1)
             await sfRepo.save(fruit1);
           });
-        }
-
-        resolve(true);
+        } */
+        resolve({ status: "success" });
       })
 
     })

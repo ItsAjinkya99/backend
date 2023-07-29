@@ -20,6 +20,7 @@ export class CustomerController {
     private readonly authService: AuthService) { }
 
   @Post('register')
+  @AllowUnauthorizedRequest()
   async registerUser(@Body() body: CreateCustomerDto) {
     body.role = UserRoles.Customer
     return this.authService.register(body);
@@ -59,8 +60,13 @@ export class CustomerController {
 
   @Get('authstatus')
   authStatus(@AuthStatus() user: User, @Req() req: any) {
-
     return { status: !!user, user };
+  }
+
+  @Get('getAddresses')
+  getAddresses(@AuthStatus() user: User) {
+    console.log(user)
+    this.customerService.getAddresses(user.id)
   }
 
   @Get(':id')
@@ -84,7 +90,7 @@ export class CustomerController {
   }
 
   @Post('placeorder')
-  placeOrder(@Body() orderBody: any, @Session() session: any) {
+  placeOrder(@Body() orderBody: any) {
     return this.customerService.placeOrder(orderBody);
   }
 

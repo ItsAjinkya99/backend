@@ -43,7 +43,7 @@ export class FruitsController {
     var dir = body.title;
     var images: string[] = [];
     files.forEach(file => {
-      let destinationPath = 'uploads/fruits/' + dir + '/' + file.filename;
+      const destinationPath = 'uploads/fruits/' + dir + '/' + file.filename;
       fs.move('/tmp/' + file.filename, destinationPath, function (err) {
         if (err) {
           return console.error(err);
@@ -52,7 +52,7 @@ export class FruitsController {
         }
 
       });
-      let fruit = {
+      const fruit = {
         name: body.title,
         images: images,
         mainImage: destinationPath,

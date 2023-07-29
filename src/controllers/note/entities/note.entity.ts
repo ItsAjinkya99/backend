@@ -1,6 +1,4 @@
-import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
-import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
-import { Vegetable } from 'src/controllers/vegetables/entities/Vegetable.entity';
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('note')
 export class Note {
@@ -9,11 +7,5 @@ export class Note {
 
     @Column()
     name: string;
-
-    /* @OneToMany(() => Mineral, mineral => mineral.benefits)
-    minerals: Mineral[];
-  
-    @OneToMany(() => Vitamin, vitamin => vitamin.benefits)
-    vitamins: Vitamin[]; */
 
 }

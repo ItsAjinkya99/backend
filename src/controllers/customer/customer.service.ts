@@ -1,4 +1,4 @@
-import { Injectable, Session } from '@nestjs/common';
+import { BadRequestException, Injectable, Session } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { Order } from '../orders/entities/order.entity';
@@ -7,6 +7,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { EventEmitter2 } from '@nestjs/event-emitter';
 import { OrderCreatedEvent } from './entities/OrderCreated.event';
 import { BehaviorSubject, Subject } from 'rxjs';
+import { Address } from '../../auth/entities/user-address.entity';
 
 @Injectable()
 export class CustomerService {
@@ -17,6 +18,7 @@ export class CustomerService {
   shopId: number
 
   constructor(@InjectRepository(Order) private readonly order: Repository<Order>,
+    @InjectRepository(Address) private readonly address: Repository<Address>,
     private eventEmitter: EventEmitter2) { }
 
   create(createCustomerDto: CreateCustomerDto,
@@ -38,6 +40,17 @@ export class CustomerService {
 
   remove(id: number) {
     return `This action removes a #${id} customer`;
+  }
+
+  async getAddresses(id: number) {
+    try {
+
+      const addresses = await this.address.find({ where: { userId: (id) } });
+      console.log(addresses)
+      return addresses;
+    } catch (err) {
+      throw new BadRequestException('Addresses not found');
+    }
   }
 
   async placeOrder(orderBody: object) {

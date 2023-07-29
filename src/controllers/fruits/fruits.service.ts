@@ -1,6 +1,6 @@
 import { FruitImage } from './entities/FruitImages.entity';
 import { FruitVitamin } from './entities/FruitVitamins.entity';
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateFruitDto } from './dto/create-fruit.dto';
@@ -11,7 +11,6 @@ import { FruitCategory } from './entities/FruitCategory.entity';
 import { Vitamin } from '../vitamins/entities/vitamin.entity';
 import { Mineral } from '../minerals/entities/mineral.entity';
 import { Category } from '../categories/entities/category.entity';
-import { User } from 'src/auth/entities/user.entity';
 
 @Injectable()
 export class FruitsService {

@@ -13,9 +13,9 @@ export class CreateShopDto {
     @IsNotEmpty()
     contact: string;
 
-    @IsString()
+    // @IsString()
     @IsOptional()
-    userId: string;
+    userId: number;
 
     @IsString()
     @IsOptional()

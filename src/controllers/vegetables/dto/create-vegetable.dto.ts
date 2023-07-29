@@ -1,5 +1,4 @@
 import { IsString, IsNotEmpty, IsOptional } from "class-validator";
-import { Category } from "src/controllers/categories/entities/category.entity";
 
 export class CreateVegetableDto {
 

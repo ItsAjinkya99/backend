@@ -1,14 +1,9 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, StreamableFile, Res, UploadedFile, UseInterceptors, UploadedFiles, Header, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, UploadedFiles, Query } from '@nestjs/common';
 import { VegetablesService } from './vegetables.service';
 import { CreateVegetableDto } from './dto/create-vegetable.dto';
 import { UpdateVegetableDto } from './dto/update-vegetable.dto';
-import { createReadStream, readFileSync } from 'fs';
-import { join } from 'path';
-import { Response } from 'express';
-import { AnyFilesInterceptor, FileFieldsInterceptor, FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { FilesInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { spawn } from 'child_process';
-import { AllowUnauthorizedRequest } from 'src/app.controller';
 var fs = require('fs-extra');
 var path = require('path');
 
@@ -58,7 +53,7 @@ export class VegetablesController {
         }
 
       });
-      let vegetable = {
+      const vegetable = {
         name: body.title,
         images: images,
         mainImage: destinationPath,

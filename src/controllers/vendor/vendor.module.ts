@@ -9,6 +9,7 @@ import { Vendor } from './entities/vendor.entity';
 import { ShopService } from '../shop/shop.service';
 import { Vegetable } from '../vegetables/entities/Vegetable.entity';
 import { Fruit } from '../fruits/entities/Fruit.entity';
+import { Address } from '../../auth/entities/user-address.entity';
 
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
@@ -17,7 +18,7 @@ const { combine, timestamp, label, printf } = format;
 
 @Module({
   controllers: [VendorController],
-  imports: [TypeOrmModule.forFeature([User, Shop, Vendor, Vegetable, Fruit])
+  imports: [TypeOrmModule.forFeature([User, Shop, Vendor, Vegetable, Fruit, Address])
   ],
   providers: [VendorService, ShopService]
 })

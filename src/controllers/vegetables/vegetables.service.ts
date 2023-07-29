@@ -36,9 +36,9 @@ export class VegetablesService {
       Object.assign(vegetable, createVegetableDto)
 
       this.repo.create(vegetable);
-      let savedFruitData = await this.repo.save(vegetable);
+      const savedFruitData = await this.repo.save(vegetable);
 
-      /* if (createVegetableDto?.images) {
+      if (createVegetableDto?.images) {
         createVegetableDto?.images.forEach(async element => {
           let image = {
             vegetableId: savedFruitData.id,
@@ -48,7 +48,7 @@ export class VegetablesService {
           this.vegetabeleImages.create(image);
           await this.vegetabeleImages.save(image);
         });
-      } */
+      }
 
       return savedFruitData;
 

@@ -16,6 +16,6 @@ export class Order {
     orderData: string
 
     @ManyToOne(() => User, user => user.orders, { eager: true })
-    user: Relation<User>;
+    customer: Relation<User>;
 
 }

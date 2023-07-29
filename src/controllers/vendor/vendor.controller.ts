@@ -34,7 +34,8 @@ export class VendorController {
   async registerVendor(@Body() body: CreateVendorDto) {
 
     body.role = UserRoles.Vendor
-    return this.vendorService.createDB(body)
+    const vendorId = await this.vendorService.createVendorDB(body)
+    return vendorId
 
   }
 
@@ -102,7 +103,8 @@ export class VendorController {
   }
 
   @Post('createshop')
-  async createShop(@Body() body: CreateShopDto) {
+  async createShop(@Body() body: CreateShopDto, @AuthStatus() user: User) {
+    body.userId = user.id
     return this.vendorService.createVendorShop(body)
   }
 

@@ -1,4 +1,4 @@
-import { Fruit } from 'src/controllers/fruits/entities/Fruit.entity';
+import { Fruit } from '../../../controllers/fruits/entities/Fruit.entity';
 import { Mineral } from '../entities/mineral.entity';
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from "typeorm";
 

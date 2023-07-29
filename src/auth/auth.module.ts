@@ -3,7 +3,6 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { Global, Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
-// import { Vendor } from 'src/controllers/vendor/entities/vendor.entity';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from './jwt.strategy';
@@ -11,10 +10,11 @@ import { Order } from '../controllers/orders/entities/order.entity';
 import { Shop } from '../controllers/shop/entities/shop.entity';
 import { Vegetable } from '../controllers/vegetables/entities/Vegetable.entity';
 import { Vendor } from '../controllers/vendor/entities/vendor.entity';
+import { Address } from './entities/user-address.entity';
 
 @Global()
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Order, Shop, Vegetable, Vendor]),
+  imports: [TypeOrmModule.forFeature([User, Order, Shop, Vegetable, Vendor, Address]),
   JwtModule.register({
     secret: 'secretStringThatNoOneCanGuess',
     signOptions: {
