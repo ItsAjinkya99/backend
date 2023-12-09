@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Res, Session, UseGuards, Req } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Res, UseGuards, Req } from '@nestjs/common';
 import { Response } from 'express';
 import { AuthService } from './../../auth/auth.service';
 import { AuthStatus } from '../../decorators/authstatus.decorator';
@@ -8,7 +8,6 @@ import { UserRoles } from '../../auth/user-roles';
 import { CustomerService } from './customer.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
-import { AuthGuard } from '@nestjs/passport';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AllowUnauthorizedRequest } from '../../app.controller';
 
@@ -24,7 +23,6 @@ export class CustomerController {
   async registerUser(@Body() body: CreateCustomerDto) {
     body.role = UserRoles.Customer
     return this.authService.register(body);
-
   }
 
   @Post('login')
@@ -37,18 +35,14 @@ export class CustomerController {
 
     res.cookie('isAuthenticated', true, {
       maxAge: 24 * 60 * 60 * 1000,
-
     }) // max age 24 hours
+
     res.cookie('Authentication', token,
       {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
-
-      }
-    )
-
+      })
     return res.send({ success: true })
-
   }
 
   @Post('/logout')
@@ -65,8 +59,22 @@ export class CustomerController {
 
   @Get('getAddresses')
   getAddresses(@AuthStatus() user: User) {
-    console.log(user)
-    this.customerService.getAddresses(user.id)
+    return this.customerService.getAddresses(user.id)
+  }
+
+  @Get('getOrders')
+  getOrders(@AuthStatus() user: User) {
+    return this.customerService.getOrders(user.id)
+  }
+
+  @Post('addAddress')
+  addAddresse(@Body() orderBody: any) {
+    return this.customerService.createAddress(orderBody)
+  }
+
+  @Get('getAccountInfo')
+  getAccountInfo(@AuthStatus() user: User) {
+    return this.authService.getAccountInfo(UserRoles.Customer, user.email)
   }
 
   @Get(':id')

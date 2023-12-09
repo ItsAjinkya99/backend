@@ -14,8 +14,8 @@ import { Address } from '../../auth/entities/user-address.entity';
 import { User } from '../../auth/entities/user.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Shop, Order, Vendor, Vegetable, Fruit, Address, User]), CustomerModule],
+  imports: [TypeOrmModule.forFeature([Shop, Order, Vendor, Vegetable, Fruit, Address, User])],
   controllers: [ShopController],
-  providers: [ShopService, CustomerService, VendorService],
+  providers: [ShopService, VendorService],
 })
 export class ShopModule { }

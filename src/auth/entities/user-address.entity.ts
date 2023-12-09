@@ -6,7 +6,7 @@ export class Address {
     id: number;
 
     @Column()
-    userId: number;
+    customerId: number;
 
     @Column()
     title: string;

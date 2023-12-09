@@ -17,8 +17,7 @@ export class ShopController {
   public myOrdersObservable = this.myOrders.asObservable();
 
   eventData: any
-  constructor(private readonly shopService: ShopService,
-    private readonly customerService: CustomerService) { }
+  constructor(private readonly shopService: ShopService) { }
 
   @Get()
   findAll() {

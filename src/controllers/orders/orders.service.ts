@@ -1,11 +1,22 @@
 import { Injectable } from '@nestjs/common';
-import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
+import { Order } from './entities/order.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class OrdersService {
-  create(createOrderDto: CreateOrderDto) {
-    return 'This action adds a new order';
+
+  constructor(@InjectRepository(Order) private readonly order: Repository<Order>) { }
+
+  async create(createOrderDto: any) {
+    const order = new Order();
+    Object.assign(order, createOrderDto);
+
+    this.order.create(order); // this will run any hooks present, such as password hashing
+    const savedOrderDetails = await this.order.save(order);
+
+    return savedOrderDetails;
   }
 
   findAll() {

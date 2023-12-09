@@ -53,12 +53,12 @@ export class AuthService {
           }
         }
       }
+
       case 'Vendor': {
 
         const dataSource = await this.getVendorDB(loginBody.vendorId)
 
         try {
-
           const vendorDB = dataSource.getRepository(User);
 
           const user = await vendorDB.createQueryBuilder('Users')
@@ -105,13 +105,11 @@ export class AuthService {
       .andWhere('user.email = :email', { email: userBody.email }).getOne();
 
     if (checkUser) {
-
       throw new BadRequestException('Please enter different email');
     } else {
+
       const user = new User();
-
       Object.assign(user, userBody);
-
       user.role = userBody.role;
 
       this.user.create(user); // this will run any hooks present, such as password hashing
@@ -123,16 +121,13 @@ export class AuthService {
           userId: savedUserDetails.id,
           title: userBody?.address,
         }
-
         this.address.create(address);
         await this.address.save(address);
-
       }
 
       delete user.password;
       return user;
     }
-
   }
 
   async generateHash(password: string) {
@@ -181,6 +176,13 @@ export class AuthService {
     this.setDataSource(dataSource);
 
     return dataSource;
+  }
+
+  async getAccountInfo(role, email) {
+    const checkUser = await this.user.createQueryBuilder('user')
+      .where('user.role = :role', { role: role })
+      .andWhere('user.email = :email', { email: email }).getOne();
+    return checkUser
   }
 
 }

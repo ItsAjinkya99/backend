@@ -20,6 +20,7 @@ import { EventEmitterModule } from '@nestjs/event-emitter';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/guards/roles.guard';
 import { JwtAuthGuard } from './auth/guards/jwt-auth.guard';
+import { OrdersModule } from './controllers/orders/orders.module';
 const winston = require('winston');
 const DailyRotateFile = require('winston-daily-rotate-file');
 const { format } = require('winston');
@@ -53,7 +54,7 @@ const { combine, timestamp, label, printf } = format;
     MineralsModule,
     // BenefitsModule,
     // CategoriesModule,
-    // OrdersModule,
+    OrdersModule,
     // ColorModule,
     // NoteModule,
     AuthModule,

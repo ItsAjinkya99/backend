@@ -1,17 +1,15 @@
-import { BadRequestException, Injectable, Session } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { Order } from '../orders/entities/order.entity';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
-import { EventEmitter2 } from '@nestjs/event-emitter';
-import { OrderCreatedEvent } from './entities/OrderCreated.event';
 import { BehaviorSubject, Subject } from 'rxjs';
 import { Address } from '../../auth/entities/user-address.entity';
+import { OrdersService } from '../orders/orders.service';
 
 @Injectable()
 export class CustomerService {
-  private events = new Subject();
 
   myShopId: BehaviorSubject<number> = new BehaviorSubject<number>(null);
   public myShopIdObservable = this.myShopId.asObservable();
@@ -19,7 +17,8 @@ export class CustomerService {
 
   constructor(@InjectRepository(Order) private readonly order: Repository<Order>,
     @InjectRepository(Address) private readonly address: Repository<Address>,
-    private eventEmitter: EventEmitter2) { }
+    private readonly ordersService: OrdersService
+  ) { }
 
   create(createCustomerDto: CreateCustomerDto,
   ) {
@@ -44,23 +43,38 @@ export class CustomerService {
 
   async getAddresses(id: number) {
     try {
-
-      const addresses = await this.address.find({ where: { userId: (id) } });
-      console.log(addresses)
+      const addresses = await this.address.find({ where: { customerId: (id) } });
       return addresses;
     } catch (err) {
-      throw new BadRequestException('Addresses not found');
+      throw new BadRequestException('No address(es) found');
+    }
+  }
+
+  async getOrders(id: number) {
+    try {
+      const orders = await this.order.find({ where: { customerId: (id) } });
+
+      return orders;
+    } catch (err) {
+      throw new BadRequestException(err);
+    }
+  }
+
+  async createAddress(addressBody: any) {
+    try {
+      console.log(addressBody)
+      const address = new Address();
+      Object.assign(address, addressBody);
+      this.address.create(address);
+      await this.address.save(address);
+      return address
+    } catch (err) {
+      throw new BadRequestException(err);
     }
   }
 
   async placeOrder(orderBody: object) {
-    /* const order = new Order();
-
-    Object.assign(order, orderBody);
-
-    this.order.create(order);
-    await this.order.save(order); */
-    this.sendPlaceOrder()
+    return this.ordersService.create(orderBody);
   }
 
   setShopId(id: number) {
@@ -68,14 +82,4 @@ export class CustomerService {
     this.shopId = id;
   }
 
-  sendPlaceOrder() {
-    const orderCreatedEvent = new OrderCreatedEvent()
-
-    orderCreatedEvent.name = "order.name";
-    orderCreatedEvent.description = "order.description";
-    orderCreatedEvent.shopId = 2;
-
-    this.eventEmitter.emit('order.created', orderCreatedEvent);
-
-  }
 }
