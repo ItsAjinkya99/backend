@@ -7,7 +7,7 @@ import { Mineral } from './entities/mineral.entity';
 
 @Module({
   imports: [
-  TypeOrmModule.forFeature([Mineral])],
+    TypeOrmModule.forFeature([Mineral])],
   controllers: [MineralsController],
   providers: [MineralsService]
 })

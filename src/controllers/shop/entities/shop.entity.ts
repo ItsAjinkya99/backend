@@ -48,8 +48,8 @@ export class Shop {
   @Column()
   description: string;
 
-  @OneToMany(() => Order, order => order.shopId)
+  /* @OneToMany(() => Order, order => order.shopId)
   @JoinTable()
-  orders: Relation<Order[]>;
+  orders: Relation<Order[]>; */
 
 }

@@ -3,3 +3,4 @@ uploads
 dist
 .vscode/settings.json
 log
+package-lock.json

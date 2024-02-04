@@ -7,11 +7,13 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class OrdersService {
 
-  constructor(@InjectRepository(Order) private readonly order: Repository<Order>) { }
+  constructor(@InjectRepository(Order) private readonly order: Repository<Order>,
+  ) { }
 
   async create(createOrderDto: any) {
     const order = new Order();
     Object.assign(order, createOrderDto);
+
 
     this.order.create(order); // this will run any hooks present, such as password hashing
     const savedOrderDetails = await this.order.save(order);

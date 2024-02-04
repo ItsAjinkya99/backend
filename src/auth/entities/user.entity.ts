@@ -2,7 +2,6 @@ import { BeforeInsert, Column, Entity, OneToMany, PrimaryGeneratedColumn, Relati
 import { UserRoles } from "../user-roles";
 import * as bcrypt from 'bcryptjs';
 import { Order } from "../../controllers/orders/entities/order.entity";
-import { Address } from "./user-address.entity";
 import { IsOptional } from "class-validator";
 
 @Entity('Users')

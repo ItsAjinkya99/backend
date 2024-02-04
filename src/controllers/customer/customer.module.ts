@@ -7,10 +7,6 @@ import { Order } from '../orders/entities/order.entity';
 import { Address } from '../../auth/entities/user-address.entity';
 import { OrdersModule } from '../orders/orders.module';
 
-const winston = require('winston');
-const DailyRotateFile = require('winston-daily-rotate-file');
-const { format } = require('winston');
-const { combine, timestamp, label, printf } = format;
 
 @Module({
   imports: [

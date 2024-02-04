@@ -3,8 +3,6 @@ import { ShopService } from './shop.service';
 import { ShopController } from './shop.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Shop } from './entities/shop.entity';
-import { CustomerModule } from '../customer/customer.module';
-import { CustomerService } from '../customer/customer.service';
 import { Order } from '../orders/entities/order.entity';
 import { VendorService } from '../vendor/vendor.service';
 import { Vendor } from '../vendor/entities/vendor.entity';

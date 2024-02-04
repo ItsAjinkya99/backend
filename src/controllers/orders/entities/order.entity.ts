@@ -46,7 +46,7 @@ export class Order {
     @ManyToOne(() => User, user => user.orders, { eager: true })
     customer: Relation<User>;
 
-    @ManyToOne(() => Shop, shop => shop.id, { eager: true })
-    shop: Relation<Shop>;
+    /* @ManyToOne(() => Shop, shop => shop.id, { eager: true })
+    shop: Relation<Shop>; */
 
 }

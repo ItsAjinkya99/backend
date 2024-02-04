@@ -42,7 +42,7 @@ export class CustomerController {
         httpOnly: true,
         maxAge: 24 * 60 * 60 * 1000,
       })
-    return res.send({ success: true })
+    return res.send({ success: true, user })
   }
 
   @Post('/logout')
@@ -75,26 +75,6 @@ export class CustomerController {
   @Get('getAccountInfo')
   getAccountInfo(@AuthStatus() user: User) {
     return this.authService.getAccountInfo(UserRoles.Customer, user.email)
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: number) {
-    return this.customerService.findOne(id);
-  }
-
-  @Get()
-  findAll() {
-    return this.customerService.findAll();
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCustomerDto: UpdateCustomerDto) {
-    return this.customerService.update(+id, updateCustomerDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.customerService.remove(+id);
   }
 
   @Post('placeorder')
