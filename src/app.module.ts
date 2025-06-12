@@ -33,7 +33,7 @@ const { combine, timestamp, label, printf } = format;
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'mysql',
+      password: 'Ajinkya@123',
       database: 'backend',
       autoLoadEntities: true,
       synchronize: true,

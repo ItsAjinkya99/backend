@@ -157,7 +157,7 @@ export class AuthService {
       host: 'localhost',
       port: 3306,
       username: 'root',
-      password: 'mysql',
+      password: 'Ajinkya@123',
       database: "vendor_db_" + vendorId,
       synchronize: true,
       entities: [User, VendorShops, Order, ShopFruits, ShopVegetables]
