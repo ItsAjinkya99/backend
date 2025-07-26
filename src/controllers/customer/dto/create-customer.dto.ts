@@ -5,11 +5,11 @@ import { CreateUserDto } from '../../../auth/dto/create-user.dto';
 export class CreateCustomerDto extends CreateUserDto {
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   billingAddress: string;
 
   @IsString()
-  @IsNotEmpty()
+  @IsOptional()
   shippingAddress: string;
 
 }

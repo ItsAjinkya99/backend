@@ -36,7 +36,6 @@ const { combine, timestamp, label, printf } = format;
       password: 'Ajinkya@123',
       database: 'backend',
       autoLoadEntities: true,
-      synchronize: true,
     }),
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..',),
@@ -51,7 +50,7 @@ const { combine, timestamp, label, printf } = format;
       dest: "./uploads"
     }),
     VitaminsModule,
-    MineralsModule,
+    // MineralsModule,
     // BenefitsModule,
     // CategoriesModule,
     OrdersModule,
