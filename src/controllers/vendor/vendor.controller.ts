@@ -32,10 +32,9 @@ export class VendorController {
   @Post('register')
   @AllowUnauthorizedRequest()
   async registerVendor(@Body() body: CreateVendorDto) {
-
     body.role = UserRoles.Vendor
     const vendorId = await this.vendorService.createVendorDB(body)
-    return vendorId
+    return vendorId;
 
   }
 

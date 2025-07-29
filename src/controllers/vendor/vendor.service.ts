@@ -54,70 +54,65 @@ export class VendorService {
   }
 
   async createVendorDB(userBody) {
-    const vendorId = await new Promise(async resolve => {
 
-      const vendorId = await this.vendor.query(`SELECT FLOOR(RAND() * 99999) AS random_num
+    let vendorId = await this.vendor.query(`SELECT FLOOR(RAND() * 99999) AS random_num
       FROM Vendor
       WHERE ("random_num" NOT IN (SELECT vendorId FROM Vendor))
       LIMIT 1`)
 
-      let vendorBody = {
-        vendorId: vendorId.length !== 0 ? vendorId[0].random_num : Math.floor(Math.random() * 90000) + 10000
-      }
+    vendorId = vendorId.length !== 0 ? vendorId[0].random_num : Math.floor(Math.random() * 90000) + 10000
 
-      const vendor = new Vendor();
-      Object.assign(vendor, vendorBody);
-      this.vendor.create(vendor);
-      this.vendor.save(vendor);
+    console.log(userBody)
+    const vendor = new Vendor();
+    Object.assign(vendor, { vendorId });
+    this.vendor.create(vendor);
+    this.vendor.save(vendor);
 
-      const options: DataSourceOptions = {
-        type: 'mysql',
-        host: 'localhost',
-        port: 3306,
-        username: 'root',
-        password: 'Ajinkya@123',
-        database: "vendor_db_" + vendorBody.vendorId,
-        synchronize: true,
-        entities: [User, VendorShops, Order, ShopFruits, ShopVegetables, Address]
-      };
-      try {
-        // Create the database with specification of the DataSource options
-        await createDatabase({
-          options
-        });
+    const options: DataSourceOptions = {
+      type: 'mysql',
+      host: 'localhost',
+      port: 3306,
+      username: 'root',
+      password: 'Ajinkya@123',
+      database: "vendor_db_" + vendorId,
+      synchronize: true,
+      entities: [User, VendorShops, Order, ShopFruits, ShopVegetables, Address]
+    };
+    try {
+      // Create the database with specification of the DataSource options
+      await createDatabase({
+        options
+      });
 
-        const dataSource = new DataSource(options);
-        await dataSource.initialize()
+      const dataSource = new DataSource(options);
+      await dataSource.initialize()
 
-        const userRepo = dataSource.getRepository(User);
+      const userRepo = dataSource.getRepository(User);
 
-        const user = new User();
-        Object.assign(user, userBody);
+      const user = new User();
+      Object.assign(user, userBody);
 
-        user.role = userBody.role;
+      user.role = userBody.role;
 
-        userRepo.create(user); // this will run any hooks present, such as password hashing
-        this.user.create(user); // this will run any hooks present, such as password hashing
-        await userRepo.save(user);
-        const savedUser = await this.user.save(user);
+      userRepo.create(user); // this will run any hooks present, such as password hashing
+      this.user.create(user); // this will run any hooks present, such as password hashing
+      await userRepo.save(user);
+      const savedUser = await this.user.save(user);
 
-        if (userBody?.address) {
+      if (userBody?.address) {
 
-          const address = {
-            userId: savedUser.id,
-            title: userBody.address,
-          }
-
-          this.address.create(address);
-          await this.address.save(address);
-          await dataSource.destroy()
-          resolve(vendorBody.vendorId)
+        const address = {
+          userId: savedUser.id,
+          title: userBody.address,
         }
-      } catch (Exception) {
-        console.log(Exception)
-      }
 
-    })
+        this.address.create(address);
+        await this.address.save(address);
+        await dataSource.destroy()
+      }
+    } catch (Exception) {
+      console.log(Exception)
+    }
 
     return vendorId
   }
